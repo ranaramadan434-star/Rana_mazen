@@ -73,6 +73,7 @@ button.alt{background:#ddd;color:#332a29}
 
 <script>
 const SUPABASE_URL="https://jqpceabdshvboderrbiz.supabase.co";
+
 const SUPABASE_KEY="sb_publishable_lgtWi40tBxTt1zPogOQ4oA_Zf8SKU2P";
 
 const supabaseClient=window.supabase.createClient(
@@ -83,21 +84,29 @@ SUPABASE_KEY
 let currentId=null;
 
 function login(){
+
 const username=document.getElementById("u").value.trim().toLowerCase();
 const password=document.getElementById("p").value;
 
 if(username==="ranamazen" && password==="10/10/2005"){
+
 document.getElementById("login").classList.add("hidden");
 document.getElementById("panel").classList.remove("hidden");
+
 loadData();
+
 }else{
+
 document.getElementById("e").textContent="Wrong username or password.";
+
 }
 }
 
 function addMem(data={}){
+
 const d=document.createElement("div");
 d.className="mem";
+
 d.innerHTML=`
 <input class="mt" placeholder="Memory title">
 <input class="md" placeholder="Date">
@@ -121,28 +130,45 @@ const {data,error}=await supabaseClient
 .limit(1);
 
 if(error){
+
 console.error(error);
-setStatus("Couldn't load the data. Check Supabase settings.");
+
+setStatus("Couldn't load the data: "+error.message);
+
 return;
 }
 
 if(data && data.length>0){
 
 const row=data[0];
-currentId=row.id;
 
-document.getElementById("names").value=row.names||"Rana & Mazen";
-document.getElementById("date").value=row.event_date||"03 / 11 / 2025";
-document.getElementById("story").value=row.story||"";
-document.getElementById("music").value=row.music||"";
+currentId=row.Id;
+
+document.getElementById("names").value=
+row.Name||"Rana & Mazen";
+
+document.getElementById("date").value=
+row.Event_date||"03 / 11 / 2025";
+
+document.getElementById("story").value=
+row.Story||"";
+
+document.getElementById("music").value=
+row.Music||"";
 
 document.getElementById("photos").value=
-Array.isArray(row.photos)?row.photos.join("\n"):"";
+Array.isArray(row.Photos)
+?row.Photos.join("\n")
+:"";
 
 document.getElementById("mems").innerHTML="";
 
-if(Array.isArray(row.memories)){
-row.memories.forEach(memory=>addMem(memory));
+if(Array.isArray(row.Memories)){
+
+row.Memories.forEach(memory=>{
+addMem(memory);
+});
+
 }
 
 setStatus("Data loaded ♡");
@@ -159,21 +185,30 @@ async function saveData(){
 setStatus("Saving...");
 
 const obj={
-names:document.getElementById("names").value,
-event_date:document.getElementById("date").value,
-story:document.getElementById("story").value,
-music:document.getElementById("music").value,
 
-photos:document.getElementById("photos").value
+Name:document.getElementById("names").value,
+
+Event_date:document.getElementById("date").value,
+
+Story:document.getElementById("story").value,
+
+Music:document.getElementById("music").value,
+
+Photos:document.getElementById("photos").value
 .split("\n")
 .map(x=>x.trim())
 .filter(Boolean),
 
-memories:[...document.querySelectorAll(".mem")].map(x=>({
+Memories:[...document.querySelectorAll(".mem")].map(x=>({
+
 title:x.querySelector(".mt").value,
+
 date:x.querySelector(".md").value,
+
 text:x.querySelector(".mx").value
+
 }))
+
 };
 
 let result;
@@ -183,7 +218,7 @@ if(currentId){
 result=await supabaseClient
 .from("rana_mazen")
 .update(obj)
-.eq("id",currentId);
+.eq("Id",currentId);
 
 }else{
 
@@ -194,22 +229,29 @@ result=await supabaseClient
 .single();
 
 if(result.data){
-currentId=result.data.id;
+
+currentId=result.data.Id;
+
 }
 }
 
 if(result.error){
 
 console.error(result.error);
+
 setStatus("Save failed: "+result.error.message);
+
 return;
 }
 
 setStatus("Saved online successfully ♡");
+
 }
 
 function setStatus(message){
+
 document.getElementById("status").textContent=message;
+
 }
 </script>
 
