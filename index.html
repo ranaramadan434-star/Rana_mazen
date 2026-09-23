@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Rana & Mazen — Admin</title>
+<style>
+body{margin:0;background:#f8f2ef;font-family:Arial,sans-serif;color:#332a29}.wrap{max-width:760px;margin:30px auto;padding:18px}.box{background:#fff;border-radius:22px;padding:28px;box-shadow:0 10px 40px #0001}h1{font-weight:400}.grid{display:grid;gap:12px}label{font-size:13px;color:#705d59}input,textarea{width:100%;box-sizing:border-box;padding:13px;border:1px solid #ddd;border-radius:10px;margin:5px 0 12px;font:15px Arial}button{padding:13px 20px;border:0;border-radius:10px;background:#4c3834;color:white}button.alt{background:#ddd;color:#332a29}.hidden{display:none}.note{font-size:13px;line-height:1.6;color:#786966}.mem{border:1px solid #eadbd7;padding:15px;border-radius:14px;margin:10px 0}
+</style></head><body><div class="wrap"><div class="box">
+<h1>Rana & Mazen ♡</h1>
+<div id="login"><p class="note">Admin starter. For a real public deployment, use Supabase Auth rather than putting a password in browser code.</p>
+<label>Username</label><input id="u"><label>Password</label><input id="p" type="password"><button onclick="login()">Enter</button><p id="e"></p></div>
+<div id="panel" class="hidden">
+<label>Names</label><input id="names" value="Rana & Mazen">
+<label>Date</label><input id="date" value="03 / 11 / 2025">
+<label>Story</label><textarea id="story" rows="7">Our story is just beginning… ♡</textarea>
+<label>Song URL</label><input id="music" placeholder="Spotify / YouTube link">
+<label>Photo URLs (one per line)</label><textarea id="photos" rows="5" placeholder="https://..."></textarea>
+<h3>Memories</h3><div id="mems"></div><button class="alt" onclick="addMem()">+ Add memory</button>
+<br><br><button onclick="downloadData()">Export data.json</button>
+<p class="note">This export workflow is intentionally static. To make edits save online from any phone, connect the supplied Supabase backend template using the SQL in SUPABASE.sql.</p>
+</div></div></div>
+<script>
+function login(){if(u.value.trim().toLowerCase()==="ranamazen"&&p.value==="10/10/2005"){document.getElementById("login").classList.add("hidden");document.getElementById("panel").classList.remove("hidden")}else e.textContent="Wrong username or password."}
+function addMem(){let d=document.createElement("div");d.className="mem";d.innerHTML='<input class="mt" placeholder="Memory title"><input class="md" placeholder="Date"><textarea class="mx" rows="3" placeholder="What happened?"></textarea>';mems.appendChild(d)}
+function downloadData(){
+ const obj={names:names.value,date:date.value,story:story.value,music:music.value,photos:photos.value.split("\n").map(x=>x.trim()).filter(Boolean),memories:[...document.querySelectorAll(".mem")].map(x=>({title:x.querySelector(".mt").value,date:x.querySelector(".md").value,text:x.querySelector(".mx").value}))};
+ const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(obj,null,2)],{type:"application/json"}));a.download="data.json";a.click();
+}
+</script></body></html>
