@@ -14,7 +14,6 @@ input,textarea{width:100%;box-sizing:border-box;padding:13px;border:1px solid #d
 button{padding:13px 20px;border:0;border-radius:10px;background:#4c3834;color:white;cursor:pointer}
 button.alt{background:#ddd;color:#332a29}
 .hidden{display:none}
-.note{font-size:13px;line-height:1.6;color:#786966}
 .mem{border:1px solid #eadbd7;padding:15px;border-radius:14px;margin:10px 0}
 #status{margin-top:15px;font-size:14px}
 </style>
@@ -27,8 +26,6 @@ button.alt{background:#ddd;color:#332a29}
 <h1>Rana & Mazen ♡</h1>
 
 <div id="login">
-<p class="note">Admin area</p>
-
 <label>Username</label>
 <input id="u">
 
@@ -51,10 +48,10 @@ button.alt{background:#ddd;color:#332a29}
 <textarea id="story" rows="7">Our story is just beginning… ♡</textarea>
 
 <label>Song URL</label>
-<input id="music" placeholder="Spotify / YouTube link">
+<input id="music">
 
 <label>Photo URLs (one per line)</label>
-<textarea id="photos" rows="5" placeholder="https://..."></textarea>
+<textarea id="photos" rows="5"></textarea>
 
 <h3>Memories</h3>
 <div id="mems"></div>
@@ -73,7 +70,6 @@ button.alt{background:#ddd;color:#332a29}
 
 <script>
 const SUPABASE_URL="https://jqpceabdshvboderrbiz.supabase.co";
-
 const SUPABASE_KEY="sb_publishable_lgtWi40tBxTt1zPogOQ4oA_Zf8SKU2P";
 
 const supabaseClient=window.supabase.createClient(
@@ -84,44 +80,33 @@ SUPABASE_KEY
 let currentId=null;
 
 function login(){
-
 const username=document.getElementById("u").value.trim().toLowerCase();
 const password=document.getElementById("p").value;
 
 if(username==="ranamazen" && password==="10/10/2005"){
-
 document.getElementById("login").classList.add("hidden");
 document.getElementById("panel").classList.remove("hidden");
-
 loadData();
-
 }else{
-
 document.getElementById("e").textContent="Wrong username or password.";
-
 }
 }
 
 function addMem(data={}){
-
 const d=document.createElement("div");
 d.className="mem";
-
 d.innerHTML=`
 <input class="mt" placeholder="Memory title">
 <input class="md" placeholder="Date">
 <textarea class="mx" rows="3" placeholder="What happened?"></textarea>
 `;
-
 d.querySelector(".mt").value=data.title||"";
 d.querySelector(".md").value=data.date||"";
 d.querySelector(".mx").value=data.text||"";
-
 document.getElementById("mems").appendChild(d);
 }
 
 async function loadData(){
-
 setStatus("Loading your data...");
 
 const {data,error}=await supabaseClient
@@ -130,53 +115,31 @@ const {data,error}=await supabaseClient
 .limit(1);
 
 if(error){
-
-console.error(error);
-
 setStatus("Couldn't load the data: "+error.message);
-
 return;
 }
 
 if(data && data.length>0){
-
 const row=data[0];
-
 currentId=row.Id;
 
-document.getElementById("names").value=
-row.Name||"Rana & Mazen";
-
-document.getElementById("date").value=
-row.Event_date||"03 / 11 / 2025";
-
-document.getElementById("story").value=
-row.Story||"";
-
-document.getElementById("music").value=
-row.Music||"";
+document.getElementById("names").value=row.Name||"Rana & Mazen";
+document.getElementById("date").value=row.Event_date||"03 / 11 / 2025";
+document.getElementById("story").value=row.Story||"";
+document.getElementById("music").value=row.Music||"";
 
 document.getElementById("photos").value=
-Array.isArray(row.Photos)
-?row.Photos.join("\n")
-:"";
+Array.isArray(row.Photos)?row.Photos.join("\n"):"";
 
 document.getElementById("mems").innerHTML="";
 
 if(Array.isArray(row.Memories)){
-
-row.Memories.forEach(memory=>{
-addMem(memory);
-});
-
+row.Memories.forEach(memory=>addMem(memory));
 }
 
 setStatus("Data loaded ♡");
-
 }else{
-
 setStatus("No saved data yet. Add your memories and press Save online ♡");
-
 }
 }
 
@@ -185,43 +148,27 @@ async function saveData(){
 setStatus("Saving...");
 
 const obj={
-
 Name:document.getElementById("names").value,
-
 Event_date:document.getElementById("date").value,
-
 Story:document.getElementById("story").value,
-
 Music:document.getElementById("music").value,
-
 Photos:document.getElementById("photos").value
-.split("\n")
-.map(x=>x.trim())
-.filter(Boolean),
-
+.split("\n").map(x=>x.trim()).filter(Boolean),
 Memories:[...document.querySelectorAll(".mem")].map(x=>({
-
 title:x.querySelector(".mt").value,
-
 date:x.querySelector(".md").value,
-
 text:x.querySelector(".mx").value
-
 }))
-
 };
 
 let result;
 
 if(currentId){
-
 result=await supabaseClient
 .from("rana_mazen")
 .update(obj)
 .eq("Id",currentId);
-
 }else{
-
 result=await supabaseClient
 .from("rana_mazen")
 .insert(obj)
@@ -229,29 +176,20 @@ result=await supabaseClient
 .single();
 
 if(result.data){
-
 currentId=result.data.Id;
-
 }
 }
 
 if(result.error){
-
-console.error(result.error);
-
 setStatus("Save failed: "+result.error.message);
-
 return;
 }
 
 setStatus("Saved online successfully ♡");
-
 }
 
 function setStatus(message){
-
 document.getElementById("status").textContent=message;
-
 }
 </script>
 
