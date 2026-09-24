@@ -93,7 +93,7 @@ section{
   text-align:center
 }
 
-/* Polaroid Photos */
+/* POLAROID PHOTOS */
 
 .photos{
   display:grid;
@@ -123,6 +123,33 @@ section{
   box-shadow:0 15px 35px #00000022
 }
 
+/* VIDEO */
+
+.video-box{
+  background:#fff;
+  border-radius:28px;
+  padding:18px;
+  box-shadow:0 10px 35px #0000000c;
+  text-align:center
+}
+
+.video-frame{
+  width:100%;
+  aspect-ratio:16/9;
+  border:0;
+  border-radius:20px;
+  display:block;
+  background:#eee
+}
+
+.video-caption{
+  font-size:17px;
+  margin-top:18px;
+  color:#59413c
+}
+
+/* MEMORIES */
+
 .memory{
   background:#fff;
   border-radius:24px;
@@ -148,6 +175,8 @@ section{
   line-height:1.8;
   font-size:16px
 }
+
+/* MUSIC */
 
 .music-box{
   text-align:center;
@@ -189,6 +218,8 @@ section{
 .youtube-btn:hover{
   transform:translateY(-2px)
 }
+
+/* END */
 
 .end{
   text-align:center;
@@ -278,11 +309,17 @@ section{
 
   <div class="hero-inner">
 
-    <div class="small">our little story</div>
+    <div class="small">
+      our little story
+    </div>
 
-    <h1 id="names">Rana & Mazen</h1>
+    <h1 id="names">
+      Rana & Mazen
+    </h1>
 
-    <div class="heart">♡</div>
+    <div class="heart">
+      ♡
+    </div>
 
     <div class="hero-date" id="heroDate"></div>
 
@@ -313,6 +350,33 @@ section{
   </h2>
 
   <div class="photos" id="photos"></div>
+
+</section>
+
+
+<!-- VIDEO SECTION -->
+
+<section id="videoSection">
+
+  <h2 class="title">
+    A Little Video
+  </h2>
+
+  <div class="video-box">
+
+    <iframe
+      class="video-frame"
+      src="https://www.youtube.com/embed/VIDEO_ID"
+      title="Our little video"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowfullscreen>
+    </iframe>
+
+    <div class="video-caption">
+      A little piece of us ♡
+    </div>
+
+  </div>
 
 </section>
 
@@ -441,6 +505,8 @@ async function loadPage(){
     data.Story || "";
 
 
+  /* PHOTOS */
+
   let photos = data.Photos;
 
 
@@ -490,6 +556,8 @@ async function loadPage(){
 
   }
 
+
+  /* MEMORIES */
 
   let memories = data.Memories;
 
