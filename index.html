@@ -6,78 +6,92 @@
 <title>Rana & Mazen — Admin</title>
 
 <style>
+*{box-sizing:border-box}
 body{
-margin:0;
-background:#f8f2ef;
-font-family:Arial,sans-serif;
-color:#332a29;
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:#f8f1ef;
+  color:#59413c;
 }
 .wrap{
-max-width:760px;
-margin:30px auto;
-padding:18px;
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:25px;
 }
 .box{
-background:#fff;
-border-radius:22px;
-padding:28px;
-box-shadow:0 10px 40px #0001;
+  width:100%;
+  max-width:650px;
+  background:white;
+  border-radius:28px;
+  padding:28px;
+  box-shadow:0 10px 35px #00000012;
 }
 h1{
-font-weight:400;
-text-align:center;
+  text-align:center;
+  margin-top:0;
 }
 label{
-font-size:13px;
-color:#705d59;
-display:block;
-margin-top:10px;
+  display:block;
+  margin:18px 0 7px;
+  font-weight:bold;
 }
 input,textarea{
-width:100%;
-box-sizing:border-box;
-padding:13px;
-border:1px solid #ddd;
-border-radius:10px;
-margin:5px 0 12px;
-font:15px Arial;
+  width:100%;
+  border:1px solid #ddd;
+  border-radius:14px;
+  padding:13px;
+  font-size:15px;
+  font-family:inherit;
+}
+textarea{
+  resize:vertical;
 }
 button{
-padding:13px 20px;
-border:0;
-border-radius:10px;
-background:#4c3834;
-color:white;
-cursor:pointer;
-font-size:14px;
+  width:100%;
+  border:0;
+  border-radius:14px;
+  padding:14px;
+  margin-top:18px;
+  background:#59413c;
+  color:white;
+  font-size:16px;
+  cursor:pointer;
 }
 button.alt{
-background:#ddd;
-color:#332a29;
+  background:#eadbd6;
+  color:#59413c;
 }
 button.delete{
-background:#b76b63;
-margin-top:5px;
+  background:#f3d8d3;
+  color:#7d3028;
+  margin-top:10px;
 }
-.hidden{
-display:none;
+.hidden{display:none}
+#status,#e{
+  text-align:center;
+  margin-top:15px;
 }
 .mem{
-border:1px solid #eadbd7;
-padding:15px;
-border-radius:14px;
-margin:12px 0;
-background:#fffafa;
+  border:1px solid #eadbd6;
+  border-radius:18px;
+  padding:15px;
+  margin-top:15px;
 }
 .mem-title{
-font-size:14px;
-color:#705d59;
-margin-bottom:5px;
+  font-weight:bold;
+  margin-bottom:10px;
 }
-#status{
-margin-top:15px;
-font-size:14px;
-line-height:1.6;
+.mem input,
+.mem textarea{
+  margin-bottom:10px;
+}
+.section-note{
+  font-size:13px;
+  color:#8b7772;
+  margin-top:7px;
+  line-height:1.5;
 }
 </style>
 </head>
@@ -92,10 +106,10 @@ line-height:1.6;
 <div id="login">
 
 <label>Username</label>
-<input id="u" autocomplete="username">
+<input id="u">
 
 <label>Password</label>
-<input id="p" type="password" autocomplete="current-password">
+<input id="p" type="password">
 
 <button onclick="login()">Enter</button>
 
@@ -103,22 +117,40 @@ line-height:1.6;
 
 </div>
 
+
 <div id="panel" class="hidden">
 
 <label>Names</label>
 <input id="names" value="Rana & Mazen">
 
+
 <label>Date</label>
 <input id="date" value="03 / 11 / 2025">
+
 
 <label>Story</label>
 <textarea id="story" rows="7"></textarea>
 
+
 <label>Song URL</label>
 <input id="music" placeholder="Paste song URL">
 
+
 <label>Photo URLs — one per line</label>
-<textarea id="photos" rows="5" placeholder="Paste image URLs here, one URL per line"></textarea>
+<textarea id="photos" rows="5"></textarea>
+
+<div class="section-note">
+Paste each photo link on a separate line.
+</div>
+
+
+<label>Video URLs — one per line</label>
+<textarea id="videos" rows="5" placeholder="Paste video URL here"></textarea>
+
+<div class="section-note">
+Paste each video link on a separate line. You can add more than one video.
+</div>
+
 
 <h3>Memories</h3>
 
@@ -133,8 +165,10 @@ line-height:1.6;
 <p id="status"></p>
 
 </div>
+
 </div>
 </div>
+
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -148,358 +182,424 @@ const SUPABASE_KEY =
 
 const supabaseClient =
 window.supabase.createClient(
-SUPABASE_URL,
-SUPABASE_KEY
+  SUPABASE_URL,
+  SUPABASE_KEY
 );
 
-
-/* LOGIN */
 
 function login(){
 
-const username =
-document.getElementById("u").value.trim().toLowerCase();
+  const username =
+    document.getElementById("u").value.trim().toLowerCase();
 
-const password =
-document.getElementById("p").value;
+  const password =
+    document.getElementById("p").value;
 
-if(
-username === "ranamazen" &&
-password === "10/10/2005"
-){
+  if(
+    username==="ranamazen" &&
+    password==="10/10/2005"
+  ){
 
-document.getElementById("login").classList.add("hidden");
-document.getElementById("panel").classList.remove("hidden");
+    document.getElementById("login")
+      .classList.add("hidden");
 
-loadData();
+    document.getElementById("panel")
+      .classList.remove("hidden");
 
-}else{
+    loadData();
 
-document.getElementById("e").textContent =
-"Wrong username or password.";
+  }else{
 
-}
+    document.getElementById("e").textContent =
+      "Wrong username or password.";
 
-}
-
-
-/* ADD MEMORY */
-
-function addMem(data = {}){
-
-const d = document.createElement("div");
-
-d.className = "mem";
-
-d.innerHTML = `
-
-<div class="mem-title">Memory</div>
-
-<input class="mt" placeholder="Memory title">
-
-<input class="md" placeholder="Date">
-
-<textarea class="mx" rows="4" placeholder="What happened?"></textarea>
-
-<button class="delete" type="button">Delete memory</button>
-
-`;
-
-d.querySelector(".mt").value =
-data.title || "";
-
-d.querySelector(".md").value =
-data.date || "";
-
-d.querySelector(".mx").value =
-data.text || "";
-
-d.querySelector(".delete").onclick =
-function(){
-d.remove();
-};
-
-document.getElementById("mems").appendChild(d);
+  }
 
 }
 
 
-/* LOAD DATA */
+function addMem(data={}){
+
+  const d=document.createElement("div");
+
+  d.className="mem";
+
+  d.innerHTML=`
+    <div class="mem-title">Memory</div>
+
+    <input
+      class="mt"
+      placeholder="Memory title"
+    >
+
+    <input
+      class="md"
+      placeholder="Date"
+    >
+
+    <textarea
+      class="mx"
+      rows="4"
+      placeholder="What happened?"
+    ></textarea>
+
+    <button
+      class="delete"
+      type="button"
+    >
+      Delete memory
+    </button>
+  `;
+
+  d.querySelector(".mt").value =
+    data.title || "";
+
+  d.querySelector(".md").value =
+    data.date || "";
+
+  d.querySelector(".mx").value =
+    data.text || "";
+
+  d.querySelector(".delete").onclick =
+    function(){
+      d.remove();
+    };
+
+  document
+    .getElementById("mems")
+    .appendChild(d);
+}
+
 
 async function loadData(){
 
-setStatus("Loading your data...");
+  setStatus("Loading your data...");
 
-const result =
-await supabaseClient
-.from("rana_mazen")
-.select("*")
-.limit(1);
+  const result =
+    await supabaseClient
+      .from("rana_mazen")
+      .select("*")
+      .limit(1);
 
-if(result.error){
 
-setStatus(
-"Couldn't load the data: " +
-result.error.message
-);
+  if(result.error){
 
-return;
+    setStatus(
+      "Couldn't load the data: " +
+      result.error.message
+    );
+
+    return;
+  }
+
+
+  if(
+    result.data &&
+    result.data.length>0
+  ){
+
+    const row=result.data[0];
+
+
+    document.getElementById("names").value =
+      row.Name || "Rana & Mazen";
+
+
+    document.getElementById("date").value =
+      row.Event_date || "03 / 11 / 2025";
+
+
+    document.getElementById("story").value =
+      row.Story || "";
+
+
+    document.getElementById("music").value =
+      row.Music || "";
+
+
+    /* PHOTOS */
+
+    let photos=row.Photos;
+
+    if(typeof photos==="string"){
+
+      try{
+        photos=JSON.parse(photos);
+      }catch(e){
+        photos=[];
+      }
+
+    }
+
+    document.getElementById("photos").value =
+      Array.isArray(photos)
+      ? photos.join("\n")
+      : "";
+
+
+    /* VIDEOS */
+
+    let videos=row.Videos;
+
+    if(typeof videos==="string"){
+
+      try{
+        videos=JSON.parse(videos);
+      }catch(e){
+        videos=[];
+      }
+
+    }
+
+    document.getElementById("videos").value =
+      Array.isArray(videos)
+      ? videos.join("\n")
+      : "";
+
+
+    /* MEMORIES */
+
+    let memories=row.Memories;
+
+    if(typeof memories==="string"){
+
+      try{
+        memories=JSON.parse(memories);
+      }catch(e){
+        memories=[];
+      }
+
+    }
+
+
+    const memoriesBox =
+      document.getElementById("mems");
+
+    memoriesBox.innerHTML="";
+
+
+    if(
+      Array.isArray(memories) &&
+      memories.length
+    ){
+
+      memories.forEach(memory =>
+        addMem({
+          title:memory.title || "",
+          date:memory.date || "",
+          text:memory.text || ""
+        })
+      );
+
+    }
+
+
+    setStatus("Data loaded ♡");
+
+
+  }else{
+
+    setStatus(
+      "No saved data yet. Add your memories and press Save online ♡"
+    );
+
+  }
+
 }
 
-if(result.data && result.data.length > 0){
-
-const row = result.data[0];
-
-document.getElementById("names").value =
-row.Name || "Rana & Mazen";
-
-document.getElementById("date").value =
-row.Event_date || "03 / 11 / 2025";
-
-document.getElementById("story").value =
-row.Story || "";
-
-document.getElementById("music").value =
-row.Music || "";
-
-
-/* PHOTOS */
-
-let photos = row.Photos;
-
-if(typeof photos === "string"){
-
-try{
-photos = JSON.parse(photos);
-}catch(e){
-photos = [];
-}
-
-}
-
-document.getElementById("photos").value =
-Array.isArray(photos)
-? photos.join("\n")
-: "";
-
-
-/* MEMORIES */
-
-let memories = row.Memories;
-
-if(typeof memories === "string"){
-
-try{
-memories = JSON.parse(memories);
-}catch(e){
-memories = [];
-}
-
-}
-
-const memoriesBox =
-document.getElementById("mems");
-
-memoriesBox.innerHTML = "";
-
-if(
-Array.isArray(memories) &&
-memories.length
-){
-
-memories.forEach(function(memory){
-
-addMem({
-title: memory.title || "",
-date: memory.date || "",
-text: memory.text || ""
-});
-
-});
-
-}
-
-setStatus("Data loaded ♡");
-
-}else{
-
-setStatus(
-"No saved data yet. Add your memories and press Save online ♡"
-);
-
-}
-
-}
-
-
-/* SAVE DATA */
 
 async function saveData(){
 
-setStatus("Saving...");
+  setStatus("Saving...");
 
 
-/* MEMORIES */
+  /* MEMORIES */
 
-const memories = [];
+  const memories=[];
 
-document.querySelectorAll(".mem").forEach(function(memoryBox){
+  document
+    .querySelectorAll(".mem")
+    .forEach(function(memoryBox){
 
-const title =
-memoryBox.querySelector(".mt").value.trim();
+      const title =
+        memoryBox
+          .querySelector(".mt")
+          .value
+          .trim();
 
-const date =
-memoryBox.querySelector(".md").value.trim();
+      const date =
+        memoryBox
+          .querySelector(".md")
+          .value
+          .trim();
 
-const text =
-memoryBox.querySelector(".mx").value.trim();
+      const text =
+        memoryBox
+          .querySelector(".mx")
+          .value
+          .trim();
 
-if(title || date || text){
 
-memories.push({
-title:title,
-date:date,
-text:text
-});
+      if(title || date || text){
+
+        memories.push({
+          title,
+          date,
+          text
+        });
+
+      }
+
+    });
+
+
+  /* PHOTOS */
+
+  const photos =
+    document
+      .getElementById("photos")
+      .value
+      .split("\n")
+      .map(x=>x.trim())
+      .filter(x=>x.length>0);
+
+
+  /* VIDEOS */
+
+  const videos =
+    document
+      .getElementById("videos")
+      .value
+      .split("\n")
+      .map(x=>x.trim())
+      .filter(x=>x.length>0);
+
+
+  /* DATA */
+
+  const obj={
+
+    Name:
+      document
+        .getElementById("names")
+        .value
+        .trim(),
+
+    Event_date:
+      document
+        .getElementById("date")
+        .value
+        .trim(),
+
+    Story:
+      document
+        .getElementById("story")
+        .value,
+
+    Music:
+      document
+        .getElementById("music")
+        .value
+        .trim(),
+
+    Photos:
+      photos,
+
+    Videos:
+      videos,
+
+    Memories:
+      memories
+
+  };
+
+
+  /* CHECK EXISTING ROW */
+
+  const existing =
+    await supabaseClient
+      .from("rana_mazen")
+      .select("*")
+      .limit(1);
+
+
+  if(existing.error){
+
+    setStatus(
+      "Save failed: " +
+      existing.error.message
+    );
+
+    return;
+  }
+
+
+  /* UPDATE */
+
+  if(
+    existing.data &&
+    existing.data.length>0
+  ){
+
+    const oldRow =
+      existing.data[0];
+
+
+    const updateResult =
+      await supabaseClient
+        .from("rana_mazen")
+        .update(obj)
+        .eq("Name",oldRow.Name);
+
+
+    if(updateResult.error){
+
+      setStatus(
+        "Save failed: " +
+        updateResult.error.message
+      );
+
+      return;
+    }
+
+
+  }else{
+
+    /* INSERT */
+
+    const insertResult =
+      await supabaseClient
+        .from("rana_mazen")
+        .insert(obj);
+
+
+    if(insertResult.error){
+
+      setStatus(
+        "Save failed: " +
+        insertResult.error.message
+      );
+
+      return;
+    }
+
+  }
+
+
+  await loadData();
+
+  setStatus(
+    "Saved online successfully ♡"
+  );
 
 }
 
-});
-
-
-/* PHOTOS */
-
-const photos =
-document.getElementById("photos").value
-.split("\n")
-.map(function(x){
-return x.trim();
-})
-.filter(function(x){
-return x.length > 0;
-});
-
-
-/* DATA TO SAVE */
-
-const obj = {
-
-Name:
-document.getElementById("names").value.trim(),
-
-Event_date:
-document.getElementById("date").value.trim(),
-
-Story:
-document.getElementById("story").value,
-
-Music:
-document.getElementById("music").value.trim(),
-
-Photos:
-photos,
-
-Memories:
-memories
-
-};
-
-
-/*
-CHECK IF A ROW EXISTS
-NO ID COLUMN IS USED
-*/
-
-const existing =
-await supabaseClient
-.from("rana_mazen")
-.select("*")
-.limit(1);
-
-if(existing.error){
-
-setStatus(
-"Save failed: " +
-existing.error.message
-);
-
-return;
-}
-
-
-/* UPDATE EXISTING ROW */
-
-if(
-existing.data &&
-existing.data.length > 0
-){
-
-const oldRow = existing.data[0];
-
-
-/*
-We update using the existing
-Name value instead of Id.
-*/
-
-const updateResult =
-await supabaseClient
-.from("rana_mazen")
-.update(obj)
-.eq("Name", oldRow.Name);
-
-if(updateResult.error){
-
-setStatus(
-"Save failed: " +
-updateResult.error.message
-);
-
-return;
-}
-
-}
-
-
-/* INSERT IF TABLE IS EMPTY */
-
-else{
-
-const insertResult =
-await supabaseClient
-.from("rana_mazen")
-.insert(obj);
-
-if(insertResult.error){
-
-setStatus(
-"Save failed: " +
-insertResult.error.message
-);
-
-return;
-}
-
-}
-
-
-/* LOAD AGAIN */
-
-await loadData();
-
-setStatus(
-"Saved online successfully ♡"
-);
-
-}
-
-
-/* STATUS */
 
 function setStatus(message){
 
-document.getElementById("status").textContent =
-message;
+  document
+    .getElementById("status")
+    .textContent=message;
 
 }
 
