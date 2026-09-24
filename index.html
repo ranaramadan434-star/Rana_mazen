@@ -4,20 +4,96 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Rana & Mazen — Admin</title>
+
 <style>
-body{margin:0;background:#f8f2ef;font-family:Arial,sans-serif;color:#332a29}
-.wrap{max-width:760px;margin:30px auto;padding:18px}
-.box{background:#fff;border-radius:22px;padding:28px;box-shadow:0 10px 40px #0001}
-h1{font-weight:400}
-label{font-size:13px;color:#705d59}
-input,textarea{width:100%;box-sizing:border-box;padding:13px;border:1px solid #ddd;border-radius:10px;margin:5px 0 12px;font:15px Arial}
-button{padding:13px 20px;border:0;border-radius:10px;background:#4c3834;color:white;cursor:pointer}
-button.alt{background:#ddd;color:#332a29}
-.hidden{display:none}
-.mem{border:1px solid #eadbd7;padding:15px;border-radius:14px;margin:10px 0}
-#status{margin-top:15px;font-size:14px}
+body{
+margin:0;
+background:#f8f2ef;
+font-family:Arial,sans-serif;
+color:#332a29;
+}
+
+.wrap{
+max-width:760px;
+margin:30px auto;
+padding:18px;
+}
+
+.box{
+background:#fff;
+border-radius:22px;
+padding:28px;
+box-shadow:0 10px 40px #0001;
+}
+
+h1{
+font-weight:400;
+text-align:center;
+}
+
+label{
+font-size:13px;
+color:#705d59;
+display:block;
+margin-top:10px;
+}
+
+input,textarea{
+width:100%;
+box-sizing:border-box;
+padding:13px;
+border:1px solid #ddd;
+border-radius:10px;
+margin:5px 0 12px;
+font:15px Arial;
+}
+
+button{
+padding:13px 20px;
+border:0;
+border-radius:10px;
+background:#4c3834;
+color:white;
+cursor:pointer;
+font-size:14px;
+}
+
+button.alt{
+background:#ddd;
+color:#332a29;
+}
+
+button.delete{
+background:#b76b63;
+margin-top:5px;
+}
+
+.hidden{
+display:none;
+}
+
+.mem{
+border:1px solid #eadbd7;
+padding:15px;
+border-radius:14px;
+margin:12px 0;
+background:#fffafa;
+}
+
+.mem-title{
+font-size:14px;
+color:#705d59;
+margin-bottom:5px;
+}
+
+#status{
+margin-top:15px;
+font-size:14px;
+line-height:1.6;
+}
 </style>
 </head>
+
 <body>
 
 <div class="wrap">
@@ -25,172 +101,485 @@ button.alt{background:#ddd;color:#332a29}
 
 <h1>Rana & Mazen ♡</h1>
 
+<!-- LOGIN -->
+
 <div id="login">
+
 <label>Username</label>
-<input id="u">
+<input id="u" autocomplete="username">
 
 <label>Password</label>
-<input id="p" type="password">
+<input id="p" type="password" autocomplete="current-password">
 
 <button onclick="login()">Enter</button>
+
 <p id="e"></p>
+
 </div>
+
+
+<!-- ADMIN PANEL -->
 
 <div id="panel" class="hidden">
 
 <label>Names</label>
 <input id="names" value="Rana & Mazen">
 
+
 <label>Date</label>
 <input id="date" value="03 / 11 / 2025">
 
+
 <label>Story</label>
-<textarea id="story" rows="7">Our story is just beginning… ♡</textarea>
+<textarea id="story" rows="7"></textarea>
+
 
 <label>Song URL</label>
-<input id="music">
+<input id="music" placeholder="Paste song URL">
 
-<label>Photo URLs (one per line)</label>
-<textarea id="photos" rows="5"></textarea>
+
+<label>Photo URLs — one per line</label>
+<textarea id="photos" rows="5"
+placeholder="Paste image URLs here, one URL per line"></textarea>
+
 
 <h3>Memories</h3>
+
 <div id="mems"></div>
 
-<button class="alt" onclick="addMem()">+ Add memory</button>
+<button class="alt" onclick="addMem()">
++ Add memory
+</button>
+
 <br><br>
 
-<button onclick="saveData()">Save online ♡</button>
+<button onclick="saveData()">
+Save online ♡
+</button>
+
 <p id="status"></p>
 
 </div>
+
 </div>
 </div>
+
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
-const SUPABASE_URL="https://jqpceabdshvboderrbiz.supabase.co";
-const SUPABASE_KEY="sb_publishable_lgtWi40tBxTt1zPogOQ4oA_Zf8SKU2P";
 
-const supabaseClient=window.supabase.createClient(
+const SUPABASE_URL =
+"https://jqpceabdshvboderrbiz.supabase.co";
+
+const SUPABASE_KEY =
+"sb_publishable_lgtWi40tBxTt1zPogOQ4oA_Zf8SKU2P";
+
+const supabaseClient =
+window.supabase.createClient(
 SUPABASE_URL,
 SUPABASE_KEY
 );
 
-let currentId=null;
+let currentId = null;
+
+
+/* LOGIN */
 
 function login(){
-const username=document.getElementById("u").value.trim().toLowerCase();
-const password=document.getElementById("p").value;
 
-if(username==="ranamazen" && password==="10/10/2005"){
-document.getElementById("login").classList.add("hidden");
-document.getElementById("panel").classList.remove("hidden");
+const username =
+document.getElementById("u").value.trim().toLowerCase();
+
+const password =
+document.getElementById("p").value;
+
+if(
+username === "ranamazen" &&
+password === "10/10/2005"
+){
+
+document
+.getElementById("login")
+.classList.add("hidden");
+
+document
+.getElementById("panel")
+.classList.remove("hidden");
+
 loadData();
+
 }else{
-document.getElementById("e").textContent="Wrong username or password.";
-}
+
+document.getElementById("e").textContent =
+"Wrong username or password.";
+
 }
 
-function addMem(data={}){
-const d=document.createElement("div");
-d.className="mem";
-d.innerHTML=`
-<input class="mt" placeholder="Memory title">
-<input class="md" placeholder="Date">
-<textarea class="mx" rows="3" placeholder="What happened?"></textarea>
-`;
-d.querySelector(".mt").value=data.title||"";
-d.querySelector(".md").value=data.date||"";
-d.querySelector(".mx").value=data.text||"";
-document.getElementById("mems").appendChild(d);
 }
+
+
+/* ADD MEMORY */
+
+function addMem(data = {}){
+
+const d = document.createElement("div");
+
+d.className = "mem";
+
+d.innerHTML = `
+
+<div class="mem-title">Memory</div>
+
+<input
+class="mt"
+placeholder="Memory title"
+>
+
+<input
+class="md"
+placeholder="Date"
+>
+
+<textarea
+class="mx"
+rows="4"
+placeholder="What happened?"
+></textarea>
+
+<button
+class="delete"
+type="button"
+>
+Delete memory
+</button>
+
+`;
+
+d.querySelector(".mt").value =
+data.title || "";
+
+d.querySelector(".md").value =
+data.date || "";
+
+d.querySelector(".mx").value =
+data.text || "";
+
+
+d.querySelector(".delete").onclick =
+function(){
+
+d.remove();
+
+};
+
+
+document
+.getElementById("mems")
+.appendChild(d);
+
+}
+
+
+/* LOAD DATA */
 
 async function loadData(){
+
 setStatus("Loading your data...");
 
-const {data,error}=await supabaseClient
+const result =
+await supabaseClient
 .from("rana_mazen")
 .select("*")
 .limit(1);
 
-if(error){
-setStatus("Couldn't load the data: "+error.message);
+if(result.error){
+
+setStatus(
+"Couldn't load the data: " +
+result.error.message
+);
+
 return;
 }
 
-if(data && data.length>0){
-const row=data[0];
-currentId=row.Id;
 
-document.getElementById("names").value=row.Name||"Rana & Mazen";
-document.getElementById("date").value=row.Event_date||"03 / 11 / 2025";
-document.getElementById("story").value=row.Story||"";
-document.getElementById("music").value=row.Music||"";
+if(result.data && result.data.length > 0){
 
-document.getElementById("photos").value=
-Array.isArray(row.Photos)?row.Photos.join("\n"):"";
+const row = result.data[0];
 
-document.getElementById("mems").innerHTML="";
+currentId = row.Id;
+
+
+/* BASIC DATA */
+
+document.getElementById("names").value =
+row.Name || "Rana & Mazen";
+
+document.getElementById("date").value =
+row.Event_date || "03 / 11 / 2025";
+
+document.getElementById("story").value =
+row.Story || "";
+
+document.getElementById("music").value =
+row.Music || "";
+
+
+/* PHOTOS */
+
+document.getElementById("photos").value =
+Array.isArray(row.Photos)
+? row.Photos.join("\n")
+: "";
+
+
+/* MEMORIES */
+
+const memoriesBox =
+document.getElementById("mems");
+
+memoriesBox.innerHTML = "";
 
 if(Array.isArray(row.Memories)){
-row.Memories.forEach(memory=>addMem(memory));
+
+row.Memories.forEach(function(memory){
+
+addMem({
+
+title: memory.title || "",
+date: memory.date || "",
+text: memory.text || ""
+
+});
+
+});
+
 }
 
 setStatus("Data loaded ♡");
+
 }else{
-setStatus("No saved data yet. Add your memories and press Save online ♡");
+
+setStatus(
+"No saved data yet. Add your memories and press Save online ♡"
+);
+
 }
+
 }
+
+
+/* SAVE */
 
 async function saveData(){
 
 setStatus("Saving...");
 
-const obj={
-Name:document.getElementById("names").value,
-Event_date:document.getElementById("date").value,
-Story:document.getElementById("story").value,
-Music:document.getElementById("music").value,
-Photos:document.getElementById("photos").value
-.split("\n").map(x=>x.trim()).filter(Boolean),
-Memories:[...document.querySelectorAll(".mem")].map(x=>({
-title:x.querySelector(".mt").value,
-date:x.querySelector(".md").value,
-text:x.querySelector(".mx").value
-}))
+
+/* COLLECT MEMORIES */
+
+const memories = [];
+
+document
+.querySelectorAll(".mem")
+.forEach(function(memoryBox){
+
+const title =
+memoryBox
+.querySelector(".mt")
+.value
+.trim();
+
+const date =
+memoryBox
+.querySelector(".md")
+.value
+.trim();
+
+const text =
+memoryBox
+.querySelector(".mx")
+.value
+.trim();
+
+
+/*
+Only save memories that contain something.
+*/
+
+if(title || date || text){
+
+memories.push({
+
+title: title,
+date: date,
+text: text
+
+});
+
+}
+
+});
+
+
+/* COLLECT PHOTOS */
+
+const photos =
+document
+.getElementById("photos")
+.value
+.split("\n")
+.map(function(x){
+
+return x.trim();
+
+})
+.filter(function(x){
+
+return x.length > 0;
+
+});
+
+
+/* OBJECT TO SAVE */
+
+const obj = {
+
+Name:
+document.getElementById("names").value.trim(),
+
+Event_date:
+document.getElementById("date").value.trim(),
+
+Story:
+document.getElementById("story").value,
+
+Music:
+document.getElementById("music").value.trim(),
+
+Photos:
+photos,
+
+Memories:
+memories
+
 };
 
-let result;
 
-if(currentId){
-result=await supabaseClient
+/* UPDATE EXISTING ROW */
+
+if(currentId !== null){
+
+const updateResult =
+await supabaseClient
 .from("rana_mazen")
 .update(obj)
-.eq("Id",currentId);
+.eq("Id", currentId)
+.select()
+.single();
+
+
+if(updateResult.error){
+
+setStatus(
+"Save failed: " +
+updateResult.error.message
+);
+
+return;
+}
+
+
+/* VERIFY */
+
+currentId =
+updateResult.data.Id;
+
 }else{
-result=await supabaseClient
+
+/* CREATE FIRST ROW */
+
+const insertResult =
+await supabaseClient
 .from("rana_mazen")
 .insert(obj)
 .select()
 .single();
 
-if(result.data){
-currentId=result.data.Id;
-}
-}
 
-if(result.error){
-setStatus("Save failed: "+result.error.message);
+if(insertResult.error){
+
+setStatus(
+"Save failed: " +
+insertResult.error.message
+);
+
 return;
 }
 
-setStatus("Saved online successfully ♡");
+
+currentId =
+insertResult.data.Id;
+
 }
 
-function setStatus(message){
-document.getElementById("status").textContent=message;
+
+/* RELOAD FROM DATABASE */
+
+const verify =
+await supabaseClient
+.from("rana_mazen")
+.select("*")
+.eq("Id", currentId)
+.single();
+
+
+if(verify.error){
+
+setStatus(
+"Saved, but verification failed: " +
+verify.error.message
+);
+
+return;
 }
+
+
+/* PUT VERIFIED MEMORIES BACK ON SCREEN */
+
+document
+.getElementById("mems")
+.innerHTML = "";
+
+if(Array.isArray(verify.data.Memories)){
+
+verify.data.Memories.forEach(function(memory){
+
+addMem(memory);
+
+});
+
+}
+
+
+setStatus(
+"Saved online successfully ♡"
+);
+
+}
+
+
+/* STATUS */
+
+function setStatus(message){
+
+document
+.getElementById("status")
+.textContent = message;
+
+}
+
 </script>
 
 </body>
