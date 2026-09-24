@@ -3,12 +3,18 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+
 <title>Rana & Mazen ♡</title>
 
 <style>
-*{box-sizing:border-box}
 
-html{scroll-behavior:smooth}
+*{
+box-sizing:border-box;
+}
+
+html{
+scroll-behavior:smooth;
+}
 
 body{
 margin:0;
@@ -17,6 +23,9 @@ color:#392b29;
 font-family:Georgia,serif;
 }
 
+
+/* HERO */
+
 .hero{
 min-height:100vh;
 display:flex;
@@ -24,9 +33,18 @@ align-items:center;
 justify-content:center;
 text-align:center;
 padding:30px;
+
 background:
-radial-gradient(circle at 20% 20%,#fff 0,transparent 35%),
-radial-gradient(circle at 80% 80%,#ead8d3 0,transparent 40%),
+radial-gradient(
+circle at 20% 20%,
+#fff 0,
+transparent 35%
+),
+radial-gradient(
+circle at 80% 80%,
+#ead8d3 0,
+transparent 40%
+),
 #f8eeeb;
 }
 
@@ -70,6 +88,9 @@ font-family:Arial,sans-serif;
 font-size:14px;
 }
 
+
+/* SECTIONS */
+
 section{
 max-width:760px;
 margin:auto;
@@ -83,6 +104,9 @@ font-weight:400;
 margin-bottom:30px;
 }
 
+
+/* STORY */
+
 .story{
 background:#fff;
 border-radius:28px;
@@ -92,6 +116,9 @@ font-size:18px;
 box-shadow:0 15px 45px #0000000d;
 text-align:center;
 }
+
+
+/* PHOTOS */
 
 .photos{
 display:grid;
@@ -106,6 +133,9 @@ object-fit:cover;
 border-radius:22px;
 box-shadow:0 8px 25px #00000012;
 }
+
+
+/* MEMORIES */
 
 .memory{
 background:#fff;
@@ -133,18 +163,52 @@ line-height:1.8;
 font-size:16px;
 }
 
+
+/* SONG */
+
 .music-box{
 text-align:center;
 background:#fff;
-padding:30px;
+padding:35px 25px;
 border-radius:28px;
 box-shadow:0 10px 35px #0000000c;
 }
 
-audio{
-width:100%;
-margin-top:15px;
+.music-heart{
+font-size:42px;
+margin-bottom:10px;
 }
+
+.music-name{
+font-size:22px;
+margin-bottom:8px;
+}
+
+.music-sub{
+font-family:Arial,sans-serif;
+font-size:13px;
+color:#96766e;
+margin-bottom:22px;
+}
+
+.youtube-btn{
+display:inline-block;
+padding:14px 25px;
+border-radius:30px;
+background:#4c3834;
+color:white;
+text-decoration:none;
+font-family:Arial,sans-serif;
+font-size:14px;
+transition:.2s;
+}
+
+.youtube-btn:hover{
+transform:translateY(-2px);
+}
+
+
+/* END */
 
 .end{
 text-align:center;
@@ -160,6 +224,9 @@ font-size:25px;
 line-height:1.7;
 margin:15px auto;
 }
+
+
+/* LOADING */
 
 .loading{
 min-height:100vh;
@@ -178,10 +245,25 @@ text-align:center;
 color:#8b4f47;
 }
 
+
+/* ANIMATION */
+
 @keyframes fade{
-from{opacity:0;transform:translateY(15px)}
-to{opacity:1;transform:translateY(0)}
+
+from{
+opacity:0;
+transform:translateY(15px);
 }
+
+to{
+opacity:1;
+transform:translateY(0);
+}
+
+}
+
+
+/* MOBILE */
 
 @media(max-width:600px){
 
@@ -206,33 +288,54 @@ padding:25px 20px;
 }
 
 }
+
 </style>
 </head>
 
+
 <body>
 
+
 <div id="loading" class="loading">
+
 <div>
+
 <div class="heart">♡</div>
+
 Loading our story...
+
 </div>
+
 </div>
+
 
 <div id="error">
+
 Something went wrong while loading our story ♡
+
 </div>
 
+
 <div id="page" style="display:none">
+
+
+<!-- HERO -->
 
 <header class="hero">
 
 <div class="hero-inner">
 
-<div class="small">our little story</div>
+<div class="small">
+our little story
+</div>
 
-<h1 id="names">Rana & Mazen</h1>
+<h1 id="names">
+Rana & Mazen
+</h1>
 
-<div class="heart">♡</div>
+<div class="heart">
+♡
+</div>
 
 <div class="hero-date" id="heroDate"></div>
 
@@ -245,51 +348,88 @@ Enter our story
 </header>
 
 
+<!-- STORY -->
+
 <section id="storySection">
 
-<h2 class="title">Our Story</h2>
+<h2 class="title">
+Our Story
+</h2>
 
 <div class="story" id="story"></div>
 
 </section>
 
 
+<!-- PHOTOS -->
+
 <section id="photosSection">
 
-<h2 class="title">Our Moments</h2>
+<h2 class="title">
+Our Moments
+</h2>
 
 <div class="photos" id="photos"></div>
 
 </section>
 
 
+<!-- MEMORIES -->
+
 <section id="memoriesSection">
 
-<h2 class="title">Little Memories</h2>
+<h2 class="title">
+Little Memories
+</h2>
 
 <div id="memories"></div>
 
 </section>
 
 
+<!-- SONG -->
+
 <section id="musicSection">
 
-<h2 class="title">Our Song</h2>
+<h2 class="title">
+Our Song
+</h2>
 
 <div class="music-box">
 
-<div>♪</div>
+<div class="music-heart">
+♡
+</div>
 
-<audio id="music" controls></audio>
+<div class="music-name">
+مش حبيبي بس
+</div>
+
+<div class="music-sub">
+أنغام · Our song
+</div>
+
+<a
+class="youtube-btn"
+href="https://www.youtube.com/watch?v=u7MxCuYPQT4"
+target="_blank"
+rel="noopener"
+>
+Listen to our song ♡
+</a>
 
 </div>
 
 </section>
 
 
+<!-- END -->
+
 <div class="end">
 
-<div class="big-heart">♡</div>
+<div class="big-heart">
+♡
+</div>
 
 <p>
 And this is only the beginning...
@@ -299,20 +439,25 @@ And this is only the beginning...
 
 </div>
 
+
 </div>
 
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+
 <script>
 
-const SUPABASE_URL=
+
+const SUPABASE_URL =
 "https://jqpceabdshvboderrbiz.supabase.co";
 
-const SUPABASE_KEY=
+
+const SUPABASE_KEY =
 "sb_publishable_lgtWi40tBxTt1zPogOQ4oA_Zf8SKU2P";
 
-const supabaseClient=
+
+const supabaseClient =
 window.supabase.createClient(
 SUPABASE_URL,
 SUPABASE_KEY
@@ -321,7 +466,9 @@ SUPABASE_KEY
 
 async function loadPage(){
 
-const {data,error}=await supabaseClient
+
+const {data,error} =
+await supabaseClient
 .from("rana_mazen")
 .select("*")
 .limit(1)
@@ -330,45 +477,81 @@ const {data,error}=await supabaseClient
 
 if(error){
 
-document.getElementById("loading").style.display="none";
+document.getElementById("loading")
+.style.display="none";
 
-document.getElementById("error").style.display="block";
+document.getElementById("error")
+.style.display="block";
 
 console.log(error);
 
 return;
+
 }
 
 
-const names=data.Name || "Rana & Mazen";
+const names =
+data.Name || "Rana & Mazen";
 
-document.getElementById("names").textContent=
-names;
 
-document.getElementById("endNames").textContent=
-names+" ♡";
+document.getElementById("names")
+.textContent = names;
 
-document.getElementById("heroDate").textContent=
+
+document.getElementById("endNames")
+.textContent =
+names + " ♡";
+
+
+document.getElementById("heroDate")
+.textContent =
 data.Event_date || "";
 
-document.getElementById("story").textContent=
+
+document.getElementById("story")
+.textContent =
 data.Story || "";
 
 
-/* Photos */
+/* PHOTOS */
 
-const photosBox=
+let photos =
+data.Photos;
+
+
+if(typeof photos === "string"){
+
+try{
+
+photos =
+JSON.parse(photos);
+
+}catch(e){
+
+photos = [];
+
+}
+
+}
+
+
+const photosBox =
 document.getElementById("photos");
 
 photosBox.innerHTML="";
 
-if(Array.isArray(data.Photos) && data.Photos.length){
 
-data.Photos.forEach(url=>{
+if(
+Array.isArray(photos) &&
+photos.length
+){
+
+photos.forEach(url=>{
 
 if(!url)return;
 
-const img=document.createElement("img");
+const img =
+document.createElement("img");
 
 img.src=url;
 
@@ -380,44 +563,78 @@ photosBox.appendChild(img);
 
 }else{
 
-document.getElementById("photosSection").style.display="none";
+document.getElementById(
+"photosSection"
+).style.display="none";
 
 }
 
 
-/* Memories */
+/* MEMORIES */
 
-const memoriesBox=
+let memories =
+data.Memories;
+
+
+if(typeof memories === "string"){
+
+try{
+
+memories =
+JSON.parse(memories);
+
+}catch(e){
+
+memories=[];
+
+}
+
+}
+
+
+const memoriesBox =
 document.getElementById("memories");
 
 memoriesBox.innerHTML="";
 
-if(Array.isArray(data.Memories) && data.Memories.length){
 
-data.Memories.forEach(memory=>{
+if(
+Array.isArray(memories) &&
+memories.length
+){
 
-const box=document.createElement("div");
+memories.forEach(memory=>{
+
+const box =
+document.createElement("div");
 
 box.className="memory";
 
-const title=document.createElement("h3");
 
-title.textContent=
+const title =
+document.createElement("h3");
+
+title.textContent =
 memory.title || "Our memory";
 
-const date=document.createElement("div");
+
+const date =
+document.createElement("div");
 
 date.className="mdate";
 
-date.textContent=
+date.textContent =
 memory.date || "";
 
-const text=document.createElement("div");
+
+const text =
+document.createElement("div");
 
 text.className="memory-text";
 
-text.textContent=
+text.textContent =
 memory.text || "";
+
 
 box.appendChild(title);
 
@@ -431,32 +648,20 @@ memoriesBox.appendChild(box);
 
 }else{
 
-document.getElementById("memoriesSection").style.display="none";
+document.getElementById(
+"memoriesSection"
+).style.display="none";
 
 }
 
 
-/* Music */
+/* SHOW PAGE */
 
-const music=
-document.getElementById("music");
+document.getElementById("loading")
+.style.display="none";
 
-if(data.Music){
-
-music.src=data.Music;
-
-}else{
-
-document.getElementById("musicSection").style.display="none";
-
-}
-
-
-/* Show page */
-
-document.getElementById("loading").style.display="none";
-
-document.getElementById("page").style.display="block";
+document.getElementById("page")
+.style.display="block";
 
 }
 
