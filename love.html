@@ -3,457 +3,383 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-
 <title>Rana & Mazen ♡</title>
 
 <style>
+*{box-sizing:border-box}
 
-*{
-box-sizing:border-box;
-}
-
-html{
-scroll-behavior:smooth;
-}
+html{scroll-behavior:smooth}
 
 body{
-margin:0;
-background:#f9f3f0;
-color:#392b29;
-font-family:Georgia,serif;
+  margin:0;
+  background:#f9f3f0;
+  color:#392b29;
+  font-family:Georgia,serif
 }
 
-
-/* HERO */
-
 .hero{
-min-height:100vh;
-display:flex;
-align-items:center;
-justify-content:center;
-text-align:center;
-padding:30px;
-
-background:
-radial-gradient(
-circle at 20% 20%,
-#fff 0,
-transparent 35%
-),
-radial-gradient(
-circle at 80% 80%,
-#ead8d3 0,
-transparent 40%
-),
-#f8eeeb;
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:30px;
+  background:
+    radial-gradient(circle at 20% 20%,#fff 0,transparent 35%),
+    radial-gradient(circle at 80% 80%,#ead8d3 0,transparent 40%),
+    #f8eeeb
 }
 
 .hero-inner{
-animation:fade 1.5s ease;
+  animation:fade 1.5s ease
 }
 
 .small{
-font-family:Arial,sans-serif;
-letter-spacing:4px;
-font-size:12px;
-color:#96766e;
-text-transform:uppercase;
+  font-family:Arial,sans-serif;
+  letter-spacing:4px;
+  font-size:12px;
+  color:#96766e;
+  text-transform:uppercase
 }
 
 h1{
-font-size:58px;
-font-weight:400;
-margin:22px 0 10px;
+  font-size:58px;
+  font-weight:400;
+  margin:22px 0 10px
 }
 
 .heart{
-font-size:28px;
-margin:10px;
+  font-size:28px;
+  margin:10px
 }
 
 .hero-date{
-font-size:18px;
-color:#8c6d65;
+  font-size:18px;
+  color:#8c6d65
 }
 
 .start{
-display:inline-block;
-margin-top:35px;
-padding:14px 28px;
-border:1px solid #c9aaa2;
-border-radius:30px;
-color:#59413c;
-text-decoration:none;
-font-family:Arial,sans-serif;
-font-size:14px;
+  display:inline-block;
+  margin-top:35px;
+  padding:14px 28px;
+  border:1px solid #c9aaa2;
+  border-radius:30px;
+  color:#59413c;
+  text-decoration:none;
+  font-family:Arial,sans-serif;
+  font-size:14px
 }
 
-
-/* SECTIONS */
-
 section{
-max-width:760px;
-margin:auto;
-padding:70px 22px;
+  max-width:760px;
+  margin:auto;
+  padding:70px 22px
 }
 
 .title{
-text-align:center;
-font-size:32px;
-font-weight:400;
-margin-bottom:30px;
+  text-align:center;
+  font-size:32px;
+  font-weight:400;
+  margin-bottom:30px
 }
-
-
-/* STORY */
 
 .story{
-background:#fff;
-border-radius:28px;
-padding:32px;
-line-height:2;
-font-size:18px;
-box-shadow:0 15px 45px #0000000d;
-text-align:center;
+  background:#fff;
+  border-radius:28px;
+  padding:32px;
+  line-height:2;
+  font-size:18px;
+  box-shadow:0 15px 45px #0000000d;
+  text-align:center
 }
 
-
-/* PHOTOS */
+/* Polaroid Photos */
 
 .photos{
-display:grid;
-grid-template-columns:repeat(2,1fr);
-gap:14px;
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:22px;
+  padding:10px 4px
 }
 
 .photos img{
-width:100%;
-height:260px;
-object-fit:cover;
-border-radius:22px;
-box-shadow:0 8px 25px #00000012;
+  width:100%;
+  height:300px;
+  object-fit:cover;
+  background:#fff;
+  padding:10px 10px 34px;
+  border-radius:3px;
+  box-shadow:0 10px 28px #00000018;
+  transform:rotate(-1.5deg);
+  transition:.3s ease
 }
 
+.photos img:nth-child(even){
+  transform:rotate(1.5deg)
+}
 
-/* MEMORIES */
+.photos img:hover{
+  transform:rotate(0) translateY(-5px);
+  box-shadow:0 15px 35px #00000022
+}
 
 .memory{
-background:#fff;
-border-radius:24px;
-padding:25px;
-margin-bottom:18px;
-box-shadow:0 8px 30px #0000000b;
+  background:#fff;
+  border-radius:24px;
+  padding:25px;
+  margin-bottom:18px;
+  box-shadow:0 8px 30px #0000000b
 }
 
 .memory h3{
-margin:0 0 8px;
-font-size:23px;
-font-weight:400;
+  margin:0 0 8px;
+  font-size:23px;
+  font-weight:400
 }
 
 .mdate{
-color:#a17e75;
-font-family:Arial,sans-serif;
-font-size:12px;
-margin-bottom:14px;
+  color:#a17e75;
+  font-family:Arial,sans-serif;
+  font-size:12px;
+  margin-bottom:14px
 }
 
 .memory-text{
-line-height:1.8;
-font-size:16px;
+  line-height:1.8;
+  font-size:16px
 }
 
-
-/* SONG */
-
 .music-box{
-text-align:center;
-background:#fff;
-padding:38px 25px;
-border-radius:28px;
-box-shadow:0 10px 35px #0000000c;
+  text-align:center;
+  background:#fff;
+  padding:38px 25px;
+  border-radius:28px;
+  box-shadow:0 10px 35px #0000000c
 }
 
 .music-heart{
-font-size:45px;
-margin-bottom:12px;
+  font-size:45px;
+  margin-bottom:12px
 }
 
 .music-name{
-font-size:23px;
-margin-bottom:8px;
+  font-size:23px;
+  margin-bottom:8px
 }
 
 .music-sub{
-font-family:Arial,sans-serif;
-font-size:13px;
-color:#96766e;
-margin-bottom:25px;
+  font-family:Arial,sans-serif;
+  font-size:13px;
+  color:#96766e;
+  margin-bottom:25px
 }
 
 .youtube-btn{
-display:inline-block;
-padding:15px 28px;
-border-radius:30px;
-background:#4c3834;
-color:#fff;
-text-decoration:none;
-font-family:Arial,sans-serif;
-font-size:14px;
-transition:.2s;
+  display:inline-block;
+  padding:15px 28px;
+  border-radius:30px;
+  background:#4c3834;
+  color:#fff;
+  text-decoration:none;
+  font-family:Arial,sans-serif;
+  font-size:14px;
+  transition:.2s
 }
 
 .youtube-btn:hover{
-transform:translateY(-2px);
+  transform:translateY(-2px)
 }
 
-
-/* END */
-
 .end{
-text-align:center;
-padding:90px 25px 110px;
+  text-align:center;
+  padding:90px 25px 110px
 }
 
 .end .big-heart{
-font-size:48px;
+  font-size:48px
 }
 
 .end p{
-font-size:25px;
-line-height:1.7;
-margin:15px auto;
+  font-size:25px;
+  line-height:1.7;
+  margin:15px auto
 }
 
-
-/* LOADING */
-
 .loading{
-min-height:100vh;
-display:flex;
-align-items:center;
-justify-content:center;
-text-align:center;
-font-size:18px;
-color:#96766e;
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  font-size:18px;
+  color:#96766e
 }
 
 #error{
-display:none;
-padding:30px;
-text-align:center;
-color:#8b4f47;
+  display:none;
+  padding:30px;
+  text-align:center;
+  color:#8b4f47
 }
-
-
-/* ANIMATION */
 
 @keyframes fade{
-
-from{
-opacity:0;
-transform:translateY(15px);
+  from{
+    opacity:0;
+    transform:translateY(15px)
+  }
+  to{
+    opacity:1;
+    transform:translateY(0)
+  }
 }
-
-to{
-opacity:1;
-transform:translateY(0);
-}
-
-}
-
-
-/* MOBILE */
 
 @media(max-width:600px){
 
-h1{
-font-size:43px;
-}
+  h1{
+    font-size:43px
+  }
 
-.photos{
-grid-template-columns:1fr;
-}
+  .photos{
+    grid-template-columns:1fr;
+    gap:25px
+  }
 
-.photos img{
-height:300px;
-}
+  .photos img{
+    height:380px
+  }
 
-section{
-padding:55px 18px;
-}
+  section{
+    padding:55px 18px
+  }
 
-.story{
-padding:25px 20px;
+  .story{
+    padding:25px 20px
+  }
 }
-
-}
-
 </style>
 </head>
 
-
 <body>
 
-
 <div id="loading" class="loading">
-
-<div>
-
-<div class="heart">♡</div>
-
-Loading our story...
-
+  <div>
+    <div class="heart">♡</div>
+    Loading our story...
+  </div>
 </div>
-
-</div>
-
 
 <div id="error">
-
-Something went wrong while loading our story ♡
-
+  Something went wrong while loading our story ♡
 </div>
-
 
 <div id="page" style="display:none">
 
-
-<!-- HERO -->
-
 <header class="hero">
 
-<div class="hero-inner">
+  <div class="hero-inner">
 
-<div class="small">
-our little story
-</div>
+    <div class="small">our little story</div>
 
-<h1 id="names">
-Rana & Mazen
-</h1>
+    <h1 id="names">Rana & Mazen</h1>
 
-<div class="heart">
-♡
-</div>
+    <div class="heart">♡</div>
 
-<div class="hero-date" id="heroDate"></div>
+    <div class="hero-date" id="heroDate"></div>
 
-<a
-href="#storySection"
-class="start"
->
-Enter our story
-</a>
+    <a href="#storySection" class="start">
+      Enter our story
+    </a>
 
-</div>
+  </div>
 
 </header>
 
 
-<!-- STORY -->
-
 <section id="storySection">
 
-<h2 class="title">
-Our Story
-</h2>
+  <h2 class="title">
+    Our Story
+  </h2>
 
-<div
-class="story"
-id="story"
-></div>
+  <div class="story" id="story"></div>
 
 </section>
 
-
-<!-- PHOTOS -->
 
 <section id="photosSection">
 
-<h2 class="title">
-Our Moments
-</h2>
+  <h2 class="title">
+    Our Moments
+  </h2>
 
-<div
-class="photos"
-id="photos"
-></div>
+  <div class="photos" id="photos"></div>
 
 </section>
 
-
-<!-- MEMORIES -->
 
 <section id="memoriesSection">
 
-<h2 class="title">
-Little Memories
-</h2>
+  <h2 class="title">
+    Little Memories
+  </h2>
 
-<div id="memories"></div>
+  <div id="memories"></div>
 
 </section>
 
-
-<!-- SONG -->
 
 <section id="musicSection">
 
-<h2 class="title">
-Our Song
-</h2>
+  <h2 class="title">
+    Our Song
+  </h2>
 
-<div class="music-box">
+  <div class="music-box">
 
-<div class="music-heart">
-♡
-</div>
+    <div class="music-heart">
+      ♡
+    </div>
 
-<div class="music-name">
-مش حبيبي بس
-</div>
+    <div class="music-name">
+      مش حبيبي بس
+    </div>
 
-<div class="music-sub">
-أنغام · Our song
-</div>
+    <div class="music-sub">
+      أنغام · Our song
+    </div>
 
-<a
-class="youtube-btn"
-href="https://www.youtube.com/watch?v=u7MxCuYPQT4"
-target="_blank"
-rel="noopener noreferrer"
->
-🎵 Listen to our song ♡
-</a>
+    <a
+      class="youtube-btn"
+      href="https://www.youtube.com/watch?v=u7MxCuYPQT4"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      🎵 Listen to our song ♡
+    </a>
 
-</div>
+  </div>
 
 </section>
 
 
-<!-- END -->
-
 <div class="end">
 
-<div class="big-heart">
-♡
+  <div class="big-heart">
+    ♡
+  </div>
+
+  <p>
+    And this is only the beginning...
+  </p>
+
+  <div id="endNames"></div>
+
 </div>
-
-<p>
-And this is only the beginning...
-</p>
-
-<div id="endNames"></div>
-
-</div>
-
 
 </div>
 
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 
 <script>
 
@@ -465,217 +391,187 @@ const SUPABASE_KEY =
 
 const supabaseClient =
 window.supabase.createClient(
-SUPABASE_URL,
-SUPABASE_KEY
+  SUPABASE_URL,
+  SUPABASE_KEY
 );
 
 
 async function loadPage(){
 
-const result =
-await supabaseClient
-.from("rana_mazen")
-.select("*")
-.limit(1)
-.single();
+  const result =
+    await supabaseClient
+      .from("rana_mazen")
+      .select("*")
+      .limit(1)
+      .single();
 
 
-if(result.error){
+  if(result.error){
 
-document.getElementById("loading")
-.style.display="none";
+    document.getElementById("loading").style.display="none";
 
-document.getElementById("error")
-.style.display="block";
+    document.getElementById("error").style.display="block";
 
-console.log(result.error);
+    console.log(result.error);
 
-return;
+    return;
+  }
 
-}
 
+  const data = result.data;
 
-const data =
-result.data;
 
+  const names =
+    data.Name || "Rana & Mazen";
 
-/* NAMES */
 
-const names =
-data.Name || "Rana & Mazen";
+  document.getElementById("names").textContent =
+    names;
 
-document.getElementById("names")
-.textContent =
-names;
 
-document.getElementById("endNames")
-.textContent =
-names + " ♡";
+  document.getElementById("endNames").textContent =
+    names + " ♡";
 
 
-/* DATE */
+  document.getElementById("heroDate").textContent =
+    data.Event_date || "";
 
-document.getElementById("heroDate")
-.textContent =
-data.Event_date || "";
 
+  document.getElementById("story").textContent =
+    data.Story || "";
 
-/* STORY */
 
-document.getElementById("story")
-.textContent =
-data.Story || "";
+  let photos = data.Photos;
 
 
-/* PHOTOS */
+  if(typeof photos === "string"){
 
-let photos =
-data.Photos;
+    try{
+      photos = JSON.parse(photos);
+    }catch(e){
+      photos = [];
+    }
 
-if(typeof photos === "string"){
+  }
 
-try{
 
-photos =
-JSON.parse(photos);
+  const photosBox =
+    document.getElementById("photos");
 
-}catch(e){
 
-photos = [];
+  photosBox.innerHTML = "";
 
-}
 
-}
+  if(Array.isArray(photos) && photos.length){
 
-const photosBox =
-document.getElementById("photos");
+    photos.forEach(function(url){
 
-photosBox.innerHTML = "";
+      if(!url) return;
 
 
-if(
-Array.isArray(photos) &&
-photos.length
-){
+      const img =
+        document.createElement("img");
 
-photos.forEach(function(url){
 
-if(!url)return;
+      img.src = url;
 
-const img =
-document.createElement("img");
+      img.alt = "Our moment";
 
-img.src = url;
 
-img.alt = "Our moment";
+      photosBox.appendChild(img);
 
-photosBox.appendChild(img);
+    });
 
-});
+  }else{
 
-}else{
+    document.getElementById(
+      "photosSection"
+    ).style.display="none";
 
-document.getElementById(
-"photosSection"
-).style.display="none";
+  }
 
-}
 
+  let memories = data.Memories;
 
-/* MEMORIES */
 
-let memories =
-data.Memories;
+  if(typeof memories === "string"){
 
-if(typeof memories === "string"){
+    try{
+      memories = JSON.parse(memories);
+    }catch(e){
+      memories = [];
+    }
 
-try{
+  }
 
-memories =
-JSON.parse(memories);
 
-}catch(e){
+  const memoriesBox =
+    document.getElementById("memories");
 
-memories = [];
 
-}
+  memoriesBox.innerHTML = "";
 
-}
 
-const memoriesBox =
-document.getElementById("memories");
+  if(Array.isArray(memories) && memories.length){
 
-memoriesBox.innerHTML = "";
+    memories.forEach(function(memory){
 
+      const box =
+        document.createElement("div");
 
-if(
-Array.isArray(memories) &&
-memories.length
-){
+      box.className = "memory";
 
-memories.forEach(function(memory){
 
-const box =
-document.createElement("div");
+      const title =
+        document.createElement("h3");
 
-box.className =
-"memory";
+      title.textContent =
+        memory.title || "Our memory";
 
 
-const title =
-document.createElement("h3");
+      const date =
+        document.createElement("div");
 
-title.textContent =
-memory.title ||
-"Our memory";
+      date.className = "mdate";
 
+      date.textContent =
+        memory.date || "";
 
-const date =
-document.createElement("div");
 
-date.className =
-"mdate";
+      const text =
+        document.createElement("div");
 
-date.textContent =
-memory.date || "";
+      text.className = "memory-text";
 
+      text.textContent =
+        memory.text || "";
 
-const text =
-document.createElement("div");
 
-text.className =
-"memory-text";
+      box.appendChild(title);
 
-text.textContent =
-memory.text || "";
+      box.appendChild(date);
 
+      box.appendChild(text);
 
-box.appendChild(title);
+      memoriesBox.appendChild(box);
 
-box.appendChild(date);
+    });
 
-box.appendChild(text);
+  }else{
 
-memoriesBox.appendChild(box);
+    document.getElementById(
+      "memoriesSection"
+    ).style.display="none";
 
-});
+  }
 
-}else{
 
-document.getElementById(
-"memoriesSection"
-).style.display="none";
+  document.getElementById("loading")
+    .style.display="none";
 
-}
 
-
-/* SHOW PAGE */
-
-document.getElementById("loading")
-.style.display="none";
-
-document.getElementById("page")
-.style.display="block";
+  document.getElementById("page")
+    .style.display="block";
 
 }
 
