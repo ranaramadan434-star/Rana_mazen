@@ -1,71 +1,230 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Rana & Mazen — Admin</title>
+
 <style>
-body{font-family:Arial;background:#faf7f8;color:#333;margin:0;padding:25px}
-.box{max-width:700px;margin:auto;background:white;padding:25px;border-radius:20px;box-shadow:0 5px 25px #0001}
-input,textarea{width:100%;padding:12px;margin:7px 0 15px;box-sizing:border-box;border:1px solid #ddd;border-radius:10px}
-textarea{min-height:100px}
-button{padding:12px 20px;border:0;border-radius:10px;margin:5px;cursor:pointer}
-.primary{background:#5b4039;color:white;width:100%}
-.danger{background:#f2d5d5}
-.hidden{display:none}
-.item{border:1px solid #eee;padding:15px;border-radius:12px;margin:10px 0}
+*{box-sizing:border-box}
+
+body{
+margin:0;
+font-family:Arial,sans-serif;
+background:#faf7f8;
+color:#4b3833;
+}
+
+.container{
+width:min(850px,92%);
+margin:35px auto;
+}
+
+.card{
+background:white;
+padding:25px;
+border-radius:22px;
+box-shadow:0 8px 30px #0001;
+margin-bottom:20px;
+}
+
+h1,h2{
+font-family:Georgia,serif;
+text-align:center;
+}
+
+label{
+display:block;
+font-weight:bold;
+margin:16px 0 7px;
+}
+
+input,textarea{
+width:100%;
+padding:13px;
+border:1px solid #ddd;
+border-radius:12px;
+font-size:16px;
+font-family:inherit;
+}
+
+textarea{
+min-height:120px;
+resize:vertical;
+}
+
+button{
+border:0;
+border-radius:12px;
+padding:12px 20px;
+font-size:15px;
+cursor:pointer;
+margin-top:10px;
+}
+
+.primary{
+background:#624740;
+color:white;
+width:100%;
+}
+
+.secondary{
+background:#eee;
+color:#333;
+}
+
+.danger{
+background:#f3d5d5;
+color:#7a3333;
+}
+
+.item{
+border:1px solid #eee;
+padding:15px;
+border-radius:14px;
+margin:12px 0;
+}
+
+.hidden{
+display:none!important;
+}
+
+#loginMessage,
+#message{
+text-align:center;
+margin-top:15px;
+font-weight:bold;
+}
+
+.logout{
+float:left;
+background:#eee;
+}
 </style>
 </head>
 
 <body>
 
-<div class="box" id="login">
+<div class="container">
 
-<h2>Rana & Mazen ♡</h2>
+<!-- LOGIN -->
 
-<input id="email" type="email" placeholder="Email">
+<div id="loginCard" class="card">
 
-<input id="password" type="password" placeholder="Password">
+<h1>Rana & Mazen ♡</h1>
 
-<button class="primary" onclick="login()">Login</button>
+<label>Email</label>
 
-<p id="loginMsg"></p>
+<input
+id="email"
+type="email"
+placeholder="Email"
+>
+
+<label>Password</label>
+
+<input
+id="password"
+type="password"
+placeholder="Password"
+>
+
+<button
+class="primary"
+onclick="login()">
+Login
+</button>
+
+<div id="loginMessage"></div>
 
 </div>
 
 
-<div class="box hidden" id="admin">
+<!-- ADMIN -->
 
-<h2>Rana & Mazen ♡</h2>
+<div id="adminPanel" class="hidden">
+
+<button
+class="logout"
+onclick="logout()">
+Logout
+</button>
+
+<div style="clear:both"></div>
+
+<div class="card">
+
+<h1>Rana & Mazen ♡</h1>
+
 
 <label>Names</label>
+
 <input id="name">
 
+
 <label>Date</label>
-<input id="date">
+
+<input id="eventDate">
+
 
 <label>Story</label>
+
 <textarea id="story"></textarea>
 
+
 <label>Song URL</label>
-<input id="music">
 
-<h3>Photos</h3>
-<textarea id="photos" placeholder="One URL per line"></textarea>
+<input
+id="music"
+placeholder="Paste song URL"
+>
 
-<h3>Videos 🔐</h3>
+
+<h2>Photos ♡</h2>
+
+<label>
+Photo URLs — one per line
+</label>
+
+<textarea
+id="photos"
+placeholder="Paste photo URLs here..."
+></textarea>
+
+
+<h2>Videos 🔐</h2>
+
 <div id="videos"></div>
-<button onclick="addVideo()">+ Add video</button>
 
-<h3>Memories ♡</h3>
+<button
+class="secondary"
+onclick="addVideo()">
++ Add video
+</button>
+
+
+<h2>Memories ♡</h2>
+
 <div id="memories"></div>
-<button onclick="addMemory()">+ Add memory</button>
 
-<br><br>
+<button
+class="secondary"
+onclick="addMemory()">
++ Add memory
+</button>
 
-<button class="primary" onclick="save()">Save Changes ♡</button>
 
-<p id="msg"></p>
+<button
+class="primary"
+onclick="saveData()">
+Save Changes ♡
+</button>
+
+<div id="message"></div>
+
+</div>
+
+</div>
 
 </div>
 
@@ -74,142 +233,555 @@ button{padding:12px 20px;border:0;border-radius:10px;margin:5px;cursor:pointer}
 
 <script>
 
-const db=supabase.createClient(
-"https://jqpceabdshvboderrbiz.supabase.co",
-"sb_publishable_lgtWi40tBxTt1zPogOQ4oA_Zf8SKU2P"
+/* SUPABASE */
+
+const SUPABASE_URL =
+"https://jqpceabdshvboderrbiz.supabase.co";
+
+const SUPABASE_KEY =
+"sb_publishable_lgtWi40tBxTt1zPogOQ4oA_Zf8SKU2P";
+
+
+/*
+Public connection:
+used for reading the data,
+because the public website already
+has permission to read it.
+*/
+
+const publicDb =
+window.supabase.createClient(
+SUPABASE_URL,
+SUPABASE_KEY
 );
+
+
+/*
+Authenticated connection:
+used for login and saving changes.
+*/
+
+const authDb =
+window.supabase.createClient(
+SUPABASE_URL,
+SUPABASE_KEY
+);
+
 
 let rowId=null;
 
 
+/* LOGIN */
+
 async function login(){
 
-const {data,error}=await db.auth.signInWithPassword({
-email:document.getElementById("email").value,
-password:document.getElementById("password").value
+const email =
+document
+.getElementById("email")
+.value
+.trim();
+
+const password =
+document
+.getElementById("password")
+.value;
+
+const msg =
+document.getElementById("loginMessage");
+
+if(!email || !password){
+
+msg.textContent =
+"اكتبي الإيميل والباسورد";
+
+return;
+
+}
+
+msg.textContent =
+"Logging in...";
+
+
+const {data,error} =
+await authDb.auth.signInWithPassword({
+
+email:email,
+
+password:password
+
 });
 
+
 if(error){
-document.getElementById("loginMsg").textContent=error.message;
+
+msg.textContent =
+error.message;
+
 return;
-}
-
-document.getElementById("login").classList.add("hidden");
-document.getElementById("admin").classList.remove("hidden");
-
-load();
 
 }
 
 
-async function load(){
+if(data.session){
 
-const {data,error}=await db
+document
+.getElementById("loginCard")
+.classList.add("hidden");
+
+document
+.getElementById("adminPanel")
+.classList.remove("hidden");
+
+await loadData();
+
+}
+
+}
+
+
+/* LOGOUT */
+
+async function logout(){
+
+await authDb.auth.signOut();
+
+document
+.getElementById("adminPanel")
+.classList.add("hidden");
+
+document
+.getElementById("loginCard")
+.classList.remove("hidden");
+
+}
+
+
+/* LOAD */
+
+async function loadData(){
+
+const msg =
+document.getElementById("message");
+
+
+msg.textContent =
+"Loading...";
+
+
+const {data,error} =
+await publicDb
 .from("rana_mazen")
 .select("*")
 .limit(1);
 
+
 if(error){
-document.getElementById("msg").textContent=error.message;
+
+msg.textContent =
+"Error: "+error.message;
+
 return;
+
 }
+
 
 if(!data || !data.length){
-document.getElementById("msg").textContent="No data found";
+
+msg.textContent =
+"No data found";
+
 return;
-}
-
-const r=data[0];
-
-rowId=r.Id;
-
-document.getElementById("name").value=r.Name||"";
-document.getElementById("date").value=r.Event_date||"";
-document.getElementById("story").value=r.Story||"";
-document.getElementById("music").value=r.Music||"";
-
-let photos=r.Photos||[];
-if(typeof photos==="string")photos=JSON.parse(photos);
-document.getElementById("photos").value=photos.join("\n");
-
-let memories=r.Memories||[];
-if(typeof memories==="string")memories=JSON.parse(memories);
-
-memories.forEach(x=>addMemory(x));
-
-let videos=r.Videos||[];
-if(typeof videos==="string")videos=JSON.parse(videos);
-
-videos.forEach(x=>addVideo(x));
 
 }
 
 
-function addMemory(value=""){
+const row =
+data[0];
 
-const d=document.createElement("div");
-d.className="item";
 
-d.innerHTML=`
-<textarea class="memory">${typeof value==="string"?value:(value.text||"")}</textarea>
-<button class="danger" onclick="this.parentElement.remove()">Remove</button>
+rowId =
+row.Id;
+
+
+/* BASIC */
+
+document
+.getElementById("name")
+.value =
+row.Name || "";
+
+
+document
+.getElementById("eventDate")
+.value =
+row.Event_date || "";
+
+
+document
+.getElementById("story")
+.value =
+row.Story || "";
+
+
+document
+.getElementById("music")
+.value =
+row.Music || "";
+
+
+/* PHOTOS */
+
+let photos =
+row.Photos || [];
+
+
+if(typeof photos==="string"){
+
+try{
+
+photos =
+JSON.parse(photos);
+
+}catch(e){
+
+photos=[];
+
+}
+
+}
+
+
+if(!Array.isArray(photos))
+photos=[];
+
+
+document
+.getElementById("photos")
+.value =
+photos.join("\n");
+
+
+/* MEMORIES */
+
+let memories =
+row.Memories || [];
+
+
+if(typeof memories==="string"){
+
+try{
+
+memories =
+JSON.parse(memories);
+
+}catch(e){
+
+memories=[];
+
+}
+
+}
+
+
+if(!Array.isArray(memories))
+memories=[];
+
+
+const memoriesBox =
+document.getElementById("memories");
+
+memoriesBox.innerHTML="";
+
+
+memories.forEach(memory=>{
+
+addMemory(memory);
+
+});
+
+
+/* VIDEOS */
+
+let videos =
+row.Videos || [];
+
+
+if(typeof videos==="string"){
+
+try{
+
+videos =
+JSON.parse(videos);
+
+}catch(e){
+
+videos=[];
+
+}
+
+}
+
+
+if(!Array.isArray(videos))
+videos=[];
+
+
+const videosBox =
+document.getElementById("videos");
+
+videosBox.innerHTML="";
+
+
+videos.forEach(video=>{
+
+addVideo(video);
+
+});
+
+
+msg.textContent="";
+
+}
+
+
+/* ADD MEMORY */
+
+function addMemory(memory=""){
+
+const box =
+document.getElementById("memories");
+
+const item =
+document.createElement("div");
+
+item.className="item";
+
+
+let value="";
+
+
+if(typeof memory==="string"){
+
+value=memory;
+
+}else if(memory){
+
+value =
+memory.text ||
+"";
+
+}
+
+
+item.innerHTML=`
+
+<textarea
+class="memoryText"
+placeholder="اكتبي الذكرى هنا..."
+></textarea>
+
+<button
+class="danger"
+onclick="this.parentElement.remove()">
+Remove
+</button>
+
 `;
 
-document.getElementById("memories").appendChild(d);
+
+box.appendChild(item);
+
+
+item
+.querySelector(".memoryText")
+.value=value;
 
 }
 
 
-function addVideo(value=""){
+/* ADD VIDEO */
 
-const d=document.createElement("div");
-d.className="item";
+function addVideo(video=""){
 
-d.innerHTML=`
-<input class="video" placeholder="Video URL">
-<button class="danger" onclick="this.parentElement.remove()">Remove</button>
+const box =
+document.getElementById("videos");
+
+const item =
+document.createElement("div");
+
+item.className="item";
+
+
+item.innerHTML=`
+
+<label>Video URL</label>
+
+<input
+class="videoUrl"
+type="url"
+placeholder="Paste video URL here..."
+>
+
+<button
+class="danger"
+onclick="this.parentElement.remove()">
+Remove
+</button>
+
 `;
 
-d.querySelector(".video").value=value||"";
 
-document.getElementById("videos").appendChild(d);
+box.appendChild(item);
+
+
+item
+.querySelector(".videoUrl")
+.value =
+video || "";
 
 }
 
 
-async function save(){
+/* SAVE */
+
+async function saveData(){
+
+const msg =
+document.getElementById("message");
+
 
 if(!rowId){
-document.getElementById("msg").textContent="No row loaded";
+
+msg.textContent =
+"No data row found";
+
 return;
+
 }
 
-let photos=document.getElementById("photos").value
-.split("\n").map(x=>x.trim()).filter(Boolean);
 
-let memories=[...document.querySelectorAll(".memory")]
-.map(x=>x.value.trim()).filter(Boolean);
+msg.textContent =
+"Saving...";
 
-let videos=[...document.querySelectorAll(".video")]
-.map(x=>x.value.trim()).filter(Boolean);
 
-const {error}=await db
+/* PHOTOS */
+
+const photos =
+document
+.getElementById("photos")
+.value
+.split("\n")
+.map(x=>x.trim())
+.filter(Boolean);
+
+
+/* MEMORIES */
+
+const memories =
+Array
+.from(
+document.querySelectorAll(".memoryText")
+)
+.map(x=>x.value.trim())
+.filter(Boolean);
+
+
+/* VIDEOS */
+
+const videos =
+Array
+.from(
+document.querySelectorAll(".videoUrl")
+)
+.map(x=>x.value.trim())
+.filter(Boolean);
+
+
+/* UPDATE */
+
+const {error} =
+await authDb
 .from("rana_mazen")
 .update({
-Name:document.getElementById("name").value,
-Event_date:document.getElementById("date").value,
-Story:document.getElementById("story").value,
-Music:document.getElementById("music").value,
-Photos:photos,
-Memories:memories,
-Videos:videos
+
+Name:
+document
+.getElementById("name")
+.value
+.trim(),
+
+Event_date:
+document
+.getElementById("eventDate")
+.value
+.trim(),
+
+Story:
+document
+.getElementById("story")
+.value,
+
+Music:
+document
+.getElementById("music")
+.value
+.trim(),
+
+Photos:
+photos,
+
+Memories:
+memories,
+
+Videos:
+videos
+
 })
 .eq("Id",rowId);
 
-document.getElementById("msg").textContent=
-error ? error.message : "Saved online successfully ♡";
+
+if(error){
+
+msg.textContent =
+"Save failed: "+error.message;
+
+return;
 
 }
+
+
+msg.textContent =
+"Saved online successfully ♡";
+
+}
+
+
+/* CHECK SESSION */
+
+async function checkSession(){
+
+const {data} =
+await authDb.auth.getSession();
+
+
+if(data.session){
+
+document
+.getElementById("loginCard")
+.classList.add("hidden");
+
+document
+.getElementById("adminPanel")
+.classList.remove("hidden");
+
+await loadData();
+
+}
+
+}
+
+
+checkSession();
 
 </script>
 
