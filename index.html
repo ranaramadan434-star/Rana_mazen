@@ -1,787 +1,736 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Rana & Mazen — Admin</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rana & Mazen ♡ — Admin</title>
 
-<style>
-*{box-sizing:border-box}
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-body{
-margin:0;
-font-family:Arial,sans-serif;
-background:#faf7f8;
-color:#4b3833;
-}
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
-.container{
-width:min(850px,92%);
-margin:35px auto;
-}
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #fff7fa;
+      color: #333;
+    }
 
-.card{
-background:white;
-padding:25px;
-border-radius:22px;
-box-shadow:0 8px 30px #0001;
-margin-bottom:20px;
-}
+    .wrap {
+      max-width: 700px;
+      margin: auto;
+      padding: 25px 18px 50px;
+    }
 
-h1,h2{
-font-family:Georgia,serif;
-text-align:center;
-}
+    h1 {
+      text-align: center;
+      color: #b84d72;
+      margin-bottom: 25px;
+    }
 
-label{
-display:block;
-font-weight:bold;
-margin:16px 0 7px;
-}
+    h2 {
+      color: #b84d72;
+      font-size: 20px;
+      margin-top: 28px;
+    }
 
-input,textarea{
-width:100%;
-padding:13px;
-border:1px solid #ddd;
-border-radius:12px;
-font-size:16px;
-font-family:inherit;
-}
+    label {
+      display: block;
+      margin-top: 15px;
+      margin-bottom: 6px;
+      font-weight: bold;
+    }
 
-textarea{
-min-height:120px;
-resize:vertical;
-}
+    input,
+    textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      font-size: 15px;
+      background: white;
+    }
 
-button{
-border:0;
-border-radius:12px;
-padding:12px 20px;
-font-size:15px;
-cursor:pointer;
-margin-top:10px;
-}
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
 
-.primary{
-background:#624740;
-color:white;
-width:100%;
-}
+    button {
+      border: 0;
+      border-radius: 10px;
+      padding: 12px 18px;
+      font-size: 15px;
+      cursor: pointer;
+      margin-top: 12px;
+    }
 
-.secondary{
-background:#eee;
-color:#333;
-}
+    .main-btn {
+      width: 100%;
+      background: #b84d72;
+      color: white;
+      font-weight: bold;
+    }
 
-.danger{
-background:#f3d5d5;
-color:#7a3333;
-}
+    .add-btn {
+      background: #f4d5df;
+      color: #8d3657;
+    }
 
-.item{
-border:1px solid #eee;
-padding:15px;
-border-radius:14px;
-margin:12px 0;
-}
+    .remove-btn {
+      background: #eee;
+      color: #777;
+      margin-top: 7px;
+    }
 
-.hidden{
-display:none!important;
-}
+    .box {
+      background: white;
+      padding: 18px;
+      border-radius: 15px;
+      margin-top: 15px;
+      box-shadow: 0 3px 15px rgba(0,0,0,.05);
+    }
 
-#loginMessage,
-#message{
-text-align:center;
-margin-top:15px;
-font-weight:bold;
-}
+    .item {
+      background: #fff8fb;
+      padding: 12px;
+      border-radius: 12px;
+      margin-top: 10px;
+    }
 
-.logout{
-float:left;
-background:#eee;
-}
-</style>
+    #admin {
+      display: none;
+    }
+
+    #status {
+      text-align: center;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    .logout {
+      background: #eee;
+      color: #555;
+      width: 100%;
+    }
+  </style>
 </head>
 
 <body>
 
-<div class="container">
+<div class="wrap">
 
-<!-- LOGIN -->
+  <!-- LOGIN -->
+  <div id="login">
+    <h1>Rana & Mazen ♡</h1>
 
-<div id="loginCard" class="card">
+    <div class="box">
+      <h2>Admin Login</h2>
 
-<h1>Rana & Mazen ♡</h1>
+      <label>Email</label>
+      <input id="email" type="email" placeholder="Your email">
 
-<label>Email</label>
+      <label>Password</label>
+      <input id="password" type="password" placeholder="Your password">
 
-<input
-id="email"
-type="email"
-placeholder="Email"
->
+      <button class="main-btn" id="loginBtn">
+        Login
+      </button>
 
-<label>Password</label>
-
-<input
-id="password"
-type="password"
-placeholder="Password"
->
-
-<button
-class="primary"
-onclick="login()">
-Login
-</button>
-
-<div id="loginMessage"></div>
-
-</div>
+      <div id="loginStatus"></div>
+    </div>
+  </div>
 
 
-<!-- ADMIN -->
+  <!-- ADMIN -->
+  <div id="admin">
 
-<div id="adminPanel" class="hidden">
+    <h1>Rana & Mazen ♡</h1>
 
-<button
-class="logout"
-onclick="logout()">
-Logout
-</button>
+    <div class="box">
 
-<div style="clear:both"></div>
+      <h2>Basic Information</h2>
 
-<div class="card">
+      <label>Names</label>
+      <input id="name">
 
-<h1>Rana & Mazen ♡</h1>
+      <label>Date</label>
+      <input id="event_date">
 
+      <label>Story</label>
+      <textarea id="story"></textarea>
 
-<label>Names</label>
+      <label>Song URL</label>
+      <input id="music" placeholder="https://...">
 
-<input id="name">
-
-
-<label>Date</label>
-
-<input id="eventDate">
+    </div>
 
 
-<label>Story</label>
+    <!-- PHOTOS -->
+    <div class="box">
 
-<textarea id="story"></textarea>
+      <h2>Photos</h2>
 
+      <div id="photos"></div>
 
-<label>Song URL</label>
+      <button class="add-btn" id="addPhoto">
+        + Add photo
+      </button>
 
-<input
-id="music"
-placeholder="Paste song URL"
->
-
-
-<h2>Photos ♡</h2>
-
-<label>
-Photo URLs — one per line
-</label>
-
-<textarea
-id="photos"
-placeholder="Paste photo URLs here..."
-></textarea>
+    </div>
 
 
-<h2>Videos 🔐</h2>
+    <!-- VIDEOS -->
+    <div class="box">
 
-<div id="videos"></div>
+      <h2>Videos</h2>
 
-<button
-class="secondary"
-onclick="addVideo()">
-+ Add video
-</button>
+      <div id="videos"></div>
 
+      <button class="add-btn" id="addVideo">
+        + Add video
+      </button>
 
-<h2>Memories ♡</h2>
-
-<div id="memories"></div>
-
-<button
-class="secondary"
-onclick="addMemory()">
-+ Add memory
-</button>
+    </div>
 
 
-<button
-class="primary"
-onclick="saveData()">
-Save Changes ♡
-</button>
+    <!-- MEMORIES -->
+    <div class="box">
 
-<div id="message"></div>
+      <h2>Memories</h2>
+
+      <div id="memories"></div>
+
+      <button class="add-btn" id="addMemory">
+        + Add memory
+      </button>
+
+    </div>
+
+
+    <button class="main-btn" id="saveBtn">
+      Save Changes ♡
+    </button>
+
+    <div id="status"></div>
+
+    <button class="logout" id="logoutBtn">
+      Logout
+    </button>
+
+  </div>
 
 </div>
 
-</div>
-
-</div>
-
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
 
-/* SUPABASE */
-
 const SUPABASE_URL =
-"https://jqpceabdshvboderrbiz.supabase.co";
+  "https://jqpceabdshvboderrbiz.supabase.co";
 
 const SUPABASE_KEY =
-"sb_publishable_lgtWi40tBxTt1zPogOQ4oA_Zf8SKU2P";
+  "sb_publishable_lgtWi40tBxTt1zPogOQ4oA_Zf8SKU2P";
 
 
 /*
-Public connection:
-used for reading the data,
-because the public website already
-has permission to read it.
+  Auth is only used to protect the Admin screen.
+  Database requests stay anonymous because your current
+  Supabase RLS policies allow anon access.
 */
 
-const publicDb =
-window.supabase.createClient(
-SUPABASE_URL,
-SUPABASE_KEY
-);
+const supabaseClient =
+  window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
 
 
-/*
-Authenticated connection:
-used for login and saving changes.
-*/
-
-const authDb =
-window.supabase.createClient(
-SUPABASE_URL,
-SUPABASE_KEY
-);
+let rowId = null;
 
 
-let rowId=null;
+/* ---------------- LOGIN ---------------- */
 
+document.getElementById("loginBtn").addEventListener("click", async () => {
 
-/* LOGIN */
+  const email =
+    document.getElementById("email").value.trim();
 
-async function login(){
+  const password =
+    document.getElementById("password").value;
 
-const email =
-document
-.getElementById("email")
-.value
-.trim();
+  const status =
+    document.getElementById("loginStatus");
 
-const password =
-document
-.getElementById("password")
-.value;
+  status.textContent = "Logging in...";
 
-const msg =
-document.getElementById("loginMessage");
+  const { error } =
+    await supabaseClient.auth.signInWithPassword({
+      email,
+      password
+    });
 
-if(!email || !password){
+  if (error) {
+    status.textContent =
+      "Login failed: " + error.message;
+    return;
+  }
 
-msg.textContent =
-"اكتبي الإيميل والباسورد";
+  status.textContent = "";
 
-return;
+  document.getElementById("login").style.display = "none";
+  document.getElementById("admin").style.display = "block";
 
-}
-
-msg.textContent =
-"Logging in...";
-
-
-const {data,error} =
-await authDb.auth.signInWithPassword({
-
-email:email,
-
-password:password
-
+  await loadData();
 });
 
 
-if(error){
+/* ---------------- LOAD DATA ---------------- */
 
-msg.textContent =
-error.message;
+async function loadData() {
 
-return;
+  const status =
+    document.getElementById("status");
 
+  status.textContent = "Loading...";
+
+  try {
+
+    /*
+      IMPORTANT:
+      No Authorization header here.
+      This keeps the request anonymous,
+      matching your existing RLS SELECT policy.
+    */
+
+    const response = await fetch(
+      SUPABASE_URL +
+      "/rest/v1/rana_mazen?select=*&limit=1",
+      {
+        method: "GET",
+        headers: {
+          "apikey": SUPABASE_KEY,
+          "Accept": "application/json"
+        }
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        data.message ||
+        data.error_description ||
+        "Could not load data"
+      );
+    }
+
+    if (!data || data.length === 0) {
+      status.textContent = "No data found";
+      return;
+    }
+
+    const item = data[0];
+
+    rowId = item.Id;
+
+    document.getElementById("name").value =
+      item.Name || "";
+
+    document.getElementById("event_date").value =
+      item.Event_date || "";
+
+    document.getElementById("story").value =
+      item.Story || "";
+
+    document.getElementById("music").value =
+      item.Music || "";
+
+
+    /* PHOTOS */
+
+    const photos =
+      Array.isArray(item.Photos)
+        ? item.Photos
+        : [];
+
+    document.getElementById("photos").innerHTML = "";
+
+    photos.forEach(url => {
+      addPhoto(url);
+    });
+
+
+    /* VIDEOS */
+
+    const videos =
+      Array.isArray(item.Videos)
+        ? item.Videos
+        : [];
+
+    document.getElementById("videos").innerHTML = "";
+
+    videos.forEach(url => {
+      addVideo(url);
+    });
+
+
+    /* MEMORIES */
+
+    const memories =
+      Array.isArray(item.Memories)
+        ? item.Memories
+        : [];
+
+    document.getElementById("memories").innerHTML = "";
+
+    memories.forEach(memory => {
+
+      if (typeof memory === "string") {
+        addMemory(memory);
+      } else {
+        addMemory(
+          memory.text || "",
+          memory.date || ""
+        );
+      }
+
+    });
+
+    status.textContent = "";
+
+  } catch (error) {
+
+    console.error(error);
+
+    status.textContent =
+      "Error: " + error.message;
+  }
 }
 
 
-if(data.session){
+/* ---------------- PHOTOS ---------------- */
 
-document
-.getElementById("loginCard")
-.classList.add("hidden");
+function addPhoto(value = "") {
 
-document
-.getElementById("adminPanel")
-.classList.remove("hidden");
+  const container =
+    document.getElementById("photos");
 
-await loadData();
+  const item =
+    document.createElement("div");
 
-}
+  item.className = "item";
 
-}
+  item.innerHTML = `
+    <input
+      class="photo-input"
+      type="url"
+      placeholder="Photo URL"
+      value="${escapeHtml(value)}"
+    >
 
+    <button
+      type="button"
+      class="remove-btn"
+    >
+      Remove
+    </button>
+  `;
 
-/* LOGOUT */
+  item.querySelector(".remove-btn")
+    .addEventListener("click", () => {
+      item.remove();
+    });
 
-async function logout(){
-
-await authDb.auth.signOut();
-
-document
-.getElementById("adminPanel")
-.classList.add("hidden");
-
-document
-.getElementById("loginCard")
-.classList.remove("hidden");
-
-}
-
-
-/* LOAD */
-
-async function loadData(){
-
-const msg =
-document.getElementById("message");
-
-
-msg.textContent =
-"Loading...";
-
-
-const {data,error} =
-await publicDb
-.from("rana_mazen")
-.select("*")
-.limit(1);
-
-
-if(error){
-
-msg.textContent =
-"Error: "+error.message;
-
-return;
-
+  container.appendChild(item);
 }
 
 
-if(!data || !data.length){
+document.getElementById("addPhoto")
+  .addEventListener("click", () => {
+    addPhoto("");
+  });
 
-msg.textContent =
-"No data found";
 
-return;
+/* ---------------- VIDEOS ---------------- */
 
+function addVideo(value = "") {
+
+  const container =
+    document.getElementById("videos");
+
+  const item =
+    document.createElement("div");
+
+  item.className = "item";
+
+  item.innerHTML = `
+    <input
+      class="video-input"
+      type="url"
+      placeholder="Video URL"
+      value="${escapeHtml(value)}"
+    >
+
+    <button
+      type="button"
+      class="remove-btn"
+    >
+      Remove
+    </button>
+  `;
+
+  item.querySelector(".remove-btn")
+    .addEventListener("click", () => {
+      item.remove();
+    });
+
+  container.appendChild(item);
 }
 
 
-const row =
-data[0];
+document.getElementById("addVideo")
+  .addEventListener("click", () => {
+    addVideo("");
+  });
 
 
-rowId =
-row.Id;
+/* ---------------- MEMORIES ---------------- */
 
+function addMemory(text = "", date = "") {
 
-/* BASIC */
+  const container =
+    document.getElementById("memories");
 
-document
-.getElementById("name")
-.value =
-row.Name || "";
+  const item =
+    document.createElement("div");
 
+  item.className = "item";
 
-document
-.getElementById("eventDate")
-.value =
-row.Event_date || "";
+  item.innerHTML = `
+    <input
+      class="memory-date"
+      type="text"
+      placeholder="Date"
+      value="${escapeHtml(date)}"
+    >
 
+    <br><br>
 
-document
-.getElementById("story")
-.value =
-row.Story || "";
+    <textarea
+      class="memory-text"
+      placeholder="Memory"
+    >${escapeHtml(text)}</textarea>
 
+    <button
+      type="button"
+      class="remove-btn"
+    >
+      Remove
+    </button>
+  `;
 
-document
-.getElementById("music")
-.value =
-row.Music || "";
+  item.querySelector(".remove-btn")
+    .addEventListener("click", () => {
+      item.remove();
+    });
 
-
-/* PHOTOS */
-
-let photos =
-row.Photos || [];
-
-
-if(typeof photos==="string"){
-
-try{
-
-photos =
-JSON.parse(photos);
-
-}catch(e){
-
-photos=[];
-
-}
-
+  container.appendChild(item);
 }
 
 
-if(!Array.isArray(photos))
-photos=[];
+document.getElementById("addMemory")
+  .addEventListener("click", () => {
+    addMemory("", "");
+  });
 
 
-document
-.getElementById("photos")
-.value =
-photos.join("\n");
+/* ---------------- SAVE ---------------- */
 
+document.getElementById("saveBtn")
+  .addEventListener("click", saveData);
 
-/* MEMORIES */
 
-let memories =
-row.Memories || [];
+async function saveData() {
 
+  const status =
+    document.getElementById("status");
 
-if(typeof memories==="string"){
+  status.textContent = "Saving...";
 
-try{
 
-memories =
-JSON.parse(memories);
+  const photos =
+    [...document.querySelectorAll(".photo-input")]
+      .map(input => input.value.trim())
+      .filter(Boolean);
 
-}catch(e){
 
-memories=[];
+  const videos =
+    [...document.querySelectorAll(".video-input")]
+      .map(input => input.value.trim())
+      .filter(Boolean);
 
-}
 
-}
+  const memories =
+    [...document.querySelectorAll(".item")]
+      .map(() => null);
 
 
-if(!Array.isArray(memories))
-memories=[];
+  const memoryBoxes =
+    document.querySelectorAll(
+      "#memories .item"
+    );
 
 
-const memoriesBox =
-document.getElementById("memories");
+  const memoryData = [];
 
-memoriesBox.innerHTML="";
+  memoryBoxes.forEach(box => {
 
+    const text =
+      box.querySelector(".memory-text")
+        ?.value.trim() || "";
 
-memories.forEach(memory=>{
+    const date =
+      box.querySelector(".memory-date")
+        ?.value.trim() || "";
 
-addMemory(memory);
+    if (text || date) {
+      memoryData.push({
+        date: date,
+        text: text
+      });
+    }
 
-});
+  });
 
 
-/* VIDEOS */
+  const updateData = {
+    Name:
+      document.getElementById("name").value.trim(),
 
-let videos =
-row.Videos || [];
+    Event_date:
+      document.getElementById("event_date").value.trim(),
 
+    Story:
+      document.getElementById("story").value.trim(),
 
-if(typeof videos==="string"){
+    Music:
+      document.getElementById("music").value.trim(),
 
-try{
+    Photos:
+      photos,
 
-videos =
-JSON.parse(videos);
+    Videos:
+      videos,
 
-}catch(e){
+    Memories:
+      memoryData
+  };
 
-videos=[];
 
-}
+  try {
 
-}
+    /*
+      Anonymous PATCH because your current
+      UPDATE policy is for anon.
+    */
 
+    const response = await fetch(
+      SUPABASE_URL +
+      "/rest/v1/rana_mazen?Id=eq." +
+      encodeURIComponent(rowId),
+      {
+        method: "PATCH",
 
-if(!Array.isArray(videos))
-videos=[];
+        headers: {
+          "apikey": SUPABASE_KEY,
+          "Content-Type": "application/json",
+          "Prefer": "return=minimal"
+        },
 
+        body: JSON.stringify(updateData)
+      }
+    );
 
-const videosBox =
-document.getElementById("videos");
 
-videosBox.innerHTML="";
+    if (!response.ok) {
 
+      const errorData =
+        await response.text();
 
-videos.forEach(video=>{
+      throw new Error(
+        errorData || "Save failed"
+      );
+    }
 
-addVideo(video);
 
-});
+    status.textContent =
+      "Saved online successfully ♡";
 
+  } catch (error) {
 
-msg.textContent="";
+    console.error(error);
 
-}
-
-
-/* ADD MEMORY */
-
-function addMemory(memory=""){
-
-const box =
-document.getElementById("memories");
-
-const item =
-document.createElement("div");
-
-item.className="item";
-
-
-let value="";
-
-
-if(typeof memory==="string"){
-
-value=memory;
-
-}else if(memory){
-
-value =
-memory.text ||
-"";
-
-}
-
-
-item.innerHTML=`
-
-<textarea
-class="memoryText"
-placeholder="اكتبي الذكرى هنا..."
-></textarea>
-
-<button
-class="danger"
-onclick="this.parentElement.remove()">
-Remove
-</button>
-
-`;
-
-
-box.appendChild(item);
-
-
-item
-.querySelector(".memoryText")
-.value=value;
-
+    status.textContent =
+      "Save failed: " + error.message;
+  }
 }
 
 
-/* ADD VIDEO */
+/* ---------------- LOGOUT ---------------- */
 
-function addVideo(video=""){
+document.getElementById("logoutBtn")
+  .addEventListener("click", async () => {
 
-const box =
-document.getElementById("videos");
+    await supabaseClient.auth.signOut();
 
-const item =
-document.createElement("div");
+    document.getElementById("admin").style.display =
+      "none";
 
-item.className="item";
+    document.getElementById("login").style.display =
+      "block";
 
+    document.getElementById("email").value = "";
+    document.getElementById("password").value = "";
 
-item.innerHTML=`
-
-<label>Video URL</label>
-
-<input
-class="videoUrl"
-type="url"
-placeholder="Paste video URL here..."
->
-
-<button
-class="danger"
-onclick="this.parentElement.remove()">
-Remove
-</button>
-
-`;
+  });
 
 
-box.appendChild(item);
+/* ---------------- HELPER ---------------- */
 
+function escapeHtml(value) {
 
-item
-.querySelector(".videoUrl")
-.value =
-video || "";
-
+  return String(value || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
 }
 
 
-/* SAVE */
+/* ---------------- SESSION ---------------- */
 
-async function saveData(){
+(async function checkSession() {
 
-const msg =
-document.getElementById("message");
+  const {
+    data: { session }
+  } = await supabaseClient.auth.getSession();
 
+  if (session) {
 
-if(!rowId){
+    document.getElementById("login").style.display =
+      "none";
 
-msg.textContent =
-"No data row found";
+    document.getElementById("admin").style.display =
+      "block";
 
-return;
+    await loadData();
+  }
 
-}
-
-
-msg.textContent =
-"Saving...";
-
-
-/* PHOTOS */
-
-const photos =
-document
-.getElementById("photos")
-.value
-.split("\n")
-.map(x=>x.trim())
-.filter(Boolean);
-
-
-/* MEMORIES */
-
-const memories =
-Array
-.from(
-document.querySelectorAll(".memoryText")
-)
-.map(x=>x.value.trim())
-.filter(Boolean);
-
-
-/* VIDEOS */
-
-const videos =
-Array
-.from(
-document.querySelectorAll(".videoUrl")
-)
-.map(x=>x.value.trim())
-.filter(Boolean);
-
-
-/* UPDATE */
-
-const {error} =
-await authDb
-.from("rana_mazen")
-.update({
-
-Name:
-document
-.getElementById("name")
-.value
-.trim(),
-
-Event_date:
-document
-.getElementById("eventDate")
-.value
-.trim(),
-
-Story:
-document
-.getElementById("story")
-.value,
-
-Music:
-document
-.getElementById("music")
-.value
-.trim(),
-
-Photos:
-photos,
-
-Memories:
-memories,
-
-Videos:
-videos
-
-})
-.eq("Id",rowId);
-
-
-if(error){
-
-msg.textContent =
-"Save failed: "+error.message;
-
-return;
-
-}
-
-
-msg.textContent =
-"Saved online successfully ♡";
-
-}
-
-
-/* CHECK SESSION */
-
-async function checkSession(){
-
-const {data} =
-await authDb.auth.getSession();
-
-
-if(data.session){
-
-document
-.getElementById("loginCard")
-.classList.add("hidden");
-
-document
-.getElementById("adminPanel")
-.classList.remove("hidden");
-
-await loadData();
-
-}
-
-}
-
-
-checkSession();
+})();
 
 </script>
 
