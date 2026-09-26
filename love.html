@@ -1,731 +1,461 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Rana & Mazen ♡</title>
 
 <style>
 *{box-sizing:border-box}
 
-html{
-  scroll-behavior:smooth;
-}
-
 body{
-  margin:0;
-  color:#59413c;
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
-  background:
-    radial-gradient(circle at top,#fffafa 0%,#f9efed 45%,#f1dfdc 100%);
-  overflow-x:hidden;
+margin:0;
+font-family:Arial,sans-serif;
+background:linear-gradient(135deg,#fff7f5,#f5e3e0);
+color:#5b4039;
+overflow-x:hidden;
 }
 
-/* floating hearts */
-.heart-bg{
-  position:fixed;
-  inset:0;
-  pointer-events:none;
-  overflow:hidden;
-  z-index:0;
+#hearts{
+position:fixed;
+inset:0;
+pointer-events:none;
+overflow:hidden;
+z-index:0;
 }
 
-.floating-heart{
-  position:absolute;
-  bottom:-40px;
-  opacity:.45;
-  animation:rise linear forwards;
+.heart{
+position:absolute;
+bottom:-40px;
+animation:up 7s linear forwards;
+opacity:.55;
 }
 
-@keyframes rise{
-  from{
-    transform:translateY(0) rotate(0deg);
-    opacity:0;
-  }
-  15%{opacity:.5}
-  to{
-    transform:translateY(-110vh) rotate(25deg);
-    opacity:0;
-  }
+@keyframes up{
+to{
+transform:translateY(-110vh) rotate(25deg);
+opacity:0;
+}
 }
 
-/* falling flowers */
-.flower-rain{
-  position:fixed;
-  inset:0;
-  pointer-events:none;
-  z-index:100;
-  overflow:hidden;
+#flowers{
+position:fixed;
+inset:0;
+pointer-events:none;
+z-index:20;
+overflow:hidden;
 }
 
 .flower{
-  position:absolute;
-  top:-70px;
-  animation:fall 3s ease-in forwards;
-  font-size:30px;
+position:absolute;
+top:-50px;
+font-size:30px;
+animation:fall 3s linear forwards;
 }
 
 @keyframes fall{
-  0%{
-    transform:translateY(-80px) rotate(0deg);
-    opacity:1;
-  }
-  100%{
-    transform:translateY(110vh) rotate(420deg);
-    opacity:0;
-  }
+to{
+transform:translateY(110vh) rotate(360deg);
+opacity:0;
+}
 }
 
-.wrap{
-  position:relative;
-  z-index:2;
-  width:100%;
-  max-width:650px;
-  margin:auto;
-  padding:15px 16px 70px;
+main{
+position:relative;
+z-index:2;
+max-width:650px;
+margin:auto;
+padding:30px 15px 70px;
 }
 
-/* hero */
 .hero{
-  min-height:88vh;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  text-align:center;
+min-height:70vh;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+text-align:center;
 }
 
-.hero-heart{
-  font-size:70px;
-  animation:heartbeat 1.8s infinite;
+.hero h1{
+font-family:Georgia,serif;
+font-size:52px;
+font-weight:normal;
+margin:10px 0;
 }
 
-@keyframes heartbeat{
-  0%,100%{transform:scale(1)}
-  15%{transform:scale(1.12)}
-  30%{transform:scale(1)}
-  45%{transform:scale(1.08)}
+.hero .heart{
+position:static;
+animation:beat 1.5s infinite;
+font-size:65px;
 }
 
-.small{
-  margin-top:15px;
-  font-size:12px;
-  letter-spacing:4px;
-  color:#a4867e;
+@keyframes beat{
+50%{transform:scale(1.15)}
 }
 
-h1{
-  margin:12px 0 0;
-  font-family:Georgia,serif;
-  font-size:clamp(45px,12vw,75px);
-  font-weight:500;
-  color:#4c3530;
+.hero p{
+color:#96756d;
 }
 
-.hero-sub{
-  margin-top:16px;
-  font-size:16px;
-  color:#876b64;
-}
-
-.scroll{
-  margin-top:55px;
-  font-size:13px;
-  color:#a58b84;
-  animation:bounce 2s infinite;
-}
-
-@keyframes bounce{
-  0%,100%{transform:translateY(0)}
-  50%{transform:translateY(8px)}
-}
-
-/* sections */
 .section{
-  margin-top:65px;
+margin-top:55px;
 }
 
-.title{
-  text-align:center;
-  font-family:Georgia,serif;
-  font-size:31px;
-  font-weight:500;
-  color:#4d3631;
-  margin:0 0 25px;
+h2{
+text-align:center;
+font-family:Georgia,serif;
+font-weight:normal;
+font-size:30px;
 }
 
-.subtitle{
-  text-align:center;
-  color:#977b74;
-  font-size:14px;
-  margin-top:-15px;
-  margin-bottom:25px;
+.card{
+background:#ffffffdd;
+border-radius:28px;
+padding:25px;
+box-shadow:0 15px 40px #00000012;
 }
 
-/* photo slider */
-.photo-slider{
-  position:relative;
-  width:100%;
-  overflow:hidden;
-  border-radius:30px;
-  touch-action:pan-y;
+.photos{
+overflow:hidden;
 }
 
 .photo-track{
-  display:flex;
-  transition:transform .45s cubic-bezier(.22,.61,.36,1);
+display:flex;
+transition:.4s;
 }
 
-.photo-slide{
-  min-width:100%;
-  padding:10px 18px 25px;
+.photo{
+min-width:100%;
+padding:10px;
 }
 
-.photo-card{
-  background:white;
-  padding:12px 12px 22px;
-  border-radius:8px;
-  box-shadow:0 18px 45px #00000018;
-  transform:rotate(-1.5deg);
+.photo img{
+width:100%;
+aspect-ratio:4/5;
+object-fit:cover;
+border-radius:10px;
+display:block;
+box-shadow:0 10px 25px #0002;
 }
 
-.photo-slide:nth-child(even) .photo-card{
-  transform:rotate(1.5deg);
+.photo-count{
+text-align:center;
+margin-top:10px;
 }
 
-.photo-card img{
-  width:100%;
-  aspect-ratio:4/5;
-  object-fit:cover;
-  display:block;
-  border-radius:4px;
-}
-
-.photo-number{
-  text-align:center;
-  margin-top:12px;
-  font-family:Georgia,serif;
-  color:#9b7e76;
-  font-size:14px;
-}
-
-.slider-dots{
-  display:flex;
-  justify-content:center;
-  gap:6px;
-  margin-top:4px;
+.dots{
+display:flex;
+justify-content:center;
+gap:6px;
+margin-top:10px;
 }
 
 .dot{
-  width:7px;
-  height:7px;
-  border-radius:50%;
-  background:#d6c1bc;
-  transition:.3s;
+width:8px;
+height:8px;
+border-radius:50%;
+background:#d9c0ba;
 }
 
 .dot.active{
-  width:22px;
-  border-radius:20px;
-  background:#806057;
+width:22px;
+border-radius:20px;
+background:#76554d;
 }
 
-/* locked cards */
-.lock-card{
-  background:#ffffffd9;
-  backdrop-filter:blur(12px);
-  border-radius:30px;
-  padding:35px 22px;
-  text-align:center;
-  box-shadow:0 15px 45px #00000010;
+.lock{
+text-align:center;
+cursor:pointer;
 }
 
-.lock-icon{
-  width:76px;
-  height:76px;
-  margin:auto;
-  border-radius:50%;
-  background:#f3e3df;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:34px;
-  cursor:pointer;
-  transition:.35s;
+.lock-circle{
+width:80px;
+height:80px;
+margin:auto;
+border-radius:50%;
+background:#f1dfdb;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:35px;
 }
 
-.lock-icon:hover{
-  transform:scale(1.08) rotate(-3deg);
+.lock h3{
+font-family:Georgia,serif;
+font-size:25px;
 }
 
-.lock-title{
-  font-family:Georgia,serif;
-  font-size:25px;
-  margin:16px 0 8px;
+.message{
+line-height:2;
+font-size:16px;
+white-space:pre-line;
 }
 
-.lock-text{
-  color:#977b74;
-  line-height:1.8;
-  font-size:14px;
-}
-
-/* message */
-.message-open{
-  background:white;
-  border-radius:30px;
-  padding:27px 22px;
-  box-shadow:0 15px 45px #00000010;
-  animation:openCard .5s ease;
-}
-
-@keyframes openCard{
-  from{
-    opacity:0;
-    transform:scale(.95);
-  }
-  to{
-    opacity:1;
-    transform:scale(1);
-  }
-}
-
-.message-text{
-  white-space:pre-line;
-  line-height:2.05;
-  font-size:16px;
-  text-align:right;
-}
-
-.close-small{
-  margin-top:22px;
-  border:0;
-  background:#f1e2de;
-  color:#6d514a;
-  padding:10px 18px;
-  border-radius:999px;
-  cursor:pointer;
-}
-
-/* secret video */
-.secret-input{
-  margin-top:20px;
-}
-
-.secret-input input{
-  width:100%;
-  padding:14px 16px;
-  border:1px solid #ddcbc6;
-  border-radius:16px;
-  outline:none;
-  text-align:center;
-  font-size:16px;
-  background:#fffaf9;
-}
-
-.secret-input button{
-  margin-top:10px;
-  border:0;
-  background:#59413c;
-  color:white;
-  padding:12px 25px;
-  border-radius:999px;
-  cursor:pointer;
-}
-
-.secret-error{
-  color:#a5534b;
-  margin-top:10px;
-  font-size:13px;
-}
-
-/* videos */
-.video-box{
-  background:white;
-  padding:10px;
-  border-radius:25px;
-  box-shadow:0 15px 40px #00000012;
-  margin-top:18px;
-}
-
-.video-box video{
-  width:100%;
-  display:block;
-  border-radius:19px;
-  background:#111;
-  max-height:75vh;
-}
-
-/* memories */
-.memory-stage{
-  position:relative;
-  min-height:390px;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  touch-action:pan-y;
-}
-
-.memory-card{
-  position:absolute;
-  width:88%;
-  max-width:390px;
-  background:#fff;
-  padding:13px 13px 24px;
-  box-shadow:0 20px 50px #00000018;
-  border-radius:5px;
-  transform-origin:center;
-  transition:.4s;
-  cursor:grab;
-}
-
-.memory-card img{
-  width:100%;
-  aspect-ratio:4/3;
-  object-fit:cover;
-  display:block;
-}
-
-.memory-card.no-image{
-  padding:30px;
-  min-height:260px;
-}
-
-.memory-card h3{
-  font-family:Georgia,serif;
-  font-size:23px;
-  margin:15px 5px 5px;
-}
-
-.memory-date{
-  color:#a18780;
-  font-size:12px;
-  margin:0 5px 10px;
-}
-
-.memory-text{
-  line-height:1.9;
-  font-size:15px;
-  margin:0 5px;
-  white-space:pre-line;
-}
-
-.memory-hint{
-  text-align:center;
-  margin-top:18px;
-  color:#9b7e76;
-  font-size:13px;
-}
-
-/* music */
-.music-card{
-  background:white;
-  border-radius:30px;
-  padding:35px 20px;
-  text-align:center;
-  box-shadow:0 15px 45px #00000010;
-}
-
-.record{
-  width:105px;
-  height:105px;
-  border-radius:50%;
-  margin:0 auto 22px;
-  background:
-    repeating-radial-gradient(
-      circle,
-      #3d2925 0px,
-      #3d2925 3px,
-      #523a34 4px,
-      #3d2925 7px
-    );
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  box-shadow:0 10px 25px #00000025;
-  cursor:pointer;
-  position:relative;
-}
-
-.record:after{
-  content:"♡";
-  width:31px;
-  height:31px;
-  border-radius:50%;
-  background:#e8d3ce;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  color:#684c45;
-  font-size:18px;
-}
-
-.record.playing{
-  animation:spin 2.5s linear infinite;
-}
-
-@keyframes spin{
-  to{transform:rotate(360deg)}
-}
-
-.music-title{
-  font-family:Georgia,serif;
-  font-size:24px;
-  margin-bottom:8px;
-}
-
-.music-caption{
-  color:#977b74;
-  line-height:1.8;
-  font-size:14px;
-}
-
-.music-link{
-  display:inline-block;
-  margin-top:15px;
-  color:#765850;
-  text-decoration:none;
-  font-size:13px;
-}
-
-/* end */
-.end{
-  text-align:center;
-  margin-top:80px;
-  font-family:Georgia,serif;
-  font-size:22px;
-  line-height:1.8;
-  color:#624741;
-}
-
-.end-heart{
-  font-size:28px;
-  margin-top:10px;
+button{
+border:0;
+background:#624740;
+color:white;
+padding:12px 22px;
+border-radius:25px;
+cursor:pointer;
+margin-top:15px;
 }
 
 .hidden{
-  display:none!important;
+display:none!important;
 }
 
-.loading{
-  text-align:center;
-  padding:40px;
-  color:#987b74;
+.memory-stage{
+height:400px;
+position:relative;
+display:flex;
+align-items:center;
+justify-content:center;
+overflow:hidden;
 }
 
-/* mobile */
-@media(max-width:600px){
-  .wrap{
-    padding-left:12px;
-    padding-right:12px;
-  }
+.memory{
+position:absolute;
+width:88%;
+background:white;
+padding:12px 12px 22px;
+box-shadow:0 15px 40px #0002;
+transition:.4s;
+}
 
-  .message-text{
-    font-size:15px;
-  }
+.memory img{
+width:100%;
+aspect-ratio:4/3;
+object-fit:cover;
+}
 
-  .memory-stage{
-    min-height:370px;
-  }
+.memory h3{
+font-family:Georgia,serif;
+margin:15px 5px 5px;
+font-size:22px;
+}
+
+.memory p{
+margin:5px;
+line-height:1.8;
+}
+
+.memory small{
+margin:5px;
+display:block;
+color:#9c8078;
+}
+
+.record{
+width:110px;
+height:110px;
+border-radius:50%;
+margin:auto;
+background:repeating-radial-gradient(circle,#392622 0 3px,#533b35 4px 7px);
+display:flex;
+align-items:center;
+justify-content:center;
+cursor:pointer;
+}
+
+.record:after{
+content:"♡";
+width:32px;
+height:32px;
+background:#ead5d0;
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
+.playing{
+animation:spin 2s linear infinite;
+}
+
+@keyframes spin{
+to{transform:rotate(360deg)}
+}
+
+.music{
+text-align:center;
+}
+
+video{
+width:100%;
+border-radius:18px;
+background:#111;
+}
+
+input{
+width:100%;
+padding:14px;
+border:1px solid #dcc9c4;
+border-radius:15px;
+text-align:center;
+font-size:16px;
+margin-top:15px;
+}
+
+.error{
+color:#a04e48;
+margin-top:10px;
+}
+
+.end{
+text-align:center;
+font-family:Georgia,serif;
+font-size:22px;
+margin-top:70px;
 }
 </style>
 </head>
 
 <body>
 
-<div class="heart-bg" id="heartBg"></div>
-<div class="flower-rain" id="flowerRain"></div>
+<div id="hearts"></div>
+<div id="flowers"></div>
 
-<div class="wrap">
+<main>
 
-  <!-- HERO -->
-  <section class="hero">
+<section class="hero">
+<div class="heart">♡</div>
+<div>OUR LITTLE STORY</div>
+<h1 id="names">Rana & Mazen</h1>
+<p>For my favorite person ❤️</p>
+<p id="date"></p>
+<p>اسحب لتحت وشوف مفاجأتك ↓</p>
+</section>
 
-    <div class="hero-heart">♡</div>
 
-    <div class="small">OUR LITTLE STORY</div>
+<section id="photosSection" class="section hidden">
 
-    <h1 id="names">Rana & Mazen</h1>
+<h2>Our Moments ♡</h2>
 
-    <div class="hero-sub">
-      For my favorite person ❤️
-    </div>
+<div class="card photos" id="photoSlider">
+<div class="photo-track" id="photoTrack"></div>
+</div>
 
-    <div class="date" id="date"></div>
+<div class="dots" id="photoDots"></div>
 
-    <div class="scroll">
-      اسحب لتحت وشوف مفاجأتك ↓
-    </div>
+</section>
 
-  </section>
 
+<section class="section">
 
-  <!-- PHOTOS -->
-  <section id="photosSection" class="section hidden">
+<h2>A Message For You</h2>
 
-    <h2 class="title">Our Moments ♡</h2>
+<div id="messageClosed" class="card lock" onclick="openMessage()">
 
-    <div class="subtitle">
-      صورة ورا صورة… وكل واحدة ليها حكاية
-    </div>
+<div class="lock-circle">🔐</div>
 
-    <div class="photo-slider" id="photoSlider">
+<h3>Message</h3>
 
-      <div class="photo-track" id="photoTrack"></div>
-
-    </div>
-
-    <div class="slider-dots" id="photoDots"></div>
-
-  </section>
-
-
-  <!-- MESSAGE -->
-  <section class="section">
-
-    <h2 class="title">A Message For You</h2>
-
-    <div id="messageClosed" class="lock-card">
-
-      <div class="lock-icon" onclick="openMessage()">
-        🔐
-      </div>
-
-      <div class="lock-title">
-        Message
-      </div>
-
-      <div class="lock-text">
-        في حاجة مستخبية ليك هنا…<br>
-        دوس على القفل عشان تفتح رسالتي ❤️
-      </div>
-
-    </div>
-
-    <div id="messageOpen" class="message-open hidden">
-
-      <div class="message-text" id="story"></div>
-
-      <div style="text-align:center">
-        <button class="close-small" onclick="closeMessage()">
-          اقفل الرسالة ♡
-        </button>
-      </div>
-
-    </div>
-
-  </section>
-
-
-  <!-- MEMORIES -->
-  <section id="memoriesSection" class="section hidden">
-
-    <h2 class="title">Our Little Moments ♡</h2>
-
-    <div class="subtitle">
-      اسحب الكارت عشان تكتشف الذكريات واحدة واحدة
-    </div>
-
-    <div class="memory-stage" id="memoryStage"></div>
-
-    <div class="memory-hint">
-      ← اسحب يمين أو شمال →
-    </div>
-
-  </section>
-
-
-  <!-- SECRET VIDEO -->
-  <section id="videoSection" class="section hidden">
-
-    <h2 class="title">Something Secret 🔐</h2>
-
-    <div id="videoLocked" class="lock-card">
-
-      <div class="lock-icon" onclick="showVideoInput()">
-        🔐
-      </div>
-
-      <div class="lock-title">
-        Secret Video
-      </div>
-
-      <div class="lock-text">
-        الفيديو ده مش هيفتح لأي حد 👀<br>
-        التاريخ المميز هو المفتاح ❤️
-      </div>
-
-      <div id="secretInput" class="secret-input hidden">
-
-        <input
-          id="secretDate"
-          type="text"
-          inputmode="numeric"
-          placeholder="DD/MM/YYYY">
-
-        <button onclick="unlockVideo()">
-          Unlock ♡
-        </button>
-
-        <div id="secretError" class="secret-error"></div>
-
-      </div>
-
-    </div>
-
-    <div id="videoUnlocked" class="hidden"></div>
-
-  </section>
-
-
-  <!-- MUSIC -->
-  <section id="musicSection" class="section hidden">
-
-    <h2 class="title">Our Sound ♡</h2>
-
-    <div class="music-card">
-
-      <div
-        class="record"
-        id="record"
-        onclick="toggleMusic()">
-      </div>
-
-      <div class="music-title">
-        This song sounds like us ♡
-      </div>
-
-      <div class="music-caption">
-        كل مرة تسمعها… افتكرنا.
-      </div>
-
-      <audio id="musicPlayer" preload="none"></audio>
-
-      <a
-        id="musicLink"
-        class="music-link hidden"
-        target="_blank"
-        rel="noopener">
-        لو الأغنية مش بتشتغل هنا، افتحها من هنا ♡
-      </a>
-
-    </div>
-
-  </section>
-
-
-  <div class="end">
-    And this is only the beginning...
-    <div class="end-heart">♡</div>
-  </div>
+<p>
+في حاجة مستخبية ليك هنا…<br>
+دوس على القفل عشان تفتح رسالتي ❤️
+</p>
 
 </div>
 
+<div id="messageOpen" class="card hidden">
 
-<div id="loading" class="loading">
-  Loading our little story ♡
+<div id="story" class="message"></div>
+
+<div style="text-align:center">
+<button onclick="closeMessage()">اقفل الرسالة ♡</button>
 </div>
+
+</div>
+
+</section>
+
+
+<section id="memoriesSection" class="section hidden">
+
+<h2>Our Little Moments ♡</h2>
+
+<p style="text-align:center;color:#96756d">
+اسحب الكارت يمين أو شمال واكتشف ذكرياتنا
+</p>
+
+<div class="memory-stage" id="memoryStage"></div>
+
+</section>
+
+
+<section id="videoSection" class="section hidden">
+
+<h2>Something Secret 🔐</h2>
+
+<div id="videoLocked" class="card lock">
+
+<div class="lock-circle" onclick="showDateInput()">🔐</div>
+
+<h3>Secret Video</h3>
+
+<p>
+الفيديو مقفول…<br>
+التاريخ المميز هو المفتاح ❤️
+</p>
+
+<div id="dateBox" class="hidden">
+
+<input
+id="secretDate"
+placeholder="DD/MM/YYYY"
+inputmode="numeric">
+
+<button onclick="unlockVideo()">Unlock ♡</button>
+
+<div id="error" class="error"></div>
+
+</div>
+
+</div>
+
+<div id="videoUnlocked" class="hidden"></div>
+
+</section>
+
+
+<section id="musicSection" class="section hidden">
+
+<h2>Our Sound ♡</h2>
+
+<div class="card music">
+
+<div
+id="record"
+class="record"
+onclick="toggleMusic()">
+</div>
+
+<h3>This song sounds like us ♡</h3>
+
+<p>
+كل مرة تسمعها… افتكرنا ❤️
+</p>
+
+<a id="musicLink"
+class="hidden"
+target="_blank">
+افتح الأغنية ♡
+</a>
+
+<audio id="audio"></audio>
+
+</div>
+
+</section>
+
+
+<div class="end">
+And this is only the beginning... ♡
+</div>
+
+</main>
 
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -738,843 +468,621 @@ const SUPABASE_URL =
 const SUPABASE_KEY =
 "sb_publishable_lgtWi40tBxTt1zPogOQ4oA_Zf8SKU2P";
 
-const supabaseClient =
+const db =
 window.supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY
+SUPABASE_URL,
+SUPABASE_KEY
 );
 
 
-/* =========================
-   FALLING FLOWERS
-========================= */
+/* HEARTS */
 
-function createFlowers(){
+function heart(){
 
-  const container =
-    document.getElementById("flowerRain");
+const h=document.createElement("div");
 
-  const flowers = ["🌹","🌷","🌸","🌺","💐"];
+h.className="heart";
 
-  for(let i=0;i<28;i++){
+h.textContent=Math.random()>0.5?"♡":"♥";
 
-    const flower =
-      document.createElement("div");
+h.style.left=Math.random()*100+"%";
 
-    flower.className = "flower";
+h.style.fontSize=
+(12+Math.random()*20)+"px";
 
-    flower.textContent =
-      flowers[Math.floor(Math.random()*flowers.length)];
+h.style.animationDuration=
+(6+Math.random()*5)+"s";
 
-    flower.style.left =
-      Math.random()*100 + "%";
+document.getElementById("hearts").appendChild(h);
 
-    flower.style.animationDelay =
-      Math.random()*1.8 + "s";
+setTimeout(()=>h.remove(),12000);
 
-    flower.style.fontSize =
-      (22 + Math.random()*18) + "px";
-
-    container.appendChild(flower);
-  }
-
-  setTimeout(()=>{
-    container.innerHTML = "";
-  },5000);
 }
 
+setInterval(heart,800);
 
-/* =========================
-   FLOATING HEARTS
-========================= */
 
-function createHeart(){
+/* FLOWERS */
 
-  const container =
-    document.getElementById("heartBg");
+function flowers(){
 
-  const heart =
-    document.createElement("div");
+const box=document.getElementById("flowers");
 
-  heart.className = "floating-heart";
+const list=["🌹","🌷","🌸","🌺","💐"];
 
-  heart.textContent =
-    Math.random() > .5 ? "♡" : "♥";
+for(let i=0;i<25;i++){
 
-  heart.style.left =
-    Math.random()*100 + "%";
+const f=document.createElement("div");
 
-  heart.style.fontSize =
-    (12 + Math.random()*18) + "px";
+f.className="flower";
 
-  heart.style.animationDuration =
-    (6 + Math.random()*6) + "s";
+f.textContent=
+list[Math.floor(Math.random()*list.length)];
 
-  container.appendChild(heart);
+f.style.left=Math.random()*100+"%";
 
-  setTimeout(()=>{
-    heart.remove();
-  },13000);
+f.style.animationDelay=
+Math.random()*2+"s";
+
+box.appendChild(f);
+
 }
 
-setInterval(createHeart,900);
+setTimeout(()=>box.innerHTML="",5000);
+
+}
+
+flowers();
 
 
-/* =========================
-   MESSAGE
-========================= */
+/* MESSAGE */
 
 function openMessage(){
 
-  document.getElementById("messageClosed")
-    .classList.add("hidden");
+document
+.getElementById("messageClosed")
+.classList.add("hidden");
 
-  document.getElementById("messageOpen")
-    .classList.remove("hidden");
+document
+.getElementById("messageOpen")
+.classList.remove("hidden");
+
 }
 
 function closeMessage(){
 
-  document.getElementById("messageOpen")
-    .classList.add("hidden");
+document
+.getElementById("messageOpen")
+.classList.add("hidden");
 
-  document.getElementById("messageClosed")
-    .classList.remove("hidden");
+document
+.getElementById("messageClosed")
+.classList.remove("hidden");
+
 }
 
 
-/* =========================
-   PHOTOS
-========================= */
+/* PHOTOS */
 
-let currentPhoto = 0;
-let photoCount = 0;
+let photoIndex=0;
+let photos=[];
 
-function renderPhotos(photos){
+function showPhotos(){
 
-  const track =
-    document.getElementById("photoTrack");
+const track=
+document.getElementById("photoTrack");
 
-  const dots =
-    document.getElementById("photoDots");
+const dots=
+document.getElementById("photoDots");
 
-  track.innerHTML = "";
-  dots.innerHTML = "";
+track.innerHTML="";
+dots.innerHTML="";
 
-  photos = photos.filter(Boolean);
+photos.forEach((url,i)=>{
 
-  photoCount = photos.length;
+track.innerHTML+=`
 
-  photos.forEach((url,index)=>{
+<div class="photo">
 
-    const slide =
-      document.createElement("div");
+<img src="${url}">
 
-    slide.className = "photo-slide";
+<div class="photo-count">
+${i+1} / ${photos.length}
+</div>
 
-    slide.innerHTML = `
-      <div class="photo-card">
-        <img
-          src="${escapeAttr(url)}"
-          alt="A memory of us"
-          loading="${index===0 ? "eager" : "lazy"}">
-        <div class="photo-number">
-          ${index+1} / ${photos.length}
-        </div>
-      </div>
-    `;
+</div>
 
-    track.appendChild(slide);
+`;
 
-    const dot =
-      document.createElement("div");
+dots.innerHTML+=`
+<div class="dot ${i===0?"active":""}"></div>
+`;
 
-    dot.className =
-      "dot" + (index===0 ? " active" : "");
+});
 
-    dots.appendChild(dot);
+document
+.getElementById("photosSection")
+.classList.remove("hidden");
 
-  });
+updatePhotos();
 
-  document
-    .getElementById("photosSection")
-    .classList.remove("hidden");
-
-  updatePhoto();
-
-  setupPhotoSwipe();
 }
 
-function updatePhoto(){
+function updatePhotos(){
 
-  const track =
-    document.getElementById("photoTrack");
+document.getElementById("photoTrack")
+.style.transform=
+`translateX(${photoIndex*100}%)`;
 
-  track.style.transform =
-    `translateX(${currentPhoto * 100}%)`;
+document
+.querySelectorAll(".dot")
+.forEach((d,i)=>{
+d.classList.toggle(
+"active",
+i===photoIndex
+);
+});
 
-  document
-    .querySelectorAll("#photoDots .dot")
-    .forEach((dot,index)=>{
-      dot.classList.toggle(
-        "active",
-        index===currentPhoto
-      );
-    });
-}
-
-function nextPhoto(){
-
-  if(photoCount <= 1) return;
-
-  currentPhoto =
-    (currentPhoto + 1) % photoCount;
-
-  updatePhoto();
-}
-
-function previousPhoto(){
-
-  if(photoCount <= 1) return;
-
-  currentPhoto =
-    (currentPhoto - 1 + photoCount) % photoCount;
-
-  updatePhoto();
-}
-
-function setupPhotoSwipe(){
-
-  const slider =
-    document.getElementById("photoSlider");
-
-  let startX = 0;
-  let startY = 0;
-
-  slider.addEventListener("touchstart",e=>{
-    startX = e.touches[0].clientX;
-    startY = e.touches[0].clientY;
-  },{passive:true});
-
-  slider.addEventListener("touchend",e=>{
-
-    const endX = e.changedTouches[0].clientX;
-    const endY = e.changedTouches[0].clientY;
-
-    const dx = endX - startX;
-    const dy = endY - startY;
-
-    if(Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy)){
-
-      if(dx < 0){
-        nextPhoto();
-      }else{
-        previousPhoto();
-      }
-
-    }
-
-  },{passive:true});
 }
 
 
-/* =========================
-   MEMORIES
-========================= */
+/* swipe photos */
 
-let memoriesData = [];
-let memoryIndex = 0;
+let photoStart=0;
 
-function renderMemories(memories){
+document
+.getElementById("photoSlider")
+.addEventListener("touchstart",e=>{
+photoStart=e.touches[0].clientX;
+},{passive:true});
 
-  memoriesData =
-    memories.filter(Boolean);
+document
+.getElementById("photoSlider")
+.addEventListener("touchend",e=>{
 
-  if(!memoriesData.length) return;
+let end=e.changedTouches[0].clientX;
 
-  document
-    .getElementById("memoriesSection")
-    .classList.remove("hidden");
+if(end-photoStart<-40){
 
-  drawMemories();
-  setupMemorySwipe();
+photoIndex=
+Math.min(photoIndex+1,photos.length-1);
+
+updatePhotos();
+
+}
+
+if(end-photoStart>40){
+
+photoIndex=
+Math.max(photoIndex-1,0);
+
+updatePhotos();
+
+}
+
+},{passive:true});
+
+
+/* MEMORIES */
+
+let memories=[];
+let memoryIndex=0;
+
+function showMemories(){
+
+if(!memories.length)return;
+
+document
+.getElementById("memoriesSection")
+.classList.remove("hidden");
+
+drawMemories();
+
 }
 
 function drawMemories(){
 
-  const stage =
-    document.getElementById("memoryStage");
+const stage=
+document.getElementById("memoryStage");
 
-  stage.innerHTML = "";
+stage.innerHTML="";
 
-  memoriesData.forEach((memory,index)=>{
+memories.forEach((m,i)=>{
 
-    const card =
-      document.createElement("div");
+if(i<memoryIndex)return;
 
-    card.className =
-      "memory-card" +
-      (!memory.image ? " no-image" : "");
+if(i>memoryIndex+3)return;
 
-    const offset =
-      index - memoryIndex;
+const card=
+document.createElement("div");
 
-    if(offset < 0){
-      card.style.transform =
-        "translateX(-130%) rotate(-12deg)";
-      card.style.opacity = "0";
-      return;
-    }
+card.className="memory";
 
-    if(offset > 3){
-      card.style.display = "none";
-      return;
-    }
+let html="";
 
-    card.style.zIndex =
-      20 - offset;
+if(m.image){
 
-    card.style.transform =
-      `translateY(${offset*7}px)
-       rotate(${offset % 2 ? 2 : -2}deg)
-       scale(${1 - offset*.035})`;
-
-    card.style.opacity =
-      1 - offset*.12;
-
-    let html = "";
-
-    if(memory.image){
-
-      html += `
-        <img
-          src="${escapeAttr(memory.image)}"
-          alt="Our memory">
-      `;
-
-    }
-
-    if(memory.title){
-      html += `<h3>${escapeHtml(memory.title)}</h3>`;
-    }
-
-    if(memory.date){
-      html += `
-        <div class="memory-date">
-          ${escapeHtml(memory.date)}
-        </div>
-      `;
-    }
-
-    if(memory.text){
-      html += `
-        <div class="memory-text">
-          ${escapeHtml(memory.text)}
-        </div>
-      `;
-    }
-
-    card.innerHTML = html;
-
-    stage.appendChild(card);
-
-  });
+html+=`
+<img src="${m.image}">
+`;
 
 }
 
-function nextMemory(){
+if(m.title){
 
-  if(memoryIndex >= memoriesData.length-1){
+html+=`
+<h3>${m.title}</h3>
+`;
 
-    memoryIndex = 0;
-
-  }else{
-
-    memoryIndex++;
-
-  }
-
-  drawMemories();
 }
 
-function previousMemory(){
+if(m.date){
 
-  if(memoryIndex <= 0){
+html+=`
+<small>${m.date}</small>
+`;
 
-    memoryIndex =
-      memoriesData.length-1;
-
-  }else{
-
-    memoryIndex--;
-
-  }
-
-  drawMemories();
 }
 
-function setupMemorySwipe(){
+if(m.text){
 
-  const stage =
-    document.getElementById("memoryStage");
+html+=`
+<p>${m.text}</p>
+`;
 
-  let startX = 0;
-  let startY = 0;
+}
 
-  stage.addEventListener("touchstart",e=>{
+card.innerHTML=html;
 
-    startX =
-      e.touches[0].clientX;
+let offset=i-memoryIndex;
 
-    startY =
-      e.touches[0].clientY;
+card.style.zIndex=10-offset;
 
-  },{passive:true});
+card.style.transform=
+`translateY(${offset*8}px)
+rotate(${offset%2?2:-2}deg)
+scale(${1-offset*.04})`;
 
-  stage.addEventListener("touchend",e=>{
+stage.appendChild(card);
 
-    const dx =
-      e.changedTouches[0].clientX - startX;
+});
 
-    const dy =
-      e.changedTouches[0].clientY - startY;
-
-    if(
-      Math.abs(dx)>45 &&
-      Math.abs(dx)>Math.abs(dy)
-    ){
-
-      if(dx<0){
-        nextMemory();
-      }else{
-        previousMemory();
-      }
-
-    }
-
-  },{passive:true});
 }
 
 
-/* =========================
-   SECRET VIDEO
-========================= */
+/* swipe memories */
 
-let savedVideos = [];
+let memoryStart=0;
 
-function showVideoInput(){
+document
+.getElementById("memoryStage")
+.addEventListener("touchstart",e=>{
+memoryStart=e.touches[0].clientX;
+},{passive:true});
 
-  document
-    .getElementById("secretInput")
-    .classList.remove("hidden");
+document
+.getElementById("memoryStage")
+.addEventListener("touchend",e=>{
 
-  document
-    .getElementById("secretDate")
-    .focus();
+let end=e.changedTouches[0].clientX;
+
+if(end-memoryStart<-40){
+
+memoryIndex++;
+
+if(memoryIndex>=memories.length)
+memoryIndex=0;
+
+drawMemories();
+
 }
 
-function normalizeDate(value){
+if(end-memoryStart>40){
 
-  return value
-    .replace(/\s/g,"")
-    .replace(/\./g,"/")
-    .replace(/-/g,"/");
+memoryIndex--;
+
+if(memoryIndex<0)
+memoryIndex=memories.length-1;
+
+drawMemories();
+
+}
+
+},{passive:true});
+
+
+/* VIDEO */
+
+let videos=[];
+
+function showDateInput(){
+
+document
+.getElementById("dateBox")
+.classList.remove("hidden");
+
 }
 
 function unlockVideo(){
 
-  const entered =
-    normalizeDate(
-      document.getElementById("secretDate").value
-    );
+let value=
+document
+.getElementById("secretDate")
+.value
+.replace(/-/g,"/")
+.replace(/\./g,"/")
+.replace(/\s/g,"");
 
-  const correct =
-    entered === "03/11/2025" ||
-    entered === "3/11/2025";
+if(
+value!=="03/11/2025" &&
+value!=="3/11/2025"
+){
 
-  if(!correct){
+document
+.getElementById("error")
+.textContent=
+"التاريخ مش ده 👀 جربي تاني ❤️";
 
-    document
-      .getElementById("secretError")
-      .textContent =
-      "لأ لأ 👀 التاريخ مش ده… جربي تاني ❤️";
+return;
 
-    return;
-  }
+}
 
-  if(!savedVideos.length){
+if(!videos.length){
 
-    document
-      .getElementById("secretError")
-      .textContent =
-      "الفيديو لسه مش مضاف ❤️";
+document
+.getElementById("error")
+.textContent=
+"الفيديو لسه مش مضاف ❤️";
 
-    return;
-  }
+return;
 
-  const locked =
-    document.getElementById("videoLocked");
+}
 
-  const unlocked =
-    document.getElementById("videoUnlocked");
+document
+.getElementById("videoLocked")
+.classList.add("hidden");
 
-  locked.classList.add("hidden");
+const box=
+document.getElementById("videoUnlocked");
 
-  unlocked.classList.remove("hidden");
+box.classList.remove("hidden");
 
-  unlocked.innerHTML = "";
+videos.forEach(url=>{
 
-  savedVideos.forEach((url,index)=>{
+box.innerHTML+=`
 
-    const box =
-      document.createElement("div");
+<div class="card" style="margin-top:15px">
 
-    box.className =
-      "video-box";
+<video controls playsinline>
 
-    const video =
-      document.createElement("video");
+<source src="${url}">
 
-    video.controls = true;
-    video.playsInline = true;
-    video.preload = "metadata";
+</video>
 
-    const source =
-      document.createElement("source");
+</div>
 
-    source.src = url;
+`;
 
-    source.type = "video/mp4";
+});
 
-    video.appendChild(source);
-
-    box.appendChild(video);
-
-    if(savedVideos.length > 1){
-
-      const caption =
-        document.createElement("div");
-
-      caption.style.textAlign = "center";
-      caption.style.padding = "10px";
-      caption.style.color = "#8e726a";
-
-      caption.textContent =
-        "A little piece of us ♡ " + (index+1);
-
-      box.appendChild(caption);
-    }
-
-    unlocked.appendChild(box);
-
-  });
-
-  unlocked.scrollIntoView({
-    behavior:"smooth",
-    block:"center"
-  });
 }
 
 
-/* =========================
-   MUSIC
-========================= */
+/* MUSIC */
 
-let musicUrl = "";
+let music="";
 
 function setupMusic(url){
 
-  if(!url || !url.trim()) return;
+if(!url)return;
 
-  musicUrl = url.trim();
+music=url;
 
-  const player =
-    document.getElementById("musicPlayer");
+document
+.getElementById("musicSection")
+.classList.remove("hidden");
 
-  const link =
-    document.getElementById("musicLink");
+document
+.getElementById("audio")
+.src=url;
 
-  /*
-    لو اللينك Direct audio مثل mp3
-    هيشتغل جوه الصفحة.
-  */
+document
+.getElementById("musicLink")
+.href=url;
 
-  player.src = musicUrl;
-
-  link.href = musicUrl;
-
-  document
-    .getElementById("musicSection")
-    .classList.remove("hidden");
 }
 
 async function toggleMusic(){
 
-  const player =
-    document.getElementById("musicPlayer");
+if(!music)return;
 
-  const record =
-    document.getElementById("record");
+const audio=
+document.getElementById("audio");
 
-  const link =
-    document.getElementById("musicLink");
+const record=
+document.getElementById("record");
 
-  if(!musicUrl) return;
+try{
 
-  try{
+if(audio.paused){
 
-    if(player.paused){
+await audio.play();
 
-      await player.play();
+record.classList.add("playing");
 
-      record.classList.add("playing");
+}else{
 
-    }else{
+audio.pause();
 
-      player.pause();
+record.classList.remove("playing");
 
-      record.classList.remove("playing");
+}
 
-    }
+}catch(e){
 
-  }catch(error){
+document
+.getElementById("musicLink")
+.classList.remove("hidden");
 
-    /*
-      لو الرابط YouTube / Spotify / رابط مش direct audio
-      نفتح الرابط نفسه.
-    */
+window.open(music,"_blank");
 
-    link.classList.remove("hidden");
+}
 
-    window.open(
-      musicUrl,
-      "_blank",
-      "noopener"
-    );
-
-  }
 }
 
 document
-  .getElementById("musicPlayer")
-  .addEventListener("ended",()=>{
-
-    document
-      .getElementById("record")
-      .classList.remove("playing");
-
-  });
+.getElementById("audio")
+.addEventListener("ended",()=>{
+document
+.getElementById("record")
+.classList.remove("playing");
+});
 
 
-/* =========================
-   SECURITY HELPERS
-========================= */
+/* LOAD SUPABASE */
 
-function escapeHtml(value){
+async function load(){
 
-  return String(value)
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#039;");
+try{
+
+const result=
+await db
+.from("rana_mazen")
+.select("*")
+.limit(1);
+
+if(result.error){
+
+console.error(result.error);
+
+return;
+
 }
 
-function escapeAttr(value){
+if(!result.data || !result.data.length){
 
-  return escapeHtml(value);
+return;
+
 }
 
+const row=result.data[0];
 
-/* =========================
-   SUPABASE
-========================= */
 
-async function loadPage(){
+/* names */
 
-  const loading =
-    document.getElementById("loading");
+if(row.Name){
 
-  try{
-
-    const result =
-      await supabaseClient
-        .from("rana_mazen")
-        .select("*")
-        .limit(1);
-
-    if(result.error){
-      throw result.error;
-    }
-
-    if(
-      !result.data ||
-      result.data.length === 0
-    ){
-
-      loading.textContent =
-        "No saved data yet ♡";
-
-      return;
-    }
-
-    const row =
-      result.data[0];
-
-
-    /* NAME */
-
-    document
-      .getElementById("names")
-      .textContent =
-      row.Name || "Rana & Mazen";
-
-
-    /* DATE */
-
-    document
-      .getElementById("date")
-      .textContent =
-      row.Event_date || "";
-
-
-    /* STORY / MESSAGE */
-
-    const story =
-      document.getElementById("story");
-
-    if(row.Story && row.Story.trim()){
-
-      story.textContent =
-        row.Story;
-
-    }else{
-
-      document
-        .getElementById("messageClosed")
-        .innerHTML = `
-          <div class="lock-icon">
-            ❤️
-          </div>
-          <div class="lock-title">
-            A Message For You
-          </div>
-          <div class="lock-text">
-            رسالتي ليك هتكون هنا ❤️
-          </div>
-        `;
-
-    }
-
-
-    /* PHOTOS */
-
-    let photos =
-      row.Photos;
-
-    if(typeof photos === "string"){
-
-      try{
-        photos = JSON.parse(photos);
-      }catch(e){
-        photos = [];
-      }
-
-    }
-
-    if(Array.isArray(photos) && photos.length){
-
-      renderPhotos(photos);
-
-    }
-
-
-    /* VIDEOS */
-
-    let videos =
-      row.Videos;
-
-    if(typeof videos === "string"){
-
-      try{
-        videos = JSON.parse(videos);
-      }catch(e){
-        videos = [];
-      }
-
-    }
-
-    if(Array.isArray(videos)){
-
-      savedVideos =
-        videos.filter(Boolean);
-
-      if(savedVideos.length){
-
-        document
-          .getElementById("videoSection")
-          .classList.remove("hidden");
-
-      }
-
-    }
-
-
-    /* MEMORIES */
-
-    let memories =
-      row.Memories;
-
-    if(typeof memories === "string"){
-
-      try{
-        memories = JSON.parse(memories);
-      }catch(e){
-        memories = [];
-      }
-
-    }
-
-    if(Array.isArray(memories) && memories.length){
-
-      renderMemories(memories);
-
-    }
-
-
-    /* MUSIC */
-
-    if(
-      row.Music &&
-      row.Music.trim()
-    ){
-
-      setupMusic(row.Music);
-
-    }
-
-
-    loading.style.display =
-      "none";
-
-
-  }catch(error){
-
-    console.error(error);
-
-    loading.textContent =
-      "Something went wrong. Please try again later ♡";
-
-  }
+document
+.getElementById("names")
+.textContent=row.Name;
 
 }
 
 
-/* start */
+/* date */
 
-createFlowers();
+if(row.Event_date){
 
-loadPage();
+document
+.getElementById("date")
+.textContent=row.Event_date;
+
+}
+
+
+/* story */
+
+if(row.Story){
+
+document
+.getElementById("story")
+.textContent=row.Story;
+
+}
+
+
+/* photos */
+
+photos=row.Photos || [];
+
+if(typeof photos==="string"){
+
+try{
+photos=JSON.parse(photos);
+}catch(e){
+photos=[];
+}
+
+}
+
+if(Array.isArray(photos)&&photos.length){
+
+showPhotos();
+
+}
+
+
+/* memories */
+
+memories=row.Memories || [];
+
+if(typeof memories==="string"){
+
+try{
+memories=JSON.parse(memories);
+}catch(e){
+memories=[];
+}
+
+}
+
+if(Array.isArray(memories)&&memories.length){
+
+showMemories();
+
+}
+
+
+/* videos */
+
+videos=row.Videos || [];
+
+if(typeof videos==="string"){
+
+try{
+videos=JSON.parse(videos);
+}catch(e){
+videos=[];
+}
+
+}
+
+if(Array.isArray(videos)&&videos.length){
+
+document
+.getElementById("videoSection")
+.classList.remove("hidden");
+
+}
+
+
+/* music */
+
+if(row.Music){
+
+setupMusic(row.Music);
+
+}
+
+}catch(error){
+
+console.error(error);
+
+}
+
+}
+
+load();
 
 </script>
 
