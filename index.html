@@ -1,748 +1,608 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Rana & Mazen — Admin</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rana & Mazen — Admin</title>
 
-  <style>
-    * { box-sizing: border-box; }
+<style>
+*{box-sizing:border-box}
 
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #faf7f8;
-      color: #333;
-    }
+body{
+margin:0;
+font-family:Arial,sans-serif;
+background:#faf7f8;
+color:#333;
+}
 
-    .container {
-      width: min(900px, 92%);
-      margin: 40px auto;
-    }
+.container{
+width:min(900px,92%);
+margin:40px auto;
+}
 
-    .card {
-      background: white;
-      border-radius: 20px;
-      padding: 25px;
-      box-shadow: 0 5px 25px rgba(0,0,0,.08);
-    }
+.card{
+background:#fff;
+border-radius:20px;
+padding:25px;
+box-shadow:0 5px 25px rgba(0,0,0,.08);
+}
 
-    h1 {
-      text-align: center;
-    }
+h1{text-align:center}
 
-    h2 {
-      margin-top: 30px;
-    }
+label{
+display:block;
+margin:15px 0 7px;
+font-weight:bold;
+}
 
-    label {
-      display: block;
-      margin: 15px 0 7px;
-      font-weight: bold;
-    }
+input,textarea{
+width:100%;
+padding:12px;
+border:1px solid #ddd;
+border-radius:10px;
+font-size:15px;
+font-family:inherit;
+}
 
-    input,
-    textarea {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid #ddd;
-      border-radius: 10px;
-      font-size: 15px;
-      font-family: inherit;
-    }
+textarea{
+min-height:110px;
+resize:vertical;
+}
 
-    textarea {
-      min-height: 110px;
-      resize: vertical;
-    }
+button{
+border:0;
+border-radius:10px;
+padding:12px 18px;
+cursor:pointer;
+font-size:15px;
+margin-top:12px;
+}
 
-    button {
-      border: 0;
-      border-radius: 10px;
-      padding: 12px 18px;
-      cursor: pointer;
-      font-size: 15px;
-      margin-top: 12px;
-    }
+.primary{
+background:#222;
+color:white;
+width:100%;
+}
 
-    .primary {
-      background: #222;
-      color: white;
-      width: 100%;
-    }
+.secondary{background:#eee}
+.danger{background:#f3d4d4}
 
-    .secondary {
-      background: #eee;
-    }
+.item{
+border:1px solid #eee;
+padding:15px;
+border-radius:12px;
+margin-top:12px;
+}
 
-    .danger {
-      background: #f3d4d4;
-    }
+.hidden{display:none}
 
-    .item {
-      border: 1px solid #eee;
-      padding: 15px;
-      border-radius: 12px;
-      margin-top: 12px;
-    }
+#loginMessage,#message{
+margin-top:15px;
+text-align:center;
+font-weight:bold;
+}
 
-    .hidden {
-      display: none;
-    }
+.logout{
+float:right;
+background:#eee;
+}
 
-    #loginMessage,
-    #message {
-      margin-top: 15px;
-      text-align: center;
-      font-weight: bold;
-    }
+.clear{clear:both}
 
-    .logout {
-      float: right;
-      background: #eee;
-    }
-
-    .clear {
-      clear: both;
-    }
-  </style>
+h2{
+margin-top:30px;
+}
+</style>
 </head>
 
 <body>
 
 <div class="container">
 
-  <!-- LOGIN -->
-  <div id="loginCard" class="card">
+<!-- LOGIN -->
 
-    <h1>Rana & Mazen ♡</h1>
+<div id="loginCard" class="card">
 
-    <label>Email</label>
-    <input id="email" type="email">
+<h1>Rana & Mazen ♡</h1>
 
-    <label>Password</label>
-    <input id="password" type="password">
+<label>Email</label>
+<input id="email" type="email">
 
-    <button class="primary" onclick="login()">
-      Login
-    </button>
+<label>Password</label>
+<input id="password" type="password">
 
-    <div id="loginMessage"></div>
+<button class="primary" onclick="login()">
+Login
+</button>
 
-  </div>
-
-
-  <!-- ADMIN -->
-  <div id="adminPanel" class="hidden">
-
-    <button class="logout" onclick="logout()">
-      Logout
-    </button>
-
-    <div class="clear"></div>
-
-    <div class="card">
-
-      <h1>Rana & Mazen ♡</h1>
-
-
-      <!-- BASIC INFO -->
-
-      <label>Names</label>
-      <input id="name">
-
-      <label>Date</label>
-      <input id="eventDate">
-
-      <label>Story</label>
-      <textarea id="story"></textarea>
-
-      <label>Song URL</label>
-      <input id="music">
-
-
-      <!-- PHOTOS -->
-
-      <h2>Photos</h2>
-
-      <textarea
-        id="photos"
-        placeholder="Put one photo URL per line..."
-      ></textarea>
-
-
-      <!-- VIDEOS -->
-
-      <h2>Videos 🎥</h2>
-
-      <div id="videos"></div>
-
-      <button
-        type="button"
-        class="secondary"
-        onclick="addVideo()">
-        + Add video
-      </button>
-
-
-      <!-- MEMORIES -->
-
-      <h2>Memories</h2>
-
-      <div id="memories"></div>
-
-      <button
-        type="button"
-        class="secondary"
-        onclick="addMemory()">
-        + Add memory
-      </button>
-
-
-      <!-- SAVE -->
-
-      <button
-        type="button"
-        class="primary"
-        onclick="saveData()">
-        Save Changes ♡
-      </button>
-
-      <div id="message"></div>
-
-    </div>
-  </div>
+<div id="loginMessage"></div>
 
 </div>
 
 
+<!-- ADMIN -->
+
+<div id="adminPanel" class="hidden">
+
+<button class="logout" onclick="logout()">
+Logout
+</button>
+
+<div class="clear"></div>
+
+<div class="card">
+
+<h1>Rana & Mazen ♡</h1>
+
+
+<label>Names</label>
+<input id="name">
+
+
+<label>Date</label>
+<input id="eventDate">
+
+
+<label>Story</label>
+<textarea id="story"></textarea>
+
+
+<label>Song URL</label>
+<input id="music">
+
+
+<h2>Photos</h2>
+
+<label>Photo URLs — one per line</label>
+<textarea id="photos"></textarea>
+
+
+<h2>Videos 🔐</h2>
+
+<div id="videos"></div>
+
+<button class="secondary" onclick="addVideo()">
++ Add video
+</button>
+
+
+<h2>Memories ♡</h2>
+
+<div id="memories"></div>
+
+<button class="secondary" onclick="addMemory()">
++ Add memory
+</button>
+
+
+<button class="primary" onclick="saveData()">
+Save Changes ♡
+</button>
+
+<div id="message"></div>
+
+</div>
+</div>
+
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script>
 
 const SUPABASE_URL =
-  "https://jqpceabdshvboderrbiz.supabase.co";
+"https://jqpceabdshvboderrbiz.supabase.co";
 
 const SUPABASE_KEY =
-  "sb_publishable_lgtWi40tBxTt1zPogOQ4oA_Zf8SKU2P";
+"sb_publishable_lgtWi40tBxTt1zPogOQ4oA_Zf8SKU2P";
+
+const db =
+window.supabase.createClient(
+SUPABASE_URL,
+SUPABASE_KEY
+);
 
 
-/* =========================
-   LOGIN
-========================= */
+/* LOGIN */
 
-async function login() {
+async function login(){
 
-  const email =
-    document.getElementById("email").value.trim();
+const email =
+document.getElementById("email").value.trim();
 
-  const password =
-    document.getElementById("password").value;
+const password =
+document.getElementById("password").value;
 
-  const msg =
-    document.getElementById("loginMessage");
+const msg =
+document.getElementById("loginMessage");
 
-  if (!email || !password) {
-    msg.textContent =
-      "Enter your email and password.";
-    return;
-  }
+if(!email || !password){
 
-  msg.textContent = "Logging in...";
+msg.textContent =
+"Enter your email and password.";
 
-  try {
-
-    const response = await fetch(
-      SUPABASE_URL +
-      "/auth/v1/token?grant_type=password",
-      {
-        method: "POST",
-
-        headers: {
-          "Content-Type": "application/json",
-          "apikey": SUPABASE_KEY
-        },
-
-        body: JSON.stringify({
-          email: email,
-          password: password
-        })
-      }
-    );
-
-    const result =
-      await response.json();
-
-    if (!response.ok) {
-
-      msg.textContent =
-        result.msg ||
-        result.error_description ||
-        "Invalid login credentials.";
-
-      return;
-    }
-
-    sessionStorage.setItem(
-      "rana_admin_logged_in",
-      "true"
-    );
-
-    showAdmin();
-
-    await loadData();
-
-  } catch (error) {
-
-    msg.textContent =
-      "Connection error. Please try again.";
-
-  }
+return;
 }
 
+msg.textContent="Logging in...";
 
-/* =========================
-   LOGOUT
-========================= */
+const {data,error} =
+await db.auth.signInWithPassword({
+email:email,
+password:password
+});
 
-function logout() {
+if(error){
 
-  sessionStorage.removeItem(
-    "rana_admin_logged_in"
-  );
+msg.textContent =
+error.message;
 
-  document
-    .getElementById("adminPanel")
-    .classList.add("hidden");
+return;
+}
 
-  document
-    .getElementById("loginCard")
-    .classList.remove("hidden");
+if(data.session){
+
+showAdmin();
+
+await loadData();
+
+}
 
 }
 
 
-/* =========================
-   SHOW ADMIN
-========================= */
+/* LOGOUT */
 
-function showAdmin() {
+async function logout(){
 
-  document
-    .getElementById("loginCard")
-    .classList.add("hidden");
+await db.auth.signOut();
 
-  document
-    .getElementById("adminPanel")
-    .classList.remove("hidden");
+document
+.getElementById("adminPanel")
+.classList.add("hidden");
+
+document
+.getElementById("loginCard")
+.classList.remove("hidden");
+
+document.getElementById("email").value="";
+document.getElementById("password").value="";
 
 }
 
 
-/* =========================
-   LOAD DATA
-========================= */
+/* SHOW ADMIN */
 
-async function loadData() {
+function showAdmin(){
 
-  const msg =
-    document.getElementById("message");
+document
+.getElementById("loginCard")
+.classList.add("hidden");
 
-  msg.textContent = "Loading...";
-
-  try {
-
-    const response = await fetch(
-      SUPABASE_URL +
-      "/rest/v1/rana_mazen?select=*",
-      {
-        method: "GET",
-
-        headers: {
-          "apikey": SUPABASE_KEY,
-          "Accept": "application/json"
-        }
-      }
-    );
-
-    const data =
-      await response.json();
-
-    if (!response.ok) {
-
-      msg.textContent =
-        "Error loading data.";
-
-      return;
-    }
-
-    if (!data || data.length === 0) {
-
-      msg.textContent =
-        "No data found.";
-
-      return;
-    }
-
-    const item = data[0];
-
-
-    /* BASIC */
-
-    document.getElementById("name").value =
-      item.Name || "";
-
-    document.getElementById("eventDate").value =
-      item.Event_date || "";
-
-    document.getElementById("story").value =
-      item.Story || "";
-
-    document.getElementById("music").value =
-      item.Music || "";
-
-
-    /* PHOTOS */
-
-    let photos =
-      item.Photos || [];
-
-    if (!Array.isArray(photos)) {
-      photos = [];
-    }
-
-    document.getElementById("photos").value =
-      photos.join("\n");
-
-
-    /* VIDEOS */
-
-    let videos =
-      item.Videos || [];
-
-    if (!Array.isArray(videos)) {
-      videos = [];
-    }
-
-    const videosContainer =
-      document.getElementById("videos");
-
-    videosContainer.innerHTML = "";
-
-    videos.forEach(function(video) {
-
-      addVideo(video);
-
-    });
-
-
-    /* MEMORIES */
-
-    let memories =
-      item.Memories || [];
-
-    if (!Array.isArray(memories)) {
-      memories = [];
-    }
-
-    const memoriesContainer =
-      document.getElementById("memories");
-
-    memoriesContainer.innerHTML = "";
-
-    memories.forEach(function(memory) {
-
-      addMemory(memory);
-
-    });
-
-
-    msg.textContent = "";
-
-  } catch (error) {
-
-    msg.textContent =
-      "Connection error while loading.";
-
-  }
-}
-
-
-/* =========================
-   ADD VIDEO
-========================= */
-
-function addVideo(video = "") {
-
-  const container =
-    document.getElementById("videos");
-
-  const div =
-    document.createElement("div");
-
-  div.className = "item";
-
-  div.innerHTML = `
-
-    <input
-      class="videoUrl"
-      type="url"
-      placeholder="Paste video URL here..."
-    >
-
-    <button
-      type="button"
-      class="danger"
-      onclick="this.parentElement.remove()">
-      Remove
-    </button>
-
-  `;
-
-  container.appendChild(div);
-
-  div.querySelector(".videoUrl").value =
-    video;
+document
+.getElementById("adminPanel")
+.classList.remove("hidden");
 
 }
 
 
-/* =========================
-   ADD MEMORY
-========================= */
+/* LOAD DATA */
 
-function addMemory(memory = "") {
+async function loadData(){
 
-  const container =
-    document.getElementById("memories");
+const msg =
+document.getElementById("message");
 
-  const div =
-    document.createElement("div");
+msg.textContent="Loading...";
 
-  div.className = "item";
+const {data,error} =
+await db
+.from("rana_mazen")
+.select("*")
+.limit(1);
 
-  div.innerHTML = `
+if(error){
 
-    <textarea
-      class="memoryText"
-      placeholder="Write your memory here..."
-    ></textarea>
+msg.textContent =
+"Error loading data: "+error.message;
 
-    <button
-      type="button"
-      class="danger"
-      onclick="this.parentElement.remove()">
-      Remove
-    </button>
+return;
+}
 
-  `;
+if(!data || !data.length){
 
-  container.appendChild(div);
+msg.textContent="No data found.";
 
-  const textarea =
-    div.querySelector(".memoryText");
+return;
+}
 
-  if (typeof memory === "string") {
+const item=data[0];
 
-    textarea.value = memory;
 
-  } else if (
-    memory &&
-    typeof memory === "object" &&
-    memory.text
-  ) {
+/* BASIC DATA */
 
-    textarea.value =
-      memory.text;
+document.getElementById("name").value =
+item.Name || "";
 
-  }
+document.getElementById("eventDate").value =
+item.Event_date || "";
+
+document.getElementById("story").value =
+item.Story || "";
+
+document.getElementById("music").value =
+item.Music || "";
+
+
+/* PHOTOS */
+
+let photos=item.Photos || [];
+
+if(!Array.isArray(photos))
+photos=[];
+
+document.getElementById("photos").value =
+photos.join("\n");
+
+
+/* MEMORIES */
+
+const memoriesBox =
+document.getElementById("memories");
+
+memoriesBox.innerHTML="";
+
+let memories=item.Memories || [];
+
+if(!Array.isArray(memories))
+memories=[];
+
+memories.forEach(memory=>{
+addMemory(memory);
+});
+
+
+/* VIDEOS */
+
+const videosBox =
+document.getElementById("videos");
+
+videosBox.innerHTML="";
+
+let videos=item.Videos || [];
+
+if(!Array.isArray(videos))
+videos=[];
+
+videos.forEach(video=>{
+addVideo(video);
+});
+
+
+msg.textContent="";
 
 }
 
 
-/* =========================
-   SAVE
-========================= */
+/* ADD MEMORY */
 
-async function saveData() {
+function addMemory(memory=""){
 
-  const msg =
-    document.getElementById("message");
+const container =
+document.getElementById("memories");
 
-  msg.textContent =
-    "Saving...";
+const div =
+document.createElement("div");
 
+div.className="item";
 
-  const name =
-    document.getElementById("name")
-      .value.trim();
+div.innerHTML=`
 
-  const eventDate =
-    document.getElementById("eventDate")
-      .value.trim();
+<textarea
+class="memoryText"
+placeholder="Write your memory here..."
+></textarea>
 
-  const story =
-    document.getElementById("story")
-      .value;
+<button
+class="danger"
+onclick="this.parentElement.remove()">
+Remove
+</button>
 
-  const music =
-    document.getElementById("music")
-      .value.trim();
+`;
 
+container.appendChild(div);
 
-  /* PHOTOS */
+if(typeof memory==="string"){
 
-  const photos =
-    document.getElementById("photos")
-      .value
-      .split("\n")
-      .map(function(x) {
-        return x.trim();
-      })
-      .filter(Boolean);
+div.querySelector(".memoryText").value=
+memory;
 
+}else if(memory && memory.text){
 
-  /* VIDEOS */
+div.querySelector(".memoryText").value=
+memory.text;
 
-  const videos =
-    Array.from(
-      document.querySelectorAll(".videoUrl")
-    )
-    .map(function(x) {
-      return x.value.trim();
-    })
-    .filter(Boolean);
+}
 
-
-  /* MEMORIES */
-
-  const memories =
-    Array.from(
-      document.querySelectorAll(".memoryText")
-    )
-    .map(function(x) {
-      return x.value.trim();
-    })
-    .filter(Boolean);
-
-
-  try {
-
-    /* GET ID */
-
-    const findResponse =
-      await fetch(
-        SUPABASE_URL +
-        "/rest/v1/rana_mazen?select=Id&limit=1",
-        {
-          headers: {
-            "apikey": SUPABASE_KEY,
-            "Accept": "application/json"
-          }
-        }
-      );
-
-
-    const existing =
-      await findResponse.json();
-
-
-    if (
-      !findResponse.ok ||
-      !existing ||
-      existing.length === 0
-    ) {
-
-      msg.textContent =
-        "Could not find the existing data.";
-
-      return;
-    }
-
-
-    const id =
-      existing[0].Id;
-
-
-    /* UPDATE */
-
-    const updateResponse =
-      await fetch(
-        SUPABASE_URL +
-        "/rest/v1/rana_mazen?Id=eq." +
-        encodeURIComponent(id),
-        {
-          method: "PATCH",
-
-          headers: {
-            "apikey": SUPABASE_KEY,
-            "Content-Type": "application/json",
-            "Prefer": "return=minimal"
-          },
-
-          body: JSON.stringify({
-
-            Name: name,
-
-            Event_date: eventDate,
-
-            Story: story,
-
-            Music: music,
-
-            Photos: photos,
-
-            Videos: videos,
-
-            Memories: memories
-
-          })
-        }
-      );
-
-
-    if (!updateResponse.ok) {
-
-      const error =
-        await updateResponse.json();
-
-      msg.textContent =
-        "Save failed: " +
-        (
-          error.message ||
-          "Unknown error"
-        );
-
-      return;
-    }
-
-
-    msg.textContent =
-      "Saved online successfully ♡";
-
-
-  } catch (error) {
-
-    msg.textContent =
-      "Connection error while saving.";
-
-  }
 }
 
 
-/* =========================
-   AUTO LOGIN
-========================= */
+/* ADD VIDEO */
 
-if (
-  sessionStorage.getItem(
-    "rana_admin_logged_in"
-  ) === "true"
-) {
+function addVideo(video=""){
 
-  showAdmin();
+const container =
+document.getElementById("videos");
 
-  loadData();
+const div =
+document.createElement("div");
+
+div.className="item";
+
+div.innerHTML=`
+
+<label>Video URL</label>
+
+<input
+class="videoUrl"
+type="url"
+placeholder="Paste video URL here..."
+>
+
+<button
+class="danger"
+onclick="this.parentElement.remove()">
+Remove
+</button>
+
+`;
+
+container.appendChild(div);
+
+div.querySelector(".videoUrl").value=
+video || "";
 
 }
+
+
+/* SAVE */
+
+async function saveData(){
+
+const msg =
+document.getElementById("message");
+
+msg.textContent="Saving...";
+
+
+const name =
+document.getElementById("name").value.trim();
+
+const eventDate =
+document.getElementById("eventDate").value.trim();
+
+const story =
+document.getElementById("story").value;
+
+const music =
+document.getElementById("music").value.trim();
+
+
+/* PHOTOS */
+
+const photos =
+document
+.getElementById("photos")
+.value
+.split("\n")
+.map(x=>x.trim())
+.filter(Boolean);
+
+
+/* MEMORIES */
+
+const memories =
+Array.from(
+document.querySelectorAll(".memoryText")
+)
+.map(x=>x.value.trim())
+.filter(Boolean);
+
+
+/* VIDEOS */
+
+const videos =
+Array.from(
+document.querySelectorAll(".videoUrl")
+)
+.map(x=>x.value.trim())
+.filter(Boolean);
+
+
+/* FIND ROW */
+
+const {data:existing,error:findError} =
+await db
+.from("rana_mazen")
+.select("Id")
+.limit(1);
+
+if(findError){
+
+msg.textContent=
+"Could not find data: "+
+findError.message;
+
+return;
+}
+
+if(!existing || !existing.length){
+
+msg.textContent=
+"No existing row found.";
+
+return;
+}
+
+
+const id=existing[0].Id;
+
+
+/* UPDATE */
+
+const {error:updateError} =
+await db
+.from("rana_mazen")
+.update({
+
+Name:name,
+Event_date:eventDate,
+Story:story,
+Music:music,
+Photos:photos,
+Memories:memories,
+Videos:videos
+
+})
+.eq("Id",id);
+
+
+if(updateError){
+
+msg.textContent=
+"Save failed: "+
+updateError.message;
+
+return;
+}
+
+
+msg.textContent=
+"Saved online successfully ♡";
+
+}
+
+
+/* CHECK CURRENT SESSION */
+
+async function checkSession(){
+
+const {data} =
+await db.auth.getSession();
+
+if(data.session){
+
+showAdmin();
+
+await loadData();
+
+}
+
+}
+
+checkSession();
 
 </script>
 
