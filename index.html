@@ -67,7 +67,8 @@
     .secondary { background: #eee; }
     .danger { background: #f3d4d4; }
 
-    .memory {
+    .memory,
+    .videoBox {
       border: 1px solid #eee;
       padding: 15px;
       border-radius: 12px;
@@ -88,6 +89,10 @@
     }
 
     .clear { clear: both; }
+
+    .videoBox input {
+      margin-top: 0;
+    }
   </style>
 </head>
 
@@ -133,9 +138,26 @@
       <label>Song URL</label>
       <input id="music">
 
-      <label>Photo URLs</label>
-      <textarea id="photos"></textarea>
 
+      <!-- PHOTOS -->
+      <label>Photo URLs</label>
+      <textarea
+        id="photos"
+        placeholder="Put one photo link per line"
+      ></textarea>
+
+
+      <!-- VIDEOS -->
+      <h2>Videos</h2>
+
+      <div id="videos"></div>
+
+      <button class="secondary" onclick="addVideo()">
+        + Add video
+      </button>
+
+
+      <!-- MEMORIES -->
       <h2>Memories</h2>
 
       <div id="memories"></div>
@@ -144,6 +166,8 @@
         + Add memory
       </button>
 
+
+      <!-- SAVE -->
       <button class="primary" onclick="saveData()">
         Save Changes ♡
       </button>
@@ -193,7 +217,8 @@
     try {
 
       const response = await fetch(
-        SUPABASE_URL + "/auth/v1/token?grant_type=password",
+        SUPABASE_URL +
+        "/auth/v1/token?grant_type=password",
         {
           method: "POST",
 
@@ -219,14 +244,12 @@
         return;
       }
 
-      /* Save login only in this browser */
       sessionStorage.setItem(
         "rana_admin_logged_in",
         "true"
       );
 
       showAdmin();
-
       await loadData();
 
     } catch (error) {
@@ -321,6 +344,9 @@
 
       const item = data[0];
 
+
+      /* BASIC DATA */
+
       document.getElementById("name").value =
         item.Name || "";
 
@@ -346,12 +372,30 @@
         photos.join("\n");
 
 
+      /* VIDEOS */
+
+      const videoContainer =
+        document.getElementById("videos");
+
+      videoContainer.innerHTML = "";
+
+      let videos = item.Videos || [];
+
+      if (!Array.isArray(videos)) {
+        videos = [];
+      }
+
+      videos.forEach(function(video) {
+        addVideo(video);
+      });
+
+
       /* MEMORIES */
 
-      const container =
+      const memoryContainer =
         document.getElementById("memories");
 
-      container.innerHTML = "";
+      memoryContainer.innerHTML = "";
 
       let memories = item.Memories || [];
 
@@ -363,6 +407,7 @@
         addMemory(memory);
       });
 
+
       msg.textContent = "";
 
     } catch (error) {
@@ -370,6 +415,43 @@
       msg.textContent =
         "Connection error while loading data.";
     }
+  }
+
+
+  /* =========================
+     ADD VIDEO
+     ========================= */
+
+  function addVideo(video = "") {
+
+    const container =
+      document.getElementById("videos");
+
+    const div =
+      document.createElement("div");
+
+    div.className = "videoBox";
+
+    div.innerHTML = `
+      <input
+        type="text"
+        class="videoUrl"
+        placeholder="Paste video link here..."
+      >
+
+      <button
+        class="danger"
+        onclick="this.parentElement.remove()">
+        Remove
+      </button>
+    `;
+
+    container.appendChild(div);
+
+    div.querySelector(".videoUrl").value =
+      typeof video === "string"
+        ? video
+        : "";
   }
 
 
@@ -405,9 +487,11 @@
     div.querySelector(".memoryText").value =
       typeof memory === "string"
         ? memory
-        : (memory && memory.text
-            ? memory.text
-            : "");
+        : (
+            memory && memory.text
+              ? memory.text
+              : ""
+          );
   }
 
 
@@ -436,8 +520,11 @@
       document.getElementById("music").value.trim();
 
 
+    /* PHOTOS */
+
     const photos =
-      document.getElementById("photos")
+      document
+        .getElementById("photos")
         .value
         .split("\n")
         .map(function(x) {
@@ -445,6 +532,20 @@
         })
         .filter(Boolean);
 
+
+    /* VIDEOS */
+
+    const videos =
+      Array.from(
+        document.querySelectorAll(".videoUrl")
+      )
+      .map(function(x) {
+        return x.value.trim();
+      })
+      .filter(Boolean);
+
+
+    /* MEMORIES */
 
     const memories =
       Array.from(
@@ -492,7 +593,7 @@
         existing[0].Id;
 
 
-      /* Update */
+      /* UPDATE */
 
       const updateResponse =
         await fetch(
@@ -509,12 +610,21 @@
             },
 
             body: JSON.stringify({
+
               Name: name,
+
               Event_date: eventDate,
+
               Story: story,
+
               Music: music,
+
               Photos: photos,
+
+              Videos: videos,
+
               Memories: memories
+
             })
           }
         );
@@ -535,6 +645,7 @@
 
       msg.textContent =
         "Saved online successfully ♡";
+
 
     } catch (error) {
 
