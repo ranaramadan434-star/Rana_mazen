@@ -7,34 +7,28 @@
 
 <style>
 *{box-sizing:border-box}
-
 body{
 margin:0;
 font-family:Arial,sans-serif;
 background:#faf7f8;
 color:#333;
 }
-
 .container{
 width:min(900px,92%);
 margin:40px auto;
 }
-
 .card{
 background:#fff;
 border-radius:20px;
 padding:25px;
 box-shadow:0 5px 25px rgba(0,0,0,.08);
 }
-
 h1{text-align:center}
-
 label{
 display:block;
 margin:15px 0 7px;
 font-weight:bold;
 }
-
 input,textarea{
 width:100%;
 padding:12px;
@@ -43,12 +37,10 @@ border-radius:10px;
 font-size:15px;
 font-family:inherit;
 }
-
 textarea{
 min-height:110px;
 resize:vertical;
 }
-
 button{
 border:0;
 border-radius:10px;
@@ -57,49 +49,37 @@ cursor:pointer;
 font-size:15px;
 margin-top:12px;
 }
-
 .primary{
 background:#222;
 color:white;
 width:100%;
 }
-
 .secondary{background:#eee}
 .danger{background:#f3d4d4}
-
 .item{
 border:1px solid #eee;
 padding:15px;
 border-radius:12px;
 margin-top:12px;
 }
-
 .hidden{display:none}
-
 #loginMessage,#message{
 margin-top:15px;
 text-align:center;
 font-weight:bold;
 }
-
 .logout{
 float:right;
 background:#eee;
 }
-
 .clear{clear:both}
-
-h2{
-margin-top:30px;
-}
+h2{margin-top:30px}
 </style>
 </head>
 
 <body>
 
 <div class="container">
-
-<!-- LOGIN -->
 
 <div id="loginCard" class="card">
 
@@ -111,22 +91,16 @@ margin-top:30px;
 <label>Password</label>
 <input id="password" type="password">
 
-<button class="primary" onclick="login()">
-Login
-</button>
+<button class="primary" onclick="login()">Login</button>
 
 <div id="loginMessage"></div>
 
 </div>
 
 
-<!-- ADMIN -->
-
 <div id="adminPanel" class="hidden">
 
-<button class="logout" onclick="logout()">
-Logout
-</button>
+<button class="logout" onclick="logout()">Logout</button>
 
 <div class="clear"></div>
 
@@ -134,50 +108,36 @@ Logout
 
 <h1>Rana & Mazen ♡</h1>
 
-
 <label>Names</label>
 <input id="name">
-
 
 <label>Date</label>
 <input id="eventDate">
 
-
 <label>Story</label>
 <textarea id="story"></textarea>
 
-
 <label>Song URL</label>
 <input id="music">
-
 
 <h2>Photos</h2>
 
 <label>Photo URLs — one per line</label>
 <textarea id="photos"></textarea>
 
-
 <h2>Videos 🔐</h2>
 
 <div id="videos"></div>
 
-<button class="secondary" onclick="addVideo()">
-+ Add video
-</button>
-
+<button class="secondary" onclick="addVideo()">+ Add video</button>
 
 <h2>Memories ♡</h2>
 
 <div id="memories"></div>
 
-<button class="secondary" onclick="addMemory()">
-+ Add memory
-</button>
+<button class="secondary" onclick="addMemory()">+ Add memory</button>
 
-
-<button class="primary" onclick="saveData()">
-Save Changes ♡
-</button>
+<button class="primary" onclick="saveData()">Save Changes ♡</button>
 
 <div id="message"></div>
 
@@ -185,7 +145,6 @@ Save Changes ♡
 </div>
 
 </div>
-
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -204,8 +163,6 @@ SUPABASE_KEY
 );
 
 
-/* LOGIN */
-
 async function login(){
 
 const email =
@@ -218,10 +175,7 @@ const msg =
 document.getElementById("loginMessage");
 
 if(!email || !password){
-
-msg.textContent =
-"Enter your email and password.";
-
+msg.textContent="Enter your email and password.";
 return;
 }
 
@@ -229,30 +183,22 @@ msg.textContent="Logging in...";
 
 const {data,error} =
 await db.auth.signInWithPassword({
-email:email,
-password:password
+email,
+password
 });
 
 if(error){
-
-msg.textContent =
-error.message;
-
+msg.textContent=error.message;
 return;
 }
 
 if(data.session){
-
 showAdmin();
-
 await loadData();
-
 }
 
 }
 
-
-/* LOGOUT */
 
 async function logout(){
 
@@ -266,13 +212,8 @@ document
 .getElementById("loginCard")
 .classList.remove("hidden");
 
-document.getElementById("email").value="";
-document.getElementById("password").value="";
-
 }
 
-
-/* SHOW ADMIN */
 
 function showAdmin(){
 
@@ -287,14 +228,10 @@ document
 }
 
 
-/* LOAD DATA */
-
 async function loadData(){
 
 const msg =
 document.getElementById("message");
-
-msg.textContent="Loading...";
 
 const {data,error} =
 await db
@@ -303,24 +240,16 @@ await db
 .limit(1);
 
 if(error){
-
-msg.textContent =
-"Error loading data: "+error.message;
-
+msg.textContent="Error: "+error.message;
 return;
 }
 
 if(!data || !data.length){
-
 msg.textContent="No data found.";
-
 return;
 }
 
 const item=data[0];
-
-
-/* BASIC DATA */
 
 document.getElementById("name").value =
 item.Name || "";
@@ -335,18 +264,13 @@ document.getElementById("music").value =
 item.Music || "";
 
 
-/* PHOTOS */
-
 let photos=item.Photos || [];
 
-if(!Array.isArray(photos))
-photos=[];
+if(!Array.isArray(photos)) photos=[];
 
 document.getElementById("photos").value =
 photos.join("\n");
 
-
-/* MEMORIES */
 
 const memoriesBox =
 document.getElementById("memories");
@@ -355,15 +279,12 @@ memoriesBox.innerHTML="";
 
 let memories=item.Memories || [];
 
-if(!Array.isArray(memories))
-memories=[];
+if(!Array.isArray(memories)) memories=[];
 
 memories.forEach(memory=>{
 addMemory(memory);
 });
 
-
-/* VIDEOS */
 
 const videosBox =
 document.getElementById("videos");
@@ -372,20 +293,16 @@ videosBox.innerHTML="";
 
 let videos=item.Videos || [];
 
-if(!Array.isArray(videos))
-videos=[];
+if(!Array.isArray(videos)) videos=[];
 
 videos.forEach(video=>{
 addVideo(video);
 });
 
-
 msg.textContent="";
 
 }
 
-
-/* ADD MEMORY */
 
 function addMemory(memory=""){
 
@@ -415,21 +332,14 @@ Remove
 container.appendChild(div);
 
 if(typeof memory==="string"){
-
-div.querySelector(".memoryText").value=
-memory;
-
-}else if(memory && memory.text){
-
-div.querySelector(".memoryText").value=
-memory.text;
-
+div.querySelector(".memoryText").value=memory;
+}
+else if(memory && memory.text){
+div.querySelector(".memoryText").value=memory.text;
 }
 
 }
 
-
-/* ADD VIDEO */
 
 function addVideo(video=""){
 
@@ -461,13 +371,10 @@ Remove
 
 container.appendChild(div);
 
-div.querySelector(".videoUrl").value=
-video || "";
+div.querySelector(".videoUrl").value=video || "";
 
 }
 
-
-/* SAVE */
 
 async function saveData(){
 
@@ -490,8 +397,6 @@ const music =
 document.getElementById("music").value.trim();
 
 
-/* PHOTOS */
-
 const photos =
 document
 .getElementById("photos")
@@ -501,8 +406,6 @@ document
 .filter(Boolean);
 
 
-/* MEMORIES */
-
 const memories =
 Array.from(
 document.querySelectorAll(".memoryText")
@@ -510,8 +413,6 @@ document.querySelectorAll(".memoryText")
 .map(x=>x.value.trim())
 .filter(Boolean);
 
-
-/* VIDEOS */
 
 const videos =
 Array.from(
@@ -521,8 +422,6 @@ document.querySelectorAll(".videoUrl")
 .filter(Boolean);
 
 
-/* FIND ROW */
-
 const {data:existing,error:findError} =
 await db
 .from("rana_mazen")
@@ -530,33 +429,23 @@ await db
 .limit(1);
 
 if(findError){
-
 msg.textContent=
-"Could not find data: "+
-findError.message;
-
+"Could not find data: "+findError.message;
 return;
 }
 
 if(!existing || !existing.length){
-
-msg.textContent=
-"No existing row found.";
-
+msg.textContent="No existing row found.";
 return;
 }
 
-
 const id=existing[0].Id;
 
-
-/* UPDATE */
 
 const {error:updateError} =
 await db
 .from("rana_mazen")
 .update({
-
 Name:name,
 Event_date:eventDate,
 Story:story,
@@ -564,20 +453,15 @@ Music:music,
 Photos:photos,
 Memories:memories,
 Videos:videos
-
 })
 .eq("Id",id);
 
 
 if(updateError){
-
 msg.textContent=
-"Save failed: "+
-updateError.message;
-
+"Save failed: "+updateError.message;
 return;
 }
-
 
 msg.textContent=
 "Saved online successfully ♡";
@@ -585,19 +469,14 @@ msg.textContent=
 }
 
 
-/* CHECK CURRENT SESSION */
-
 async function checkSession(){
 
 const {data} =
 await db.auth.getSession();
 
 if(data.session){
-
 showAdmin();
-
 await loadData();
-
 }
 
 }
