@@ -3,15 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>Rana & Mazen — Admin</title>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -29,18 +24,10 @@
       background: #fff;
       border-radius: 20px;
       padding: 25px;
-      margin-bottom: 20px;
       box-shadow: 0 5px 25px rgba(0,0,0,.08);
     }
 
-    h1 {
-      text-align: center;
-      margin-bottom: 25px;
-    }
-
-    h2 {
-      margin-top: 0;
-    }
+    h1 { text-align: center; }
 
     label {
       display: block;
@@ -48,8 +35,7 @@
       font-weight: bold;
     }
 
-    input,
-    textarea {
+    input, textarea {
       width: 100%;
       padding: 12px;
       border: 1px solid #ddd;
@@ -78,13 +64,8 @@
       width: 100%;
     }
 
-    .secondary {
-      background: #eee;
-    }
-
-    .danger {
-      background: #f3d4d4;
-    }
+    .secondary { background: #eee; }
+    .danger { background: #f3d4d4; }
 
     .memory {
       border: 1px solid #eee;
@@ -93,12 +74,9 @@
       margin-top: 12px;
     }
 
-    .hidden {
-      display: none;
-    }
+    .hidden { display: none; }
 
-    #message,
-    #loginMessage {
+    #loginMessage, #message {
       margin-top: 15px;
       text-align: center;
       font-weight: bold;
@@ -109,9 +87,7 @@
       background: #eee;
     }
 
-    .clear {
-      clear: both;
-    }
+    .clear { clear: both; }
   </style>
 </head>
 
@@ -121,49 +97,24 @@
 
   <!-- LOGIN -->
   <div id="loginCard" class="card">
-
     <h1>Rana & Mazen ♡</h1>
 
-    <h2>Admin Login</h2>
-
     <label>Email</label>
-
-    <input
-      id="email"
-      type="email"
-      placeholder="Enter your email"
-      autocomplete="email"
-    >
+    <input id="email" type="email">
 
     <label>Password</label>
+    <input id="password" type="password">
 
-    <input
-      id="password"
-      type="password"
-      placeholder="Enter your password"
-      autocomplete="current-password"
-    >
-
-    <button
-      class="primary"
-      onclick="login()">
-      Login
-    </button>
+    <button class="primary" onclick="login()">Login</button>
 
     <div id="loginMessage"></div>
-
   </div>
 
 
   <!-- ADMIN -->
   <div id="adminPanel" class="hidden">
 
-    <button
-      class="logout"
-      onclick="logout()">
-      Logout
-    </button>
-
+    <button class="logout" onclick="logout()">Logout</button>
     <div class="clear"></div>
 
     <div class="card">
@@ -171,74 +122,44 @@
       <h1>Rana & Mazen ♡</h1>
 
       <label>Names</label>
-
       <input id="name">
 
-
       <label>Date</label>
-
-      <input
-        id="eventDate"
-        type="text"
-      >
-
+      <input id="eventDate">
 
       <label>Story</label>
-
       <textarea id="story"></textarea>
 
-
       <label>Song URL</label>
-
-      <input
-        id="music"
-        type="text"
-      >
-
+      <input id="music">
 
       <label>Photo URLs</label>
+      <textarea id="photos"></textarea>
 
-      <textarea
-        id="photos"
-        placeholder="Put one photo URL per line"
-      ></textarea>
-
-
-      <h2 style="margin-top:25px;">
-        Memories
-      </h2>
+      <h2>Memories</h2>
 
       <div id="memories"></div>
 
-
-      <button
-        class="secondary"
-        onclick="addMemory()">
+      <button class="secondary" onclick="addMemory()">
         + Add memory
       </button>
 
-
-      <button
-        class="primary"
-        onclick="saveData()">
+      <button class="primary" onclick="saveData()">
         Save Changes ♡
       </button>
-
 
       <div id="message"></div>
 
     </div>
-
   </div>
-
 </div>
 
 
 <script>
 
-  /* =====================================
-     SUPABASE SETTINGS
-     ===================================== */
+  /* =========================
+     SUPABASE
+     ========================= */
 
   const SUPABASE_URL =
     "https://jqpceabdshvboderrbiz.supabase.co";
@@ -247,156 +168,101 @@
     "sb_publishable_lgtWi40tBxTt1zPogOQ4oA_Zf8SKU2P";
 
 
-  /*
-     LOGIN CLIENT
-
-     This client is used only for
-     Supabase Authentication.
-  */
-
-  const authClient =
-    window.supabase.createClient(
-      SUPABASE_URL,
-      SUPABASE_KEY
-    );
-
-
-  /*
-     DATA CLIENT
-
-     This is a separate client that does
-     NOT keep an authentication session.
-
-     Your current table policies are:
-
-     INSERT -> anon
-     SELECT -> anon
-     UPDATE -> anon
-
-     So this client can use those policies
-     to read and update the existing data.
-  */
-
-  const dataClient =
-    window.supabase.createClient(
-      SUPABASE_URL,
-      SUPABASE_KEY,
-      {
-        auth: {
-          persistSession: false,
-          autoRefreshToken: false,
-          detectSessionInUrl: false,
-          storageKey: "rana-mazen-data"
-        }
-      }
-    );
-
-
-  /* =====================================
+  /* =========================
      LOGIN
-     ===================================== */
+     ========================= */
 
   async function login() {
 
     const email =
-      document
-        .getElementById("email")
-        .value
-        .trim();
+      document.getElementById("email").value.trim();
 
     const password =
-      document
-        .getElementById("password")
-        .value;
+      document.getElementById("password").value;
 
-    const message =
+    const msg =
       document.getElementById("loginMessage");
 
-
     if (!email || !password) {
-
-      message.textContent =
-        "Please enter your email and password.";
-
+      msg.textContent = "Enter your email and password.";
       return;
     }
 
+    msg.textContent = "Logging in...";
 
-    message.textContent =
-      "Logging in...";
+    try {
 
+      const response = await fetch(
+        SUPABASE_URL + "/auth/v1/token?grant_type=password",
+        {
+          method: "POST",
 
-    const { data, error } =
-      await authClient.auth.signInWithPassword({
-        email: email,
-        password: password
-      });
+          headers: {
+            "Content-Type": "application/json",
+            "apikey": SUPABASE_KEY
+          },
 
+          body: JSON.stringify({
+            email: email,
+            password: password
+          })
+        }
+      );
 
-    if (error) {
+      const result = await response.json();
 
-      message.textContent =
-        "Login failed: " + error.message;
+      if (!response.ok) {
+        msg.textContent =
+          result.msg ||
+          result.error_description ||
+          "Invalid login credentials.";
+        return;
+      }
 
-      return;
+      /* Save login only in this browser */
+      sessionStorage.setItem(
+        "rana_admin_logged_in",
+        "true"
+      );
+
+      showAdmin();
+
+      await loadData();
+
+    } catch (error) {
+
+      msg.textContent =
+        "Connection error. Please try again.";
     }
-
-
-    if (!data.session) {
-
-      message.textContent =
-        "Login failed. No session was created.";
-
-      return;
-    }
-
-
-    message.textContent = "";
-
-    showAdmin();
-
-    await loadData();
   }
 
 
-  /* =====================================
+  /* =========================
      LOGOUT
-     ===================================== */
+     ========================= */
 
-  async function logout() {
+  function logout() {
 
-    await authClient.auth.signOut();
-
+    sessionStorage.removeItem(
+      "rana_admin_logged_in"
+    );
 
     document
       .getElementById("adminPanel")
       .classList.add("hidden");
 
-
     document
       .getElementById("loginCard")
       .classList.remove("hidden");
 
-
-    document
-      .getElementById("email")
-      .value = "";
-
-
-    document
-      .getElementById("password")
-      .value = "";
-
-
-    document
-      .getElementById("loginMessage")
-      .textContent = "";
+    document.getElementById("email").value = "";
+    document.getElementById("password").value = "";
   }
 
 
-  /* =====================================
+  /* =========================
      SHOW ADMIN
-     ===================================== */
+     ========================= */
 
   function showAdmin() {
 
@@ -404,154 +270,122 @@
       .getElementById("loginCard")
       .classList.add("hidden");
 
-
     document
       .getElementById("adminPanel")
       .classList.remove("hidden");
   }
 
 
-  /* =====================================
+  /* =========================
      LOAD DATA
-     ===================================== */
+     ========================= */
 
   async function loadData() {
 
-    const message =
+    const msg =
       document.getElementById("message");
 
+    msg.textContent = "Loading...";
 
-    message.textContent =
-      "Loading...";
+    try {
 
+      const response = await fetch(
+        SUPABASE_URL +
+        "/rest/v1/rana_mazen?select=*",
+        {
+          method: "GET",
 
-    const {
-      data,
-      error
-    } =
-      await dataClient
-        .from("rana_mazen")
-        .select("*")
-        .limit(1);
+          headers: {
+            "apikey": SUPABASE_KEY,
+            "Accept": "application/json"
+          }
+        }
+      );
 
+      const data = await response.json();
 
-    if (error) {
+      if (!response.ok) {
 
-      message.textContent =
-        "Error loading data: " +
-        error.message;
+        msg.textContent =
+          "Error loading data: " +
+          (data.message || data.error || "Unknown error");
 
-      return;
-    }
+        return;
+      }
 
+      if (!data || data.length === 0) {
 
-    if (!data || data.length === 0) {
+        msg.textContent = "No data found.";
+        return;
+      }
 
-      message.textContent =
-        "No data found.";
+      const item = data[0];
 
-      return;
-    }
-
-
-    const item = data[0];
-
-
-    /* NAME */
-
-    document
-      .getElementById("name")
-      .value =
+      document.getElementById("name").value =
         item.Name || "";
 
-
-    /* DATE */
-
-    document
-      .getElementById("eventDate")
-      .value =
+      document.getElementById("eventDate").value =
         item.Event_date || "";
 
-
-    /* STORY */
-
-    document
-      .getElementById("story")
-      .value =
+      document.getElementById("story").value =
         item.Story || "";
 
-
-    /* MUSIC */
-
-    document
-      .getElementById("music")
-      .value =
+      document.getElementById("music").value =
         item.Music || "";
 
 
-    /* PHOTOS */
+      /* PHOTOS */
 
-    let photos =
-      item.Photos || [];
+      let photos = item.Photos || [];
 
+      if (!Array.isArray(photos)) {
+        photos = [];
+      }
 
-    if (!Array.isArray(photos)) {
-      photos = [];
-    }
-
-
-    document
-      .getElementById("photos")
-      .value =
+      document.getElementById("photos").value =
         photos.join("\n");
 
 
-    /* MEMORIES */
+      /* MEMORIES */
 
-    const memoriesContainer =
-      document.getElementById("memories");
+      const container =
+        document.getElementById("memories");
 
+      container.innerHTML = "";
 
-    memoriesContainer.innerHTML = "";
+      let memories = item.Memories || [];
 
+      if (!Array.isArray(memories)) {
+        memories = [];
+      }
 
-    let memories =
-      item.Memories || [];
+      memories.forEach(function(memory) {
+        addMemory(memory);
+      });
 
+      msg.textContent = "";
 
-    if (!Array.isArray(memories)) {
-      memories = [];
+    } catch (error) {
+
+      msg.textContent =
+        "Connection error while loading data.";
     }
-
-
-    memories.forEach(function(memory) {
-
-      addMemory(memory);
-
-    });
-
-
-    message.textContent = "";
   }
 
 
-  /* =====================================
+  /* =========================
      ADD MEMORY
-     ===================================== */
+     ========================= */
 
   function addMemory(memory = "") {
 
     const container =
       document.getElementById("memories");
 
-
     const div =
       document.createElement("div");
 
-
-    div.className =
-      "memory";
-
+    div.className = "memory";
 
     div.innerHTML = `
       <textarea
@@ -566,78 +400,48 @@
       </button>
     `;
 
-
     container.appendChild(div);
 
-
-    const textarea =
-      div.querySelector(".memoryText");
-
-
-    if (typeof memory === "string") {
-
-      textarea.value =
-        memory;
-
-    } else if (
-      memory &&
-      memory.text
-    ) {
-
-      textarea.value =
-        memory.text;
-    }
+    div.querySelector(".memoryText").value =
+      typeof memory === "string"
+        ? memory
+        : (memory && memory.text
+            ? memory.text
+            : "");
   }
 
 
-  /* =====================================
+  /* =========================
      SAVE DATA
-     ===================================== */
+     ========================= */
 
   async function saveData() {
 
-    const message =
+    const msg =
       document.getElementById("message");
 
-
-    message.textContent =
-      "Saving...";
+    msg.textContent = "Saving...";
 
 
     const name =
-      document
-        .getElementById("name")
-        .value
-        .trim();
-
+      document.getElementById("name").value.trim();
 
     const eventDate =
-      document
-        .getElementById("eventDate")
-        .value
-        .trim();
-
+      document.getElementById("eventDate").value.trim();
 
     const story =
-      document
-        .getElementById("story")
-        .value;
-
+      document.getElementById("story").value;
 
     const music =
-      document
-        .getElementById("music")
-        .value
-        .trim();
+      document.getElementById("music").value.trim();
 
 
     const photos =
-      document
-        .getElementById("photos")
+      document.getElementById("photos")
         .value
         .split("\n")
-        .map(function(item) {
-          return item.trim();
+        .map(function(x) {
+          return x.trim();
         })
         .filter(Boolean);
 
@@ -646,126 +450,113 @@
       Array.from(
         document.querySelectorAll(".memoryText")
       )
-      .map(function(item) {
-        return item.value.trim();
+      .map(function(x) {
+        return x.value.trim();
       })
       .filter(Boolean);
 
 
-    /* FIND EXISTING ROW */
+    try {
 
-    const {
-      data: existing,
-      error: findError
-    } =
-      await dataClient
-        .from("rana_mazen")
-        .select("Id")
-        .limit(1);
+      /* Find existing row */
 
+      const findResponse = await fetch(
+        SUPABASE_URL +
+        "/rest/v1/rana_mazen?select=Id&limit=1",
+        {
+          headers: {
+            "apikey": SUPABASE_KEY,
+            "Accept": "application/json"
+          }
+        }
+      );
 
-    if (findError) {
-
-      message.textContent =
-        "Error: " +
-        findError.message;
-
-      return;
-    }
+      const existing =
+        await findResponse.json();
 
 
-    let result;
+      if (
+        !findResponse.ok ||
+        !existing ||
+        existing.length === 0
+      ) {
+
+        msg.textContent =
+          "Could not find the existing data.";
+
+        return;
+      }
 
 
-    /* UPDATE EXISTING DATA */
-
-    if (
-      existing &&
-      existing.length > 0
-    ) {
-
-      result =
-        await dataClient
-          .from("rana_mazen")
-          .update({
-            Name: name,
-            Event_date: eventDate,
-            Story: story,
-            Music: music,
-            Photos: photos,
-            Memories: memories
-          })
-          .eq(
-            "Id",
-            existing[0].Id
-          );
-
-    }
+      const id =
+        existing[0].Id;
 
 
-    /* INSERT IF EMPTY */
+      /* Update */
 
-    else {
+      const updateResponse =
+        await fetch(
+          SUPABASE_URL +
+          "/rest/v1/rana_mazen?Id=eq." +
+          encodeURIComponent(id),
+          {
+            method: "PATCH",
 
-      result =
-        await dataClient
-          .from("rana_mazen")
-          .insert({
-            Name: name,
-            Event_date: eventDate,
-            Story: story,
-            Music: music,
-            Photos: photos,
-            Memories: memories
-          });
+            headers: {
+              "apikey": SUPABASE_KEY,
+              "Content-Type": "application/json",
+              "Prefer": "return=minimal"
+            },
 
-    }
-
-
-    if (result.error) {
-
-      message.textContent =
-        "Save failed: " +
-        result.error.message;
-
-      return;
-    }
-
-
-    message.textContent =
-      "Saved online successfully ♡";
-  }
+            body: JSON.stringify({
+              Name: name,
+              Event_date: eventDate,
+              Story: story,
+              Music: music,
+              Photos: photos,
+              Memories: memories
+            })
+          }
+        );
 
 
-  /* =====================================
-     CHECK AUTH SESSION
-     ===================================== */
+      if (!updateResponse.ok) {
 
-  async function checkSession() {
+        const error =
+          await updateResponse.json();
 
-    const {
-      data
-    } =
-      await authClient.auth.getSession();
+        msg.textContent =
+          "Save failed: " +
+          (error.message || "Unknown error");
+
+        return;
+      }
 
 
-    if (
-      data &&
-      data.session
-    ) {
+      msg.textContent =
+        "Saved online successfully ♡";
 
-      showAdmin();
+    } catch (error) {
 
-      await loadData();
+      msg.textContent =
+        "Connection error while saving.";
     }
   }
 
 
-  /* =====================================
-     START
-     ===================================== */
+  /* =========================
+     AUTO LOGIN
+     ========================= */
 
-  checkSession();
+  if (
+    sessionStorage.getItem(
+      "rana_admin_logged_in"
+    ) === "true"
+  ) {
+
+    showAdmin();
+    loadData();
+  }
 
 </script>
 
