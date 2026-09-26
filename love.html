@@ -7,9 +7,7 @@
 <title>Rana & Mazen ♡</title>
 
 <style>
-*{
-  box-sizing:border-box;
-}
+*{box-sizing:border-box}
 
 html{
   scroll-behavior:smooth;
@@ -17,285 +15,548 @@ html{
 
 body{
   margin:0;
-  background:
-    radial-gradient(circle at top,#fff8f7 0%,#f8eeec 45%,#f4e6e3 100%);
   color:#59413c;
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+  background:
+    radial-gradient(circle at top,#fffafa 0%,#f9efed 45%,#f1dfdc 100%);
+  overflow-x:hidden;
+}
+
+/* floating hearts */
+.heart-bg{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  overflow:hidden;
+  z-index:0;
+}
+
+.floating-heart{
+  position:absolute;
+  bottom:-40px;
+  opacity:.45;
+  animation:rise linear forwards;
+}
+
+@keyframes rise{
+  from{
+    transform:translateY(0) rotate(0deg);
+    opacity:0;
+  }
+  15%{opacity:.5}
+  to{
+    transform:translateY(-110vh) rotate(25deg);
+    opacity:0;
+  }
+}
+
+/* falling flowers */
+.flower-rain{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:100;
+  overflow:hidden;
+}
+
+.flower{
+  position:absolute;
+  top:-70px;
+  animation:fall 3s ease-in forwards;
+  font-size:30px;
+}
+
+@keyframes fall{
+  0%{
+    transform:translateY(-80px) rotate(0deg);
+    opacity:1;
+  }
+  100%{
+    transform:translateY(110vh) rotate(420deg);
+    opacity:0;
+  }
 }
 
 .wrap{
+  position:relative;
+  z-index:2;
   width:100%;
-  max-width:900px;
+  max-width:650px;
   margin:auto;
-  padding:22px 16px 60px;
+  padding:15px 16px 70px;
 }
 
+/* hero */
 .hero{
-  min-height:75vh;
+  min-height:88vh;
   display:flex;
   flex-direction:column;
   justify-content:center;
   align-items:center;
   text-align:center;
-  padding:45px 15px;
 }
 
-.heart{
-  font-size:55px;
-  margin-bottom:15px;
-  animation:float 3s ease-in-out infinite;
+.hero-heart{
+  font-size:70px;
+  animation:heartbeat 1.8s infinite;
 }
 
-@keyframes float{
-  0%,100%{transform:translateY(0)}
-  50%{transform:translateY(-8px)}
+@keyframes heartbeat{
+  0%,100%{transform:scale(1)}
+  15%{transform:scale(1.12)}
+  30%{transform:scale(1)}
+  45%{transform:scale(1.08)}
 }
 
 .small{
-  font-size:14px;
-  letter-spacing:2px;
-  color:#9b7d76;
-  margin-bottom:15px;
+  margin-top:15px;
+  font-size:12px;
+  letter-spacing:4px;
+  color:#a4867e;
 }
 
 h1{
+  margin:12px 0 0;
   font-family:Georgia,serif;
-  font-size:clamp(42px,10vw,78px);
-  margin:0;
-  color:#4d3631;
+  font-size:clamp(45px,12vw,75px);
   font-weight:500;
+  color:#4c3530;
 }
 
-.date{
+.hero-sub{
   margin-top:16px;
   font-size:16px;
-  color:#987b74;
+  color:#876b64;
 }
 
-.section{
+.scroll{
   margin-top:55px;
+  font-size:13px;
+  color:#a58b84;
+  animation:bounce 2s infinite;
+}
+
+@keyframes bounce{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(8px)}
+}
+
+/* sections */
+.section{
+  margin-top:65px;
 }
 
 .title{
   text-align:center;
   font-family:Georgia,serif;
-  font-size:32px;
+  font-size:31px;
   font-weight:500;
-  margin:0 0 25px;
   color:#4d3631;
+  margin:0 0 25px;
 }
 
-.card{
-  background:#ffffffcc;
-  backdrop-filter:blur(8px);
-  border-radius:28px;
-  padding:28px;
-  box-shadow:0 12px 40px #0000000b;
-  line-height:2;
-  font-size:17px;
+.subtitle{
+  text-align:center;
+  color:#977b74;
+  font-size:14px;
+  margin-top:-15px;
+  margin-bottom:25px;
 }
 
-.story{
-  white-space:pre-line;
+/* photo slider */
+.photo-slider{
+  position:relative;
+  width:100%;
+  overflow:hidden;
+  border-radius:30px;
+  touch-action:pan-y;
 }
 
-.photos-grid{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:20px;
+.photo-track{
+  display:flex;
+  transition:transform .45s cubic-bezier(.22,.61,.36,1);
+}
+
+.photo-slide{
+  min-width:100%;
+  padding:10px 18px 25px;
 }
 
 .photo-card{
   background:white;
-  padding:12px 12px 18px;
-  border-radius:7px;
-  box-shadow:0 10px 28px #00000012;
+  padding:12px 12px 22px;
+  border-radius:8px;
+  box-shadow:0 18px 45px #00000018;
+  transform:rotate(-1.5deg);
 }
 
-.photo-card:nth-child(odd){
-  transform:rotate(-2deg);
-}
-
-.photo-card:nth-child(even){
-  transform:rotate(2deg);
+.photo-slide:nth-child(even) .photo-card{
+  transform:rotate(1.5deg);
 }
 
 .photo-card img{
   width:100%;
-  aspect-ratio:1/1;
+  aspect-ratio:4/5;
   object-fit:cover;
   display:block;
-  border-radius:3px;
+  border-radius:4px;
 }
 
-.videos{
+.photo-number{
+  text-align:center;
+  margin-top:12px;
+  font-family:Georgia,serif;
+  color:#9b7e76;
+  font-size:14px;
+}
+
+.slider-dots{
   display:flex;
-  flex-direction:column;
-  gap:25px;
+  justify-content:center;
+  gap:6px;
+  margin-top:4px;
 }
 
+.dot{
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:#d6c1bc;
+  transition:.3s;
+}
+
+.dot.active{
+  width:22px;
+  border-radius:20px;
+  background:#806057;
+}
+
+/* locked cards */
+.lock-card{
+  background:#ffffffd9;
+  backdrop-filter:blur(12px);
+  border-radius:30px;
+  padding:35px 22px;
+  text-align:center;
+  box-shadow:0 15px 45px #00000010;
+}
+
+.lock-icon{
+  width:76px;
+  height:76px;
+  margin:auto;
+  border-radius:50%;
+  background:#f3e3df;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:34px;
+  cursor:pointer;
+  transition:.35s;
+}
+
+.lock-icon:hover{
+  transform:scale(1.08) rotate(-3deg);
+}
+
+.lock-title{
+  font-family:Georgia,serif;
+  font-size:25px;
+  margin:16px 0 8px;
+}
+
+.lock-text{
+  color:#977b74;
+  line-height:1.8;
+  font-size:14px;
+}
+
+/* message */
+.message-open{
+  background:white;
+  border-radius:30px;
+  padding:27px 22px;
+  box-shadow:0 15px 45px #00000010;
+  animation:openCard .5s ease;
+}
+
+@keyframes openCard{
+  from{
+    opacity:0;
+    transform:scale(.95);
+  }
+  to{
+    opacity:1;
+    transform:scale(1);
+  }
+}
+
+.message-text{
+  white-space:pre-line;
+  line-height:2.05;
+  font-size:16px;
+  text-align:right;
+}
+
+.close-small{
+  margin-top:22px;
+  border:0;
+  background:#f1e2de;
+  color:#6d514a;
+  padding:10px 18px;
+  border-radius:999px;
+  cursor:pointer;
+}
+
+/* secret video */
+.secret-input{
+  margin-top:20px;
+}
+
+.secret-input input{
+  width:100%;
+  padding:14px 16px;
+  border:1px solid #ddcbc6;
+  border-radius:16px;
+  outline:none;
+  text-align:center;
+  font-size:16px;
+  background:#fffaf9;
+}
+
+.secret-input button{
+  margin-top:10px;
+  border:0;
+  background:#59413c;
+  color:white;
+  padding:12px 25px;
+  border-radius:999px;
+  cursor:pointer;
+}
+
+.secret-error{
+  color:#a5534b;
+  margin-top:10px;
+  font-size:13px;
+}
+
+/* videos */
 .video-box{
   background:white;
-  border-radius:28px;
-  padding:14px;
-  box-shadow:0 12px 35px #00000010;
+  padding:10px;
+  border-radius:25px;
+  box-shadow:0 15px 40px #00000012;
+  margin-top:18px;
 }
 
-.video-frame{
+.video-box video{
   width:100%;
   display:block;
-  border:0;
-  border-radius:20px;
-  background:#000;
+  border-radius:19px;
+  background:#111;
   max-height:75vh;
 }
 
-.video-caption{
-  text-align:center;
-  font-size:16px;
-  color:#705952;
-  padding:15px 8px 5px;
+/* memories */
+.memory-stage{
+  position:relative;
+  min-height:390px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  touch-action:pan-y;
 }
 
-.memory{
-  background:white;
-  border-radius:24px;
-  padding:23px;
-  margin-bottom:17px;
-  box-shadow:0 10px 30px #00000009;
+.memory-card{
+  position:absolute;
+  width:88%;
+  max-width:390px;
+  background:#fff;
+  padding:13px 13px 24px;
+  box-shadow:0 20px 50px #00000018;
+  border-radius:5px;
+  transform-origin:center;
+  transition:.4s;
+  cursor:grab;
 }
 
-.memory h3{
-  margin:0 0 5px;
+.memory-card img{
+  width:100%;
+  aspect-ratio:4/3;
+  object-fit:cover;
+  display:block;
+}
+
+.memory-card.no-image{
+  padding:30px;
+  min-height:260px;
+}
+
+.memory-card h3{
   font-family:Georgia,serif;
-  font-size:22px;
+  font-size:23px;
+  margin:15px 5px 5px;
 }
 
 .memory-date{
-  color:#a18882;
-  font-size:13px;
-  margin-bottom:10px;
+  color:#a18780;
+  font-size:12px;
+  margin:0 5px 10px;
 }
 
 .memory-text{
   line-height:1.9;
+  font-size:15px;
+  margin:0 5px;
   white-space:pre-line;
 }
 
-.music-card{
+.memory-hint{
   text-align:center;
+  margin-top:18px;
+  color:#9b7e76;
+  font-size:13px;
+}
+
+/* music */
+.music-card{
   background:white;
-  border-radius:28px;
-  padding:30px 20px;
-  box-shadow:0 10px 35px #0000000c;
+  border-radius:30px;
+  padding:35px 20px;
+  text-align:center;
+  box-shadow:0 15px 45px #00000010;
 }
 
-.music-card p{
-  margin-top:0;
+.record{
+  width:105px;
+  height:105px;
+  border-radius:50%;
+  margin:0 auto 22px;
+  background:
+    repeating-radial-gradient(
+      circle,
+      #3d2925 0px,
+      #3d2925 3px,
+      #523a34 4px,
+      #3d2925 7px
+    );
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 10px 25px #00000025;
+  cursor:pointer;
+  position:relative;
+}
+
+.record:after{
+  content:"♡";
+  width:31px;
+  height:31px;
+  border-radius:50%;
+  background:#e8d3ce;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#684c45;
+  font-size:18px;
+}
+
+.record.playing{
+  animation:spin 2.5s linear infinite;
+}
+
+@keyframes spin{
+  to{transform:rotate(360deg)}
+}
+
+.music-title{
+  font-family:Georgia,serif;
+  font-size:24px;
+  margin-bottom:8px;
+}
+
+.music-caption{
+  color:#977b74;
   line-height:1.8;
+  font-size:14px;
 }
 
-.music-btn{
+.music-link{
   display:inline-block;
+  margin-top:15px;
+  color:#765850;
   text-decoration:none;
-  background:#59413c;
-  color:white;
-  padding:14px 24px;
-  border-radius:999px;
-  font-size:15px;
+  font-size:13px;
 }
 
+/* end */
 .end{
   text-align:center;
-  margin-top:70px;
+  margin-top:80px;
   font-family:Georgia,serif;
-  font-size:23px;
+  font-size:22px;
   line-height:1.8;
   color:#624741;
 }
 
-.footer-heart{
-  font-size:25px;
-  margin-top:15px;
+.end-heart{
+  font-size:28px;
+  margin-top:10px;
 }
 
 .hidden{
-  display:none;
+  display:none!important;
 }
 
 .loading{
   text-align:center;
-  padding:50px 15px;
-  color:#8f7771;
+  padding:40px;
+  color:#987b74;
 }
 
-.error{
-  text-align:center;
-  padding:35px 15px;
-  color:#9a5148;
-}
-
+/* mobile */
 @media(max-width:600px){
-
   .wrap{
     padding-left:12px;
     padding-right:12px;
   }
 
-  .hero{
-    min-height:65vh;
+  .message-text{
+    font-size:15px;
   }
 
-  .card{
-    padding:22px 18px;
-    font-size:16px;
+  .memory-stage{
+    min-height:370px;
   }
-
-  .photos-grid{
-    grid-template-columns:1fr 1fr;
-    gap:13px;
-  }
-
-  .video-box{
-    padding:9px;
-    border-radius:22px;
-  }
-
-  .video-frame{
-    border-radius:16px;
-  }
-
-  .title{
-    font-size:29px;
-  }
-
 }
 </style>
 </head>
 
 <body>
 
+<div class="heart-bg" id="heartBg"></div>
+<div class="flower-rain" id="flowerRain"></div>
+
 <div class="wrap">
 
+  <!-- HERO -->
   <section class="hero">
 
-    <div class="heart">♡</div>
+    <div class="hero-heart">♡</div>
 
     <div class="small">OUR LITTLE STORY</div>
 
     <h1 id="names">Rana & Mazen</h1>
 
+    <div class="hero-sub">
+      For my favorite person ❤️
+    </div>
+
     <div class="date" id="date"></div>
 
-  </section>
-
-
-  <!-- STORY -->
-  <section id="storySection" class="section">
-
-    <h2 class="title">Our Story</h2>
-
-    <div class="card story" id="story"></div>
+    <div class="scroll">
+      اسحب لتحت وشوف مفاجأتك ↓
+    </div>
 
   </section>
 
@@ -303,19 +564,56 @@ h1{
   <!-- PHOTOS -->
   <section id="photosSection" class="section hidden">
 
-    <h2 class="title">Our Memories</h2>
+    <h2 class="title">Our Moments ♡</h2>
 
-    <div class="photos-grid" id="photos"></div>
+    <div class="subtitle">
+      صورة ورا صورة… وكل واحدة ليها حكاية
+    </div>
+
+    <div class="photo-slider" id="photoSlider">
+
+      <div class="photo-track" id="photoTrack"></div>
+
+    </div>
+
+    <div class="slider-dots" id="photoDots"></div>
 
   </section>
 
 
-  <!-- VIDEOS -->
-  <section id="videoSection" class="section hidden">
+  <!-- MESSAGE -->
+  <section class="section">
 
-    <h2 class="title">A Little Video</h2>
+    <h2 class="title">A Message For You</h2>
 
-    <div class="videos" id="videos"></div>
+    <div id="messageClosed" class="lock-card">
+
+      <div class="lock-icon" onclick="openMessage()">
+        🔐
+      </div>
+
+      <div class="lock-title">
+        Message
+      </div>
+
+      <div class="lock-text">
+        في حاجة مستخبية ليك هنا…<br>
+        دوس على القفل عشان تفتح رسالتي ❤️
+      </div>
+
+    </div>
+
+    <div id="messageOpen" class="message-open hidden">
+
+      <div class="message-text" id="story"></div>
+
+      <div style="text-align:center">
+        <button class="close-small" onclick="closeMessage()">
+          اقفل الرسالة ♡
+        </button>
+      </div>
+
+    </div>
 
   </section>
 
@@ -323,9 +621,60 @@ h1{
   <!-- MEMORIES -->
   <section id="memoriesSection" class="section hidden">
 
-    <h2 class="title">Little Memories</h2>
+    <h2 class="title">Our Little Moments ♡</h2>
 
-    <div id="memories"></div>
+    <div class="subtitle">
+      اسحب الكارت عشان تكتشف الذكريات واحدة واحدة
+    </div>
+
+    <div class="memory-stage" id="memoryStage"></div>
+
+    <div class="memory-hint">
+      ← اسحب يمين أو شمال →
+    </div>
+
+  </section>
+
+
+  <!-- SECRET VIDEO -->
+  <section id="videoSection" class="section hidden">
+
+    <h2 class="title">Something Secret 🔐</h2>
+
+    <div id="videoLocked" class="lock-card">
+
+      <div class="lock-icon" onclick="showVideoInput()">
+        🔐
+      </div>
+
+      <div class="lock-title">
+        Secret Video
+      </div>
+
+      <div class="lock-text">
+        الفيديو ده مش هيفتح لأي حد 👀<br>
+        التاريخ المميز هو المفتاح ❤️
+      </div>
+
+      <div id="secretInput" class="secret-input hidden">
+
+        <input
+          id="secretDate"
+          type="text"
+          inputmode="numeric"
+          placeholder="DD/MM/YYYY">
+
+        <button onclick="unlockVideo()">
+          Unlock ♡
+        </button>
+
+        <div id="secretError" class="secret-error"></div>
+
+      </div>
+
+    </div>
+
+    <div id="videoUnlocked" class="hidden"></div>
 
   </section>
 
@@ -333,21 +682,32 @@ h1{
   <!-- MUSIC -->
   <section id="musicSection" class="section hidden">
 
-    <h2 class="title">Our Song</h2>
+    <h2 class="title">Our Sound ♡</h2>
 
     <div class="music-card">
 
-      <p>
-        A song that reminds me of us ♡
-      </p>
+      <div
+        class="record"
+        id="record"
+        onclick="toggleMusic()">
+      </div>
+
+      <div class="music-title">
+        This song sounds like us ♡
+      </div>
+
+      <div class="music-caption">
+        كل مرة تسمعها… افتكرنا.
+      </div>
+
+      <audio id="musicPlayer" preload="none"></audio>
 
       <a
-        id="musicButton"
-        class="music-btn"
-        href="#"
+        id="musicLink"
+        class="music-link hidden"
         target="_blank"
         rel="noopener">
-        Listen to our song ♡
+        لو الأغنية مش بتشتغل هنا، افتحها من هنا ♡
       </a>
 
     </div>
@@ -357,7 +717,7 @@ h1{
 
   <div class="end">
     And this is only the beginning...
-    <div class="footer-heart">♡</div>
+    <div class="end-heart">♡</div>
   </div>
 
 </div>
@@ -385,6 +745,651 @@ window.supabase.createClient(
 );
 
 
+/* =========================
+   FALLING FLOWERS
+========================= */
+
+function createFlowers(){
+
+  const container =
+    document.getElementById("flowerRain");
+
+  const flowers = ["🌹","🌷","🌸","🌺","💐"];
+
+  for(let i=0;i<28;i++){
+
+    const flower =
+      document.createElement("div");
+
+    flower.className = "flower";
+
+    flower.textContent =
+      flowers[Math.floor(Math.random()*flowers.length)];
+
+    flower.style.left =
+      Math.random()*100 + "%";
+
+    flower.style.animationDelay =
+      Math.random()*1.8 + "s";
+
+    flower.style.fontSize =
+      (22 + Math.random()*18) + "px";
+
+    container.appendChild(flower);
+  }
+
+  setTimeout(()=>{
+    container.innerHTML = "";
+  },5000);
+}
+
+
+/* =========================
+   FLOATING HEARTS
+========================= */
+
+function createHeart(){
+
+  const container =
+    document.getElementById("heartBg");
+
+  const heart =
+    document.createElement("div");
+
+  heart.className = "floating-heart";
+
+  heart.textContent =
+    Math.random() > .5 ? "♡" : "♥";
+
+  heart.style.left =
+    Math.random()*100 + "%";
+
+  heart.style.fontSize =
+    (12 + Math.random()*18) + "px";
+
+  heart.style.animationDuration =
+    (6 + Math.random()*6) + "s";
+
+  container.appendChild(heart);
+
+  setTimeout(()=>{
+    heart.remove();
+  },13000);
+}
+
+setInterval(createHeart,900);
+
+
+/* =========================
+   MESSAGE
+========================= */
+
+function openMessage(){
+
+  document.getElementById("messageClosed")
+    .classList.add("hidden");
+
+  document.getElementById("messageOpen")
+    .classList.remove("hidden");
+}
+
+function closeMessage(){
+
+  document.getElementById("messageOpen")
+    .classList.add("hidden");
+
+  document.getElementById("messageClosed")
+    .classList.remove("hidden");
+}
+
+
+/* =========================
+   PHOTOS
+========================= */
+
+let currentPhoto = 0;
+let photoCount = 0;
+
+function renderPhotos(photos){
+
+  const track =
+    document.getElementById("photoTrack");
+
+  const dots =
+    document.getElementById("photoDots");
+
+  track.innerHTML = "";
+  dots.innerHTML = "";
+
+  photos = photos.filter(Boolean);
+
+  photoCount = photos.length;
+
+  photos.forEach((url,index)=>{
+
+    const slide =
+      document.createElement("div");
+
+    slide.className = "photo-slide";
+
+    slide.innerHTML = `
+      <div class="photo-card">
+        <img
+          src="${escapeAttr(url)}"
+          alt="A memory of us"
+          loading="${index===0 ? "eager" : "lazy"}">
+        <div class="photo-number">
+          ${index+1} / ${photos.length}
+        </div>
+      </div>
+    `;
+
+    track.appendChild(slide);
+
+    const dot =
+      document.createElement("div");
+
+    dot.className =
+      "dot" + (index===0 ? " active" : "");
+
+    dots.appendChild(dot);
+
+  });
+
+  document
+    .getElementById("photosSection")
+    .classList.remove("hidden");
+
+  updatePhoto();
+
+  setupPhotoSwipe();
+}
+
+function updatePhoto(){
+
+  const track =
+    document.getElementById("photoTrack");
+
+  track.style.transform =
+    `translateX(${currentPhoto * 100}%)`;
+
+  document
+    .querySelectorAll("#photoDots .dot")
+    .forEach((dot,index)=>{
+      dot.classList.toggle(
+        "active",
+        index===currentPhoto
+      );
+    });
+}
+
+function nextPhoto(){
+
+  if(photoCount <= 1) return;
+
+  currentPhoto =
+    (currentPhoto + 1) % photoCount;
+
+  updatePhoto();
+}
+
+function previousPhoto(){
+
+  if(photoCount <= 1) return;
+
+  currentPhoto =
+    (currentPhoto - 1 + photoCount) % photoCount;
+
+  updatePhoto();
+}
+
+function setupPhotoSwipe(){
+
+  const slider =
+    document.getElementById("photoSlider");
+
+  let startX = 0;
+  let startY = 0;
+
+  slider.addEventListener("touchstart",e=>{
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+  },{passive:true});
+
+  slider.addEventListener("touchend",e=>{
+
+    const endX = e.changedTouches[0].clientX;
+    const endY = e.changedTouches[0].clientY;
+
+    const dx = endX - startX;
+    const dy = endY - startY;
+
+    if(Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy)){
+
+      if(dx < 0){
+        nextPhoto();
+      }else{
+        previousPhoto();
+      }
+
+    }
+
+  },{passive:true});
+}
+
+
+/* =========================
+   MEMORIES
+========================= */
+
+let memoriesData = [];
+let memoryIndex = 0;
+
+function renderMemories(memories){
+
+  memoriesData =
+    memories.filter(Boolean);
+
+  if(!memoriesData.length) return;
+
+  document
+    .getElementById("memoriesSection")
+    .classList.remove("hidden");
+
+  drawMemories();
+  setupMemorySwipe();
+}
+
+function drawMemories(){
+
+  const stage =
+    document.getElementById("memoryStage");
+
+  stage.innerHTML = "";
+
+  memoriesData.forEach((memory,index)=>{
+
+    const card =
+      document.createElement("div");
+
+    card.className =
+      "memory-card" +
+      (!memory.image ? " no-image" : "");
+
+    const offset =
+      index - memoryIndex;
+
+    if(offset < 0){
+      card.style.transform =
+        "translateX(-130%) rotate(-12deg)";
+      card.style.opacity = "0";
+      return;
+    }
+
+    if(offset > 3){
+      card.style.display = "none";
+      return;
+    }
+
+    card.style.zIndex =
+      20 - offset;
+
+    card.style.transform =
+      `translateY(${offset*7}px)
+       rotate(${offset % 2 ? 2 : -2}deg)
+       scale(${1 - offset*.035})`;
+
+    card.style.opacity =
+      1 - offset*.12;
+
+    let html = "";
+
+    if(memory.image){
+
+      html += `
+        <img
+          src="${escapeAttr(memory.image)}"
+          alt="Our memory">
+      `;
+
+    }
+
+    if(memory.title){
+      html += `<h3>${escapeHtml(memory.title)}</h3>`;
+    }
+
+    if(memory.date){
+      html += `
+        <div class="memory-date">
+          ${escapeHtml(memory.date)}
+        </div>
+      `;
+    }
+
+    if(memory.text){
+      html += `
+        <div class="memory-text">
+          ${escapeHtml(memory.text)}
+        </div>
+      `;
+    }
+
+    card.innerHTML = html;
+
+    stage.appendChild(card);
+
+  });
+
+}
+
+function nextMemory(){
+
+  if(memoryIndex >= memoriesData.length-1){
+
+    memoryIndex = 0;
+
+  }else{
+
+    memoryIndex++;
+
+  }
+
+  drawMemories();
+}
+
+function previousMemory(){
+
+  if(memoryIndex <= 0){
+
+    memoryIndex =
+      memoriesData.length-1;
+
+  }else{
+
+    memoryIndex--;
+
+  }
+
+  drawMemories();
+}
+
+function setupMemorySwipe(){
+
+  const stage =
+    document.getElementById("memoryStage");
+
+  let startX = 0;
+  let startY = 0;
+
+  stage.addEventListener("touchstart",e=>{
+
+    startX =
+      e.touches[0].clientX;
+
+    startY =
+      e.touches[0].clientY;
+
+  },{passive:true});
+
+  stage.addEventListener("touchend",e=>{
+
+    const dx =
+      e.changedTouches[0].clientX - startX;
+
+    const dy =
+      e.changedTouches[0].clientY - startY;
+
+    if(
+      Math.abs(dx)>45 &&
+      Math.abs(dx)>Math.abs(dy)
+    ){
+
+      if(dx<0){
+        nextMemory();
+      }else{
+        previousMemory();
+      }
+
+    }
+
+  },{passive:true});
+}
+
+
+/* =========================
+   SECRET VIDEO
+========================= */
+
+let savedVideos = [];
+
+function showVideoInput(){
+
+  document
+    .getElementById("secretInput")
+    .classList.remove("hidden");
+
+  document
+    .getElementById("secretDate")
+    .focus();
+}
+
+function normalizeDate(value){
+
+  return value
+    .replace(/\s/g,"")
+    .replace(/\./g,"/")
+    .replace(/-/g,"/");
+}
+
+function unlockVideo(){
+
+  const entered =
+    normalizeDate(
+      document.getElementById("secretDate").value
+    );
+
+  const correct =
+    entered === "03/11/2025" ||
+    entered === "3/11/2025";
+
+  if(!correct){
+
+    document
+      .getElementById("secretError")
+      .textContent =
+      "لأ لأ 👀 التاريخ مش ده… جربي تاني ❤️";
+
+    return;
+  }
+
+  if(!savedVideos.length){
+
+    document
+      .getElementById("secretError")
+      .textContent =
+      "الفيديو لسه مش مضاف ❤️";
+
+    return;
+  }
+
+  const locked =
+    document.getElementById("videoLocked");
+
+  const unlocked =
+    document.getElementById("videoUnlocked");
+
+  locked.classList.add("hidden");
+
+  unlocked.classList.remove("hidden");
+
+  unlocked.innerHTML = "";
+
+  savedVideos.forEach((url,index)=>{
+
+    const box =
+      document.createElement("div");
+
+    box.className =
+      "video-box";
+
+    const video =
+      document.createElement("video");
+
+    video.controls = true;
+    video.playsInline = true;
+    video.preload = "metadata";
+
+    const source =
+      document.createElement("source");
+
+    source.src = url;
+
+    source.type = "video/mp4";
+
+    video.appendChild(source);
+
+    box.appendChild(video);
+
+    if(savedVideos.length > 1){
+
+      const caption =
+        document.createElement("div");
+
+      caption.style.textAlign = "center";
+      caption.style.padding = "10px";
+      caption.style.color = "#8e726a";
+
+      caption.textContent =
+        "A little piece of us ♡ " + (index+1);
+
+      box.appendChild(caption);
+    }
+
+    unlocked.appendChild(box);
+
+  });
+
+  unlocked.scrollIntoView({
+    behavior:"smooth",
+    block:"center"
+  });
+}
+
+
+/* =========================
+   MUSIC
+========================= */
+
+let musicUrl = "";
+
+function setupMusic(url){
+
+  if(!url || !url.trim()) return;
+
+  musicUrl = url.trim();
+
+  const player =
+    document.getElementById("musicPlayer");
+
+  const link =
+    document.getElementById("musicLink");
+
+  /*
+    لو اللينك Direct audio مثل mp3
+    هيشتغل جوه الصفحة.
+  */
+
+  player.src = musicUrl;
+
+  link.href = musicUrl;
+
+  document
+    .getElementById("musicSection")
+    .classList.remove("hidden");
+}
+
+async function toggleMusic(){
+
+  const player =
+    document.getElementById("musicPlayer");
+
+  const record =
+    document.getElementById("record");
+
+  const link =
+    document.getElementById("musicLink");
+
+  if(!musicUrl) return;
+
+  try{
+
+    if(player.paused){
+
+      await player.play();
+
+      record.classList.add("playing");
+
+    }else{
+
+      player.pause();
+
+      record.classList.remove("playing");
+
+    }
+
+  }catch(error){
+
+    /*
+      لو الرابط YouTube / Spotify / رابط مش direct audio
+      نفتح الرابط نفسه.
+    */
+
+    link.classList.remove("hidden");
+
+    window.open(
+      musicUrl,
+      "_blank",
+      "noopener"
+    );
+
+  }
+}
+
+document
+  .getElementById("musicPlayer")
+  .addEventListener("ended",()=>{
+
+    document
+      .getElementById("record")
+      .classList.remove("playing");
+
+  });
+
+
+/* =========================
+   SECURITY HELPERS
+========================= */
+
+function escapeHtml(value){
+
+  return String(value)
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+}
+
+function escapeAttr(value){
+
+  return escapeHtml(value);
+}
+
+
+/* =========================
+   SUPABASE
+========================= */
+
 async function loadPage(){
 
   const loading =
@@ -398,11 +1403,9 @@ async function loadPage(){
         .select("*")
         .limit(1);
 
-
     if(result.error){
       throw result.error;
     }
-
 
     if(
       !result.data ||
@@ -415,26 +1418,27 @@ async function loadPage(){
       return;
     }
 
-
     const row =
       result.data[0];
 
 
     /* NAME */
 
-    document.getElementById("names")
+    document
+      .getElementById("names")
       .textContent =
       row.Name || "Rana & Mazen";
 
 
     /* DATE */
 
-    document.getElementById("date")
+    document
+      .getElementById("date")
       .textContent =
       row.Event_date || "";
 
 
-    /* STORY */
+    /* STORY / MESSAGE */
 
     const story =
       document.getElementById("story");
@@ -446,8 +1450,19 @@ async function loadPage(){
 
     }else{
 
-      document.getElementById("storySection")
-        .classList.add("hidden");
+      document
+        .getElementById("messageClosed")
+        .innerHTML = `
+          <div class="lock-icon">
+            ❤️
+          </div>
+          <div class="lock-title">
+            A Message For You
+          </div>
+          <div class="lock-text">
+            رسالتي ليك هتكون هنا ❤️
+          </div>
+        `;
 
     }
 
@@ -467,50 +1482,9 @@ async function loadPage(){
 
     }
 
+    if(Array.isArray(photos) && photos.length){
 
-    if(
-      Array.isArray(photos) &&
-      photos.length
-    ){
-
-      const photosBox =
-        document.getElementById("photos");
-
-      photosBox.innerHTML = "";
-
-
-      photos.forEach(function(url){
-
-        if(!url) return;
-
-
-        const card =
-          document.createElement("div");
-
-        card.className =
-          "photo-card";
-
-
-        const img =
-          document.createElement("img");
-
-        img.src = url;
-
-        img.alt =
-          "A memory of Rana & Mazen";
-
-        img.loading = "lazy";
-
-
-        card.appendChild(img);
-
-        photosBox.appendChild(card);
-
-      });
-
-
-      document.getElementById("photosSection")
-        .classList.remove("hidden");
+      renderPhotos(photos);
 
     }
 
@@ -530,77 +1504,18 @@ async function loadPage(){
 
     }
 
+    if(Array.isArray(videos)){
 
-    if(
-      Array.isArray(videos) &&
-      videos.length
-    ){
+      savedVideos =
+        videos.filter(Boolean);
 
-      const videosBox =
-        document.getElementById("videos");
+      if(savedVideos.length){
 
-      videosBox.innerHTML = "";
+        document
+          .getElementById("videoSection")
+          .classList.remove("hidden");
 
-
-      videos.forEach(function(url,index){
-
-        if(!url) return;
-
-
-        const box =
-          document.createElement("div");
-
-        box.className =
-          "video-box";
-
-
-        const video =
-          document.createElement("video");
-
-        video.className =
-          "video-frame";
-
-        video.controls = true;
-
-        video.playsInline = true;
-
-        video.preload = "metadata";
-
-
-        const source =
-          document.createElement("source");
-
-        source.src = url;
-
-        source.type = "video/mp4";
-
-
-        video.appendChild(source);
-
-
-        const caption =
-          document.createElement("div");
-
-        caption.className =
-          "video-caption";
-
-        caption.textContent =
-          videos.length === 1
-          ? "A little piece of us ♡"
-          : "A little piece of us ♡ " + (index + 1);
-
-
-        box.appendChild(video);
-
-        box.appendChild(caption);
-
-        videosBox.appendChild(box);
-
-      });
-
-
-      document.getElementById("videoSection")
-        .classList.remove("hidden");
+      }
 
     }
 
@@ -620,79 +1535,9 @@ async function loadPage(){
 
     }
 
+    if(Array.isArray(memories) && memories.length){
 
-    if(
-      Array.isArray(memories) &&
-      memories.length
-    ){
-
-      const memoriesBox =
-        document.getElementById("memories");
-
-      memoriesBox.innerHTML = "";
-
-
-      memories.forEach(function(memory){
-
-        const box =
-          document.createElement("div");
-
-        box.className =
-          "memory";
-
-
-        if(memory.title){
-
-          const title =
-            document.createElement("h3");
-
-          title.textContent =
-            memory.title;
-
-          box.appendChild(title);
-
-        }
-
-
-        if(memory.date){
-
-          const date =
-            document.createElement("div");
-
-          date.className =
-            "memory-date";
-
-          date.textContent =
-            memory.date;
-
-          box.appendChild(date);
-
-        }
-
-
-        if(memory.text){
-
-          const text =
-            document.createElement("div");
-
-          text.className =
-            "memory-text";
-
-          text.textContent =
-            memory.text;
-
-          box.appendChild(text);
-
-        }
-
-
-        memoriesBox.appendChild(box);
-
-      });
-
-
-      document.getElementById("memoriesSection")
-        .classList.remove("hidden");
+      renderMemories(memories);
 
     }
 
@@ -704,14 +1549,7 @@ async function loadPage(){
       row.Music.trim()
     ){
 
-      const button =
-        document.getElementById("musicButton");
-
-      button.href =
-        row.Music;
-
-      document.getElementById("musicSection")
-        .classList.remove("hidden");
+      setupMusic(row.Music);
 
     }
 
@@ -724,9 +1562,6 @@ async function loadPage(){
 
     console.error(error);
 
-    loading.className =
-      "error";
-
     loading.textContent =
       "Something went wrong. Please try again later ♡";
 
@@ -734,6 +1569,10 @@ async function loadPage(){
 
 }
 
+
+/* start */
+
+createFlowers();
 
 loadPage();
 
