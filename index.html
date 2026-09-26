@@ -67,8 +67,14 @@
     .secondary { background: #eee; }
     .danger { background: #f3d4d4; }
 
-    .memory,
-    .videoBox {
+    .memory {
+      border: 1px solid #eee;
+      padding: 15px;
+      border-radius: 12px;
+      margin-top: 12px;
+    }
+
+    .video {
       border: 1px solid #eee;
       padding: 15px;
       border-radius: 12px;
@@ -89,10 +95,6 @@
     }
 
     .clear { clear: both; }
-
-    .videoBox input {
-      margin-top: 0;
-    }
   </style>
 </head>
 
@@ -138,13 +140,8 @@
       <label>Song URL</label>
       <input id="music">
 
-
-      <!-- PHOTOS -->
       <label>Photo URLs</label>
-      <textarea
-        id="photos"
-        placeholder="Put one photo link per line"
-      ></textarea>
+      <textarea id="photos"></textarea>
 
 
       <!-- VIDEOS -->
@@ -167,7 +164,6 @@
       </button>
 
 
-      <!-- SAVE -->
       <button class="primary" onclick="saveData()">
         Save Changes ♡
       </button>
@@ -208,7 +204,8 @@
       document.getElementById("loginMessage");
 
     if (!email || !password) {
-      msg.textContent = "Enter your email and password.";
+      msg.textContent =
+        "Enter your email and password.";
       return;
     }
 
@@ -331,7 +328,9 @@
 
         msg.textContent =
           "Error loading data: " +
-          (data.message || data.error || "Unknown error");
+          (data.message ||
+           data.error ||
+           "Unknown error");
 
         return;
       }
@@ -374,16 +373,16 @@
 
       /* VIDEOS */
 
-      const videoContainer =
-        document.getElementById("videos");
-
-      videoContainer.innerHTML = "";
-
       let videos = item.Videos || [];
 
       if (!Array.isArray(videos)) {
         videos = [];
       }
+
+      const videoContainer =
+        document.getElementById("videos");
+
+      videoContainer.innerHTML = "";
 
       videos.forEach(function(video) {
         addVideo(video);
@@ -392,10 +391,10 @@
 
       /* MEMORIES */
 
-      const memoryContainer =
+      const container =
         document.getElementById("memories");
 
-      memoryContainer.innerHTML = "";
+      container.innerHTML = "";
 
       let memories = item.Memories || [];
 
@@ -430,13 +429,13 @@
     const div =
       document.createElement("div");
 
-    div.className = "videoBox";
+    div.className = "video";
 
     div.innerHTML = `
       <input
-        type="text"
         class="videoUrl"
-        placeholder="Paste video link here..."
+        type="url"
+        placeholder="Paste video URL here..."
       >
 
       <button
@@ -508,23 +507,26 @@
 
 
     const name =
-      document.getElementById("name").value.trim();
+      document.getElementById("name")
+        .value.trim();
 
     const eventDate =
-      document.getElementById("eventDate").value.trim();
+      document.getElementById("eventDate")
+        .value.trim();
 
     const story =
-      document.getElementById("story").value;
+      document.getElementById("story")
+        .value;
 
     const music =
-      document.getElementById("music").value.trim();
+      document.getElementById("music")
+        .value.trim();
 
 
     /* PHOTOS */
 
     const photos =
-      document
-        .getElementById("photos")
+      document.getElementById("photos")
         .value
         .split("\n")
         .map(function(x) {
@@ -559,7 +561,7 @@
 
     try {
 
-      /* Find existing row */
+      /* FIND EXISTING ROW */
 
       const findResponse = await fetch(
         SUPABASE_URL +
@@ -637,7 +639,8 @@
 
         msg.textContent =
           "Save failed: " +
-          (error.message || "Unknown error");
+          (error.message ||
+           "Unknown error");
 
         return;
       }
@@ -645,7 +648,6 @@
 
       msg.textContent =
         "Saved online successfully ♡";
-
 
     } catch (error) {
 
