@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Rana & Mazen ♡</title>
 
 <style>
@@ -16,13 +16,15 @@ color:#5b4039;
 overflow-x:hidden;
 }
 
-#hearts{
+#hearts,#flowers{
 position:fixed;
 inset:0;
 pointer-events:none;
 overflow:hidden;
-z-index:0;
 }
+
+#hearts{z-index:0}
+#flowers{z-index:20}
 
 .heart{
 position:absolute;
@@ -36,14 +38,6 @@ to{
 transform:translateY(-110vh) rotate(25deg);
 opacity:0;
 }
-}
-
-#flowers{
-position:fixed;
-inset:0;
-pointer-events:none;
-z-index:20;
-overflow:hidden;
 }
 
 .flower{
@@ -84,23 +78,18 @@ font-weight:normal;
 margin:10px 0;
 }
 
-.hero .heart{
-position:static;
-animation:beat 1.5s infinite;
+.hero .big-heart{
 font-size:65px;
+animation:beat 1.5s infinite;
 }
 
 @keyframes beat{
 50%{transform:scale(1.15)}
 }
 
-.hero p{
-color:#96756d;
-}
+.hero p{color:#96756d}
 
-.section{
-margin-top:55px;
-}
+.section{margin-top:55px}
 
 h2{
 text-align:center;
@@ -116,9 +105,9 @@ padding:25px;
 box-shadow:0 15px 40px #00000012;
 }
 
-.photos{
-overflow:hidden;
-}
+.hidden{display:none!important}
+
+.photos{overflow:hidden}
 
 .photo-track{
 display:flex;
@@ -202,10 +191,6 @@ cursor:pointer;
 margin-top:15px;
 }
 
-.hidden{
-display:none!important;
-}
-
 .memory-stage{
 height:400px;
 position:relative;
@@ -252,7 +237,9 @@ width:110px;
 height:110px;
 border-radius:50%;
 margin:auto;
-background:repeating-radial-gradient(circle,#392622 0 3px,#533b35 4px 7px);
+background:repeating-radial-gradient(
+circle,#392622 0 3px,#533b35 4px 7px
+);
 display:flex;
 align-items:center;
 justify-content:center;
@@ -278,9 +265,7 @@ animation:spin 2s linear infinite;
 to{transform:rotate(360deg)}
 }
 
-.music{
-text-align:center;
-}
+.music{text-align:center}
 
 video{
 width:100%;
@@ -309,6 +294,11 @@ font-family:Georgia,serif;
 font-size:22px;
 margin-top:70px;
 }
+
+a{
+color:#76554d;
+font-weight:bold;
+}
 </style>
 </head>
 
@@ -320,7 +310,7 @@ margin-top:70px;
 <main>
 
 <section class="hero">
-<div class="heart">♡</div>
+<div class="big-heart">♡</div>
 <div>OUR LITTLE STORY</div>
 <h1 id="names">Rana & Mazen</h1>
 <p>For my favorite person ❤️</p>
@@ -346,7 +336,9 @@ margin-top:70px;
 
 <h2>A Message For You</h2>
 
-<div id="messageClosed" class="card lock" onclick="openMessage()">
+<div id="messageClosed"
+class="card lock"
+onclick="openMessage()">
 
 <div class="lock-circle">🔐</div>
 
@@ -359,12 +351,15 @@ margin-top:70px;
 
 </div>
 
+
 <div id="messageOpen" class="card hidden">
 
 <div id="story" class="message"></div>
 
 <div style="text-align:center">
-<button onclick="closeMessage()">اقفل الرسالة ♡</button>
+<button onclick="closeMessage()">
+اقفل الرسالة ♡
+</button>
 </div>
 
 </div>
@@ -391,7 +386,9 @@ margin-top:70px;
 
 <div id="videoLocked" class="card lock">
 
-<div class="lock-circle" onclick="showDateInput()">🔐</div>
+<div class="lock-circle" onclick="showDateInput()">
+🔐
+</div>
 
 <h3>Secret Video</h3>
 
@@ -407,13 +404,16 @@ id="secretDate"
 placeholder="DD/MM/YYYY"
 inputmode="numeric">
 
-<button onclick="unlockVideo()">Unlock ♡</button>
+<button onclick="unlockVideo()">
+Unlock ♡
+</button>
 
 <div id="error" class="error"></div>
 
 </div>
 
 </div>
+
 
 <div id="videoUnlocked" class="hidden"></div>
 
@@ -426,8 +426,7 @@ inputmode="numeric">
 
 <div class="card music">
 
-<div
-id="record"
+<div id="record"
 class="record"
 onclick="toggleMusic()">
 </div>
@@ -458,8 +457,6 @@ And this is only the beginning... ♡
 </main>
 
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <script>
 
 const SUPABASE_URL =
@@ -468,11 +465,16 @@ const SUPABASE_URL =
 const SUPABASE_KEY =
 "sb_publishable_lgtWi40tBxTt1zPogOQ4oA_Zf8SKU2P";
 
-const db =
-window.supabase.createClient(
-SUPABASE_URL,
-SUPABASE_KEY
-);
+
+let photos=[];
+let photoIndex=0;
+
+let memories=[];
+let memoryIndex=0;
+
+let videos=[];
+
+let music="";
 
 
 /* HEARTS */
@@ -483,9 +485,11 @@ const h=document.createElement("div");
 
 h.className="heart";
 
-h.textContent=Math.random()>0.5?"♡":"♥";
+h.textContent=
+Math.random()>0.5 ? "♡" : "♥";
 
-h.style.left=Math.random()*100+"%";
+h.style.left=
+Math.random()*100+"%";
 
 h.style.fontSize=
 (12+Math.random()*20)+"px";
@@ -493,9 +497,13 @@ h.style.fontSize=
 h.style.animationDuration=
 (6+Math.random()*5)+"s";
 
-document.getElementById("hearts").appendChild(h);
+document
+.getElementById("hearts")
+.appendChild(h);
 
-setTimeout(()=>h.remove(),12000);
+setTimeout(()=>{
+h.remove();
+},12000);
 
 }
 
@@ -506,9 +514,12 @@ setInterval(heart,800);
 
 function flowers(){
 
-const box=document.getElementById("flowers");
+const box=
+document.getElementById("flowers");
 
-const list=["🌹","🌷","🌸","🌺","💐"];
+const list=[
+"🌹","🌷","🌸","🌺","💐"
+];
 
 for(let i=0;i<25;i++){
 
@@ -517,9 +528,12 @@ const f=document.createElement("div");
 f.className="flower";
 
 f.textContent=
-list[Math.floor(Math.random()*list.length)];
+list[Math.floor(
+Math.random()*list.length
+)];
 
-f.style.left=Math.random()*100+"%";
+f.style.left=
+Math.random()*100+"%";
 
 f.style.animationDelay=
 Math.random()*2+"s";
@@ -528,7 +542,9 @@ box.appendChild(f);
 
 }
 
-setTimeout(()=>box.innerHTML="",5000);
+setTimeout(()=>{
+box.innerHTML="";
+},5000);
 
 }
 
@@ -564,10 +580,9 @@ document
 
 /* PHOTOS */
 
-let photoIndex=0;
-let photos=[];
-
 function showPhotos(){
+
+if(!photos.length)return;
 
 const track=
 document.getElementById("photoTrack");
@@ -581,17 +596,12 @@ dots.innerHTML="";
 photos.forEach((url,i)=>{
 
 track.innerHTML+=`
-
 <div class="photo">
-
-<img src="${url}">
-
+<img src="${url}" alt="Our moment">
 <div class="photo-count">
 ${i+1} / ${photos.length}
 </div>
-
 </div>
-
 `;
 
 dots.innerHTML+=`
@@ -608,16 +618,18 @@ updatePhotos();
 
 }
 
+
 function updatePhotos(){
 
-document.getElementById("photoTrack")
+document
+.getElementById("photoTrack")
 .style.transform=
 `translateX(${photoIndex*100}%)`;
 
 document
 .querySelectorAll(".dot")
-.forEach((d,i)=>{
-d.classList.toggle(
+.forEach((dot,i)=>{
+dot.classList.toggle(
 "active",
 i===photoIndex
 );
@@ -626,26 +638,35 @@ i===photoIndex
 }
 
 
-/* swipe photos */
-
 let photoStart=0;
 
 document
 .getElementById("photoSlider")
-.addEventListener("touchstart",e=>{
+.addEventListener(
+"touchstart",
+e=>{
 photoStart=e.touches[0].clientX;
-},{passive:true});
+},
+{passive:true}
+);
+
 
 document
 .getElementById("photoSlider")
-.addEventListener("touchend",e=>{
+.addEventListener(
+"touchend",
+e=>{
 
-let end=e.changedTouches[0].clientX;
+const end=
+e.changedTouches[0].clientX;
 
 if(end-photoStart<-40){
 
 photoIndex=
-Math.min(photoIndex+1,photos.length-1);
+Math.min(
+photoIndex+1,
+photos.length-1
+);
 
 updatePhotos();
 
@@ -654,19 +675,21 @@ updatePhotos();
 if(end-photoStart>40){
 
 photoIndex=
-Math.max(photoIndex-1,0);
+Math.max(
+photoIndex-1,
+0
+);
 
 updatePhotos();
 
 }
 
-},{passive:true});
+},
+{passive:true}
+);
 
 
 /* MEMORIES */
-
-let memories=[];
-let memoryIndex=0;
 
 function showMemories(){
 
@@ -679,6 +702,7 @@ document
 drawMemories();
 
 }
+
 
 function drawMemories(){
 
@@ -701,42 +725,36 @@ card.className="memory";
 let html="";
 
 if(m.image){
-
 html+=`
-<img src="${m.image}">
+<img src="${m.image}" alt="Memory">
 `;
-
 }
 
 if(m.title){
-
 html+=`
 <h3>${m.title}</h3>
 `;
-
 }
 
 if(m.date){
-
 html+=`
 <small>${m.date}</small>
 `;
-
 }
 
 if(m.text){
-
 html+=`
 <p>${m.text}</p>
 `;
-
 }
 
 card.innerHTML=html;
 
-let offset=i-memoryIndex;
+const offset=
+i-memoryIndex;
 
-card.style.zIndex=10-offset;
+card.style.zIndex=
+10-offset;
 
 card.style.transform=
 `translateY(${offset*8}px)
@@ -750,21 +768,27 @@ stage.appendChild(card);
 }
 
 
-/* swipe memories */
-
 let memoryStart=0;
 
 document
 .getElementById("memoryStage")
-.addEventListener("touchstart",e=>{
+.addEventListener(
+"touchstart",
+e=>{
 memoryStart=e.touches[0].clientX;
-},{passive:true});
+},
+{passive:true}
+);
+
 
 document
 .getElementById("memoryStage")
-.addEventListener("touchend",e=>{
+.addEventListener(
+"touchend",
+e=>{
 
-let end=e.changedTouches[0].clientX;
+const end=
+e.changedTouches[0].clientX;
 
 if(end-memoryStart<-40){
 
@@ -788,12 +812,12 @@ drawMemories();
 
 }
 
-},{passive:true});
+},
+{passive:true}
+);
 
 
 /* VIDEO */
-
-let videos=[];
 
 function showDateInput(){
 
@@ -803,15 +827,14 @@ document
 
 }
 
+
 function unlockVideo(){
 
-let value=
+const value=
 document
 .getElementById("secretDate")
 .value
-.replace(/-/g,"/")
-.replace(/\./g,"/")
-.replace(/\s/g,"");
+.replace(/[^0-9]/g,"");
 
 if(
 value!=="03112025" &&
@@ -845,22 +868,17 @@ document
 const box=
 document.getElementById("videoUnlocked");
 
+box.innerHTML="";
 box.classList.remove("hidden");
 
 videos.forEach(url=>{
 
 box.innerHTML+=`
-
 <div class="card" style="margin-top:15px">
-
 <video controls playsinline>
-
 <source src="${url}">
-
 </video>
-
 </div>
-
 `;
 
 });
@@ -869,8 +887,6 @@ box.innerHTML+=`
 
 
 /* MUSIC */
-
-let music="";
 
 function setupMusic(url){
 
@@ -891,6 +907,7 @@ document
 .href=url;
 
 }
+
 
 async function toggleMusic(){
 
@@ -930,13 +947,17 @@ window.open(music,"_blank");
 
 }
 
+
 document
 .getElementById("audio")
-.addEventListener("ended",()=>{
+.addEventListener(
+"ended",
+()=>{
 document
 .getElementById("record")
 .classList.remove("playing");
-});
+}
+);
 
 
 /* LOAD SUPABASE */
@@ -945,119 +966,180 @@ async function load(){
 
 try{
 
-const result=
-await db
-.from("rana_mazen")
-.select("*")
-.limit(1);
+/*
+مهم:
+بنستخدم fetch مباشر من غير Authorization
+عشان الصفحة العامة تفضل Anonymous
+وتقرأ بنفس الـ RLS اللي شغال عندك.
+*/
 
-if(result.error){
+const response=
+await fetch(
+SUPABASE_URL+
+"/rest/v1/rana_mazen?select=*",
+{
+method:"GET",
+headers:{
+"apikey":SUPABASE_KEY,
+"Accept":"application/json"
+}
+}
+);
 
-console.error(result.error);
+
+const data=
+await response.json();
+
+console.log("PUBLIC DATA:",data);
+
+
+if(!response.ok){
+
+console.error(
+"Supabase error:",
+data
+);
 
 return;
 
 }
 
-if(!result.data || !result.data.length){
+
+if(
+!Array.isArray(data) ||
+!data.length
+){
+
+console.log("No data found");
 
 return;
 
 }
 
-const row=result.data[0];
+
+const row=data[0];
 
 
-/* names */
+/* NAMES */
 
 if(row.Name){
 
 document
 .getElementById("names")
-.textContent=row.Name;
+.textContent=
+row.Name;
 
 }
 
 
-/* date */
+/* DATE */
 
 if(row.Event_date){
 
 document
 .getElementById("date")
-.textContent=row.Event_date;
+.textContent=
+row.Event_date;
 
 }
 
 
-/* story */
+/* STORY */
 
 if(row.Story){
 
 document
 .getElementById("story")
-.textContent=row.Story;
+.textContent=
+row.Story;
 
 }
 
 
-/* photos */
+/* PHOTOS */
 
-photos=row.Photos || [];
+photos=
+row.Photos || [];
 
 if(typeof photos==="string"){
 
 try{
-photos=JSON.parse(photos);
+
+photos=
+JSON.parse(photos);
+
 }catch(e){
+
 photos=[];
-}
 
 }
 
-if(Array.isArray(photos)&&photos.length){
+}
+
+if(
+Array.isArray(photos) &&
+photos.length
+){
 
 showPhotos();
 
 }
 
 
-/* memories */
+/* MEMORIES */
 
-memories=row.Memories || [];
+memories=
+row.Memories || [];
 
 if(typeof memories==="string"){
 
 try{
-memories=JSON.parse(memories);
+
+memories=
+JSON.parse(memories);
+
 }catch(e){
+
 memories=[];
-}
 
 }
 
-if(Array.isArray(memories)&&memories.length){
+}
+
+if(
+Array.isArray(memories) &&
+memories.length
+){
 
 showMemories();
 
 }
 
 
-/* videos */
+/* VIDEOS */
 
-videos=row.Videos || [];
+videos=
+row.Videos || [];
 
 if(typeof videos==="string"){
 
 try{
-videos=JSON.parse(videos);
+
+videos=
+JSON.parse(videos);
+
 }catch(e){
+
 videos=[];
-}
 
 }
 
-if(Array.isArray(videos)&&videos.length){
+}
+
+if(
+Array.isArray(videos) &&
+videos.length
+){
 
 document
 .getElementById("videoSection")
@@ -1066,7 +1148,7 @@ document
 }
 
 
-/* music */
+/* MUSIC */
 
 if(row.Music){
 
@@ -1074,9 +1156,13 @@ setupMusic(row.Music);
 
 }
 
+
 }catch(error){
 
-console.error(error);
+console.error(
+"LOAD ERROR:",
+error
+);
 
 }
 
