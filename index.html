@@ -1,734 +1,522 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Rana & Mazen ♡ — Admin</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rana & Mazen ♡ Admin</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #fff7fa;
-      color: #333;
-    }
-
-    .wrap {
-      max-width: 700px;
-      margin: auto;
-      padding: 25px 18px 50px;
-    }
-
-    h1 {
-      text-align: center;
-      color: #b84d72;
-      margin-bottom: 25px;
-    }
-
-    h2 {
-      color: #b84d72;
-      font-size: 20px;
-      margin-top: 28px;
-    }
-
-    label {
-      display: block;
-      margin-top: 15px;
-      margin-bottom: 6px;
-      font-weight: bold;
-    }
-
-    input,
-    textarea {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid #ddd;
-      border-radius: 10px;
-      font-size: 15px;
-      background: white;
-    }
-
-    textarea {
-      min-height: 120px;
-      resize: vertical;
-    }
-
-    button {
-      border: 0;
-      border-radius: 10px;
-      padding: 12px 18px;
-      font-size: 15px;
-      cursor: pointer;
-      margin-top: 12px;
-    }
-
-    .main-btn {
-      width: 100%;
-      background: #b84d72;
-      color: white;
-      font-weight: bold;
-    }
-
-    .add-btn {
-      background: #f4d5df;
-      color: #8d3657;
-    }
-
-    .remove-btn {
-      background: #eee;
-      color: #777;
-      margin-top: 7px;
-    }
-
-    .box {
-      background: white;
-      padding: 18px;
-      border-radius: 15px;
-      margin-top: 15px;
-      box-shadow: 0 3px 15px rgba(0,0,0,.05);
-    }
-
-    .item {
-      background: #fff8fb;
-      padding: 12px;
-      border-radius: 12px;
-      margin-top: 10px;
-    }
-
-    #admin {
-      display: none;
-    }
-
-    #status {
-      text-align: center;
-      margin-top: 15px;
-      font-weight: bold;
-    }
-
-    .logout {
-      background: #eee;
-      color: #555;
-      width: 100%;
-    }
-  </style>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#fff7fa;color:#333}
+.wrap{max-width:700px;margin:auto;padding:25px 18px 50px}
+h1{text-align:center;color:#b84d72}
+h2{color:#b84d72;font-size:20px}
+.box{background:white;padding:18px;border-radius:15px;margin:15px 0;box-shadow:0 3px 15px #0000000d}
+label{display:block;margin:14px 0 6px;font-weight:bold}
+input,textarea{width:100%;padding:12px;border:1px solid #ddd;border-radius:10px;font-size:15px}
+textarea{min-height:110px}
+button{border:0;border-radius:10px;padding:12px 18px;font-size:15px;margin-top:10px;cursor:pointer}
+.main{width:100%;background:#b84d72;color:white;font-weight:bold}
+.add{background:#f3d3df;color:#8d3657}
+.remove{background:#eee;color:#666}
+.item{background:#fff7fa;padding:12px;border-radius:12px;margin:10px 0}
+#admin{display:none}
+#status,#loginStatus{text-align:center;margin:12px 0;font-weight:bold}
+</style>
 </head>
 
 <body>
 
 <div class="wrap">
 
-  <!-- LOGIN -->
-  <div id="login">
-    <h1>Rana & Mazen ♡</h1>
+<div id="login">
+<h1>Rana & Mazen ♡</h1>
 
-    <div class="box">
-      <h2>Admin Login</h2>
+<div class="box">
+<h2>Admin Login</h2>
 
-      <label>Email</label>
-      <input id="email" type="email" placeholder="Your email">
+<label>Email</label>
+<input id="email" type="email">
 
-      <label>Password</label>
-      <input id="password" type="password" placeholder="Your password">
+<label>Password</label>
+<input id="password" type="password">
 
-      <button class="main-btn" id="loginBtn">
-        Login
-      </button>
+<button class="main" id="loginBtn">Login</button>
 
-      <div id="loginStatus"></div>
-    </div>
-  </div>
+<div id="loginStatus"></div>
+</div>
+</div>
 
 
-  <!-- ADMIN -->
-  <div id="admin">
+<div id="admin">
 
-    <h1>Rana & Mazen ♡</h1>
+<h1>Rana & Mazen ♡</h1>
 
-    <div class="box">
+<div class="box">
+<h2>Basic Information</h2>
 
-      <h2>Basic Information</h2>
+<label>Names</label>
+<input id="name">
 
-      <label>Names</label>
-      <input id="name">
+<label>Date</label>
+<input id="event_date">
 
-      <label>Date</label>
-      <input id="event_date">
+<label>Story</label>
+<textarea id="story"></textarea>
 
-      <label>Story</label>
-      <textarea id="story"></textarea>
-
-      <label>Song URL</label>
-      <input id="music" placeholder="https://...">
-
-    </div>
+<label>Song URL</label>
+<input id="music">
+</div>
 
 
-    <!-- PHOTOS -->
-    <div class="box">
-
-      <h2>Photos</h2>
-
-      <div id="photos"></div>
-
-      <button class="add-btn" id="addPhoto">
-        + Add photo
-      </button>
-
-    </div>
+<div class="box">
+<h2>Photos</h2>
+<div id="photos"></div>
+<button class="add" id="addPhoto">+ Add photo</button>
+</div>
 
 
-    <!-- VIDEOS -->
-    <div class="box">
-
-      <h2>Videos</h2>
-
-      <div id="videos"></div>
-
-      <button class="add-btn" id="addVideo">
-        + Add video
-      </button>
-
-    </div>
+<div class="box">
+<h2>Videos</h2>
+<div id="videos"></div>
+<button class="add" id="addVideo">+ Add video</button>
+</div>
 
 
-    <!-- MEMORIES -->
-    <div class="box">
-
-      <h2>Memories</h2>
-
-      <div id="memories"></div>
-
-      <button class="add-btn" id="addMemory">
-        + Add memory
-      </button>
-
-    </div>
+<div class="box">
+<h2>Memories</h2>
+<div id="memories"></div>
+<button class="add" id="addMemory">+ Add memory</button>
+</div>
 
 
-    <button class="main-btn" id="saveBtn">
-      Save Changes ♡
-    </button>
+<button class="main" id="saveBtn">
+Save Changes ♡
+</button>
 
-    <div id="status"></div>
+<div id="status"></div>
 
-    <button class="logout" id="logoutBtn">
-      Logout
-    </button>
+<button id="logoutBtn" style="width:100%;background:#eee;color:#555">
+Logout
+</button>
 
-  </div>
-
+</div>
 </div>
 
 
 <script>
 
 const SUPABASE_URL =
-  "https://jqpceabdshvboderrbiz.supabase.co";
+"https://jqpceabdshvboderrbiz.supabase.co";
 
 const SUPABASE_KEY =
-  "sb_publishable_lgtWi40tBxTt1zPogOQ4oA_Zf8SKU2P";
+"sb_publishable_lgtWi40tBxTt1zPogOQ4oA_Zf8SKU2P";
 
-
-/*
-  Auth is only used to protect the Admin screen.
-  Database requests stay anonymous because your current
-  Supabase RLS policies allow anon access.
-*/
-
-const supabaseClient =
-  window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
-  );
-
+const db =
+window.supabase.createClient(
+SUPABASE_URL,
+SUPABASE_KEY
+);
 
 let rowId = null;
 
 
-/* ---------------- LOGIN ---------------- */
+/* LOGIN */
 
-document.getElementById("loginBtn").addEventListener("click", async () => {
+document.getElementById("loginBtn").onclick = async function(){
 
-  const email =
-    document.getElementById("email").value.trim();
+const email =
+document.getElementById("email").value.trim();
 
-  const password =
-    document.getElementById("password").value;
+const password =
+document.getElementById("password").value;
 
-  const status =
-    document.getElementById("loginStatus");
+const status =
+document.getElementById("loginStatus");
 
-  status.textContent = "Logging in...";
+status.textContent="Logging in...";
 
-  const { error } =
-    await supabaseClient.auth.signInWithPassword({
-      email,
-      password
-    });
+const {error} =
+await db.auth.signInWithPassword({
+email:email,
+password:password
+});
 
-  if (error) {
-    status.textContent =
-      "Login failed: " + error.message;
-    return;
-  }
+if(error){
+status.textContent="Login failed: "+error.message;
+return;
+}
 
-  status.textContent = "";
+document.getElementById("login").style.display="none";
+document.getElementById("admin").style.display="block";
 
-  document.getElementById("login").style.display = "none";
-  document.getElementById("admin").style.display = "block";
+await loadData();
 
-  await loadData();
+};
+
+
+/* LOAD */
+
+async function loadData(){
+
+const status =
+document.getElementById("status");
+
+status.textContent="Loading...";
+
+try{
+
+const response =
+await fetch(
+SUPABASE_URL+
+"/rest/v1/rana_mazen?select=*",
+{
+method:"GET",
+headers:{
+"apikey":SUPABASE_KEY,
+"Accept":"application/json"
+}
+}
+);
+
+const data =
+await response.json();
+
+console.log("SUPABASE DATA:",data);
+
+if(!response.ok){
+throw new Error(
+data.message ||
+data.error_description ||
+"Request failed"
+);
+}
+
+if(!Array.isArray(data) || data.length===0){
+
+status.textContent="No data found";
+
+return;
+}
+
+
+/* FIRST ROW */
+
+const item=data[0];
+
+rowId=item.Id;
+
+
+/* BASIC */
+
+document.getElementById("name").value=
+item.Name || "";
+
+document.getElementById("event_date").value=
+item.Event_date || "";
+
+document.getElementById("story").value=
+item.Story || "";
+
+document.getElementById("music").value=
+item.Music || "";
+
+
+/* PHOTOS */
+
+document.getElementById("photos").innerHTML="";
+
+const photos=
+Array.isArray(item.Photos)
+?item.Photos
+:[];
+
+photos.forEach(function(url){
+addPhoto(url);
 });
 
 
-/* ---------------- LOAD DATA ---------------- */
+/* VIDEOS */
 
-async function loadData() {
+document.getElementById("videos").innerHTML="";
 
-  const status =
-    document.getElementById("status");
+const videos=
+Array.isArray(item.Videos)
+?item.Videos
+:[];
 
-  status.textContent = "Loading...";
-
-  try {
-
-    /*
-      IMPORTANT:
-      No Authorization header here.
-      This keeps the request anonymous,
-      matching your existing RLS SELECT policy.
-    */
-
-    const response = await fetch(
-      SUPABASE_URL +
-      "/rest/v1/rana_mazen?select=*&limit=1",
-      {
-        method: "GET",
-        headers: {
-          "apikey": SUPABASE_KEY,
-          "Accept": "application/json"
-        }
-      }
-    );
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(
-        data.message ||
-        data.error_description ||
-        "Could not load data"
-      );
-    }
-
-    if (!data || data.length === 0) {
-      status.textContent = "No data found";
-      return;
-    }
-
-    const item = data[0];
-
-    rowId = item.Id;
-
-    document.getElementById("name").value =
-      item.Name || "";
-
-    document.getElementById("event_date").value =
-      item.Event_date || "";
-
-    document.getElementById("story").value =
-      item.Story || "";
-
-    document.getElementById("music").value =
-      item.Music || "";
+videos.forEach(function(url){
+addVideo(url);
+});
 
 
-    /* PHOTOS */
+/* MEMORIES */
 
-    const photos =
-      Array.isArray(item.Photos)
-        ? item.Photos
-        : [];
+document.getElementById("memories").innerHTML="";
 
-    document.getElementById("photos").innerHTML = "";
+const memories=
+Array.isArray(item.Memories)
+?item.Memories
+:[];
 
-    photos.forEach(url => {
-      addPhoto(url);
-    });
+memories.forEach(function(memory){
 
+if(typeof memory==="string"){
+addMemory(memory,"");
+}else{
+addMemory(
+memory.text || "",
+memory.date || ""
+);
+}
 
-    /* VIDEOS */
-
-    const videos =
-      Array.isArray(item.Videos)
-        ? item.Videos
-        : [];
-
-    document.getElementById("videos").innerHTML = "";
-
-    videos.forEach(url => {
-      addVideo(url);
-    });
+});
 
 
-    /* MEMORIES */
+status.textContent="";
 
-    const memories =
-      Array.isArray(item.Memories)
-        ? item.Memories
-        : [];
+}catch(error){
 
-    document.getElementById("memories").innerHTML = "";
+console.error(error);
 
-    memories.forEach(memory => {
+status.textContent=
+"Error: "+error.message;
 
-      if (typeof memory === "string") {
-        addMemory(memory);
-      } else {
-        addMemory(
-          memory.text || "",
-          memory.date || ""
-        );
-      }
+}
 
-    });
-
-    status.textContent = "";
-
-  } catch (error) {
-
-    console.error(error);
-
-    status.textContent =
-      "Error: " + error.message;
-  }
 }
 
 
-/* ---------------- PHOTOS ---------------- */
+/* PHOTO */
 
-function addPhoto(value = "") {
+function addPhoto(value=""){
 
-  const container =
-    document.getElementById("photos");
+const box=document.createElement("div");
 
-  const item =
-    document.createElement("div");
+box.className="item";
 
-  item.className = "item";
+box.innerHTML=`
+<input class="photoInput"
+type="url"
+placeholder="Photo URL">
 
-  item.innerHTML = `
-    <input
-      class="photo-input"
-      type="url"
-      placeholder="Photo URL"
-      value="${escapeHtml(value)}"
-    >
+<button class="remove">
+Remove
+</button>
+`;
 
-    <button
-      type="button"
-      class="remove-btn"
-    >
-      Remove
-    </button>
-  `;
+box.querySelector("input").value=value;
 
-  item.querySelector(".remove-btn")
-    .addEventListener("click", () => {
-      item.remove();
-    });
+box.querySelector("button").onclick=function(){
+box.remove();
+};
 
-  container.appendChild(item);
+document.getElementById("photos").appendChild(box);
+
 }
 
-
-document.getElementById("addPhoto")
-  .addEventListener("click", () => {
-    addPhoto("");
-  });
+document.getElementById("addPhoto").onclick=function(){
+addPhoto("");
+};
 
 
-/* ---------------- VIDEOS ---------------- */
+/* VIDEO */
 
-function addVideo(value = "") {
+function addVideo(value=""){
 
-  const container =
-    document.getElementById("videos");
+const box=document.createElement("div");
 
-  const item =
-    document.createElement("div");
+box.className="item";
 
-  item.className = "item";
+box.innerHTML=`
+<input class="videoInput"
+type="url"
+placeholder="Video URL">
 
-  item.innerHTML = `
-    <input
-      class="video-input"
-      type="url"
-      placeholder="Video URL"
-      value="${escapeHtml(value)}"
-    >
+<button class="remove">
+Remove
+</button>
+`;
 
-    <button
-      type="button"
-      class="remove-btn"
-    >
-      Remove
-    </button>
-  `;
+box.querySelector("input").value=value;
 
-  item.querySelector(".remove-btn")
-    .addEventListener("click", () => {
-      item.remove();
-    });
+box.querySelector("button").onclick=function(){
+box.remove();
+};
 
-  container.appendChild(item);
+document.getElementById("videos").appendChild(box);
+
 }
 
-
-document.getElementById("addVideo")
-  .addEventListener("click", () => {
-    addVideo("");
-  });
+document.getElementById("addVideo").onclick=function(){
+addVideo("");
+};
 
 
-/* ---------------- MEMORIES ---------------- */
+/* MEMORY */
 
-function addMemory(text = "", date = "") {
+function addMemory(text="",date=""){
 
-  const container =
-    document.getElementById("memories");
+const box=document.createElement("div");
 
-  const item =
-    document.createElement("div");
+box.className="item";
 
-  item.className = "item";
+box.innerHTML=`
+<input class="memoryDate"
+placeholder="Date">
 
-  item.innerHTML = `
-    <input
-      class="memory-date"
-      type="text"
-      placeholder="Date"
-      value="${escapeHtml(date)}"
-    >
+<textarea class="memoryText"
+placeholder="Memory"></textarea>
 
-    <br><br>
+<button class="remove">
+Remove
+</button>
+`;
 
-    <textarea
-      class="memory-text"
-      placeholder="Memory"
-    >${escapeHtml(text)}</textarea>
+box.querySelector(".memoryDate").value=date;
+box.querySelector(".memoryText").value=text;
 
-    <button
-      type="button"
-      class="remove-btn"
-    >
-      Remove
-    </button>
-  `;
+box.querySelector("button").onclick=function(){
+box.remove();
+};
 
-  item.querySelector(".remove-btn")
-    .addEventListener("click", () => {
-      item.remove();
-    });
+document.getElementById("memories").appendChild(box);
 
-  container.appendChild(item);
 }
 
-
-document.getElementById("addMemory")
-  .addEventListener("click", () => {
-    addMemory("", "");
-  });
+document.getElementById("addMemory").onclick=function(){
+addMemory("","");
+};
 
 
-/* ---------------- SAVE ---------------- */
+/* SAVE */
 
-document.getElementById("saveBtn")
-  .addEventListener("click", saveData);
+document.getElementById("saveBtn").onclick=async function(){
 
+const status=
+document.getElementById("status");
 
-async function saveData() {
-
-  const status =
-    document.getElementById("status");
-
-  status.textContent = "Saving...";
+status.textContent="Saving...";
 
 
-  const photos =
-    [...document.querySelectorAll(".photo-input")]
-      .map(input => input.value.trim())
-      .filter(Boolean);
+const photos=
+[...document.querySelectorAll(".photoInput")]
+.map(x=>x.value.trim())
+.filter(Boolean);
 
 
-  const videos =
-    [...document.querySelectorAll(".video-input")]
-      .map(input => input.value.trim())
-      .filter(Boolean);
+const videos=
+[...document.querySelectorAll(".videoInput")]
+.map(x=>x.value.trim())
+.filter(Boolean);
 
 
-  const memories =
-    [...document.querySelectorAll(".item")]
-      .map(() => null);
+const memories=
+[...document.querySelectorAll("#memories .item")]
+.map(function(box){
+
+return {
+date:box.querySelector(".memoryDate").value.trim(),
+text:box.querySelector(".memoryText").value.trim()
+};
+
+})
+.filter(x=>x.text || x.date);
 
 
-  const memoryBoxes =
-    document.querySelectorAll(
-      "#memories .item"
-    );
+const updateData={
+
+Name:
+document.getElementById("name").value.trim(),
+
+Event_date:
+document.getElementById("event_date").value.trim(),
+
+Story:
+document.getElementById("story").value.trim(),
+
+Music:
+document.getElementById("music").value.trim(),
+
+Photos:photos,
+
+Videos:videos,
+
+Memories:memories
+
+};
 
 
-  const memoryData = [];
+try{
 
-  memoryBoxes.forEach(box => {
+const response=
+await fetch(
+SUPABASE_URL+
+"/rest/v1/rana_mazen?Id=eq."+
+encodeURIComponent(rowId),
+{
+method:"PATCH",
+headers:{
+"apikey":SUPABASE_KEY,
+"Content-Type":"application/json",
+"Prefer":"return=minimal"
+},
+body:JSON.stringify(updateData)
+}
+);
 
-    const text =
-      box.querySelector(".memory-text")
-        ?.value.trim() || "";
+if(!response.ok){
 
-    const date =
-      box.querySelector(".memory-date")
-        ?.value.trim() || "";
+const error=
+await response.text();
 
-    if (text || date) {
-      memoryData.push({
-        date: date,
-        text: text
-      });
-    }
+throw new Error(error);
 
-  });
-
-
-  const updateData = {
-    Name:
-      document.getElementById("name").value.trim(),
-
-    Event_date:
-      document.getElementById("event_date").value.trim(),
-
-    Story:
-      document.getElementById("story").value.trim(),
-
-    Music:
-      document.getElementById("music").value.trim(),
-
-    Photos:
-      photos,
-
-    Videos:
-      videos,
-
-    Memories:
-      memoryData
-  };
-
-
-  try {
-
-    /*
-      Anonymous PATCH because your current
-      UPDATE policy is for anon.
-    */
-
-    const response = await fetch(
-      SUPABASE_URL +
-      "/rest/v1/rana_mazen?Id=eq." +
-      encodeURIComponent(rowId),
-      {
-        method: "PATCH",
-
-        headers: {
-          "apikey": SUPABASE_KEY,
-          "Content-Type": "application/json",
-          "Prefer": "return=minimal"
-        },
-
-        body: JSON.stringify(updateData)
-      }
-    );
-
-
-    if (!response.ok) {
-
-      const errorData =
-        await response.text();
-
-      throw new Error(
-        errorData || "Save failed"
-      );
-    }
-
-
-    status.textContent =
-      "Saved online successfully ♡";
-
-  } catch (error) {
-
-    console.error(error);
-
-    status.textContent =
-      "Save failed: " + error.message;
-  }
 }
 
+status.textContent=
+"Saved online successfully ♡";
 
-/* ---------------- LOGOUT ---------------- */
+}catch(error){
 
-document.getElementById("logoutBtn")
-  .addEventListener("click", async () => {
+console.error(error);
 
-    await supabaseClient.auth.signOut();
+status.textContent=
+"Save failed: "+error.message;
 
-    document.getElementById("admin").style.display =
-      "none";
-
-    document.getElementById("login").style.display =
-      "block";
-
-    document.getElementById("email").value = "";
-    document.getElementById("password").value = "";
-
-  });
-
-
-/* ---------------- HELPER ---------------- */
-
-function escapeHtml(value) {
-
-  return String(value || "")
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
 }
 
+};
 
-/* ---------------- SESSION ---------------- */
 
-(async function checkSession() {
+/* LOGOUT */
 
-  const {
-    data: { session }
-  } = await supabaseClient.auth.getSession();
+document.getElementById("logoutBtn").onclick=async function(){
 
-  if (session) {
+await db.auth.signOut();
 
-    document.getElementById("login").style.display =
-      "none";
+document.getElementById("admin").style.display="none";
+document.getElementById("login").style.display="block";
 
-    document.getElementById("admin").style.display =
-      "block";
+};
 
-    await loadData();
-  }
+
+/* EXISTING SESSION */
+
+(async function(){
+
+const {data}=
+await db.auth.getSession();
+
+if(data.session){
+
+document.getElementById("login").style.display="none";
+document.getElementById("admin").style.display="block";
+
+await loadData();
+
+}
 
 })();
 
