@@ -127,6 +127,7 @@
     <h2>Admin Login</h2>
 
     <label>Email</label>
+
     <input
       id="email"
       type="email"
@@ -135,6 +136,7 @@
     >
 
     <label>Password</label>
+
     <input
       id="password"
       type="password"
@@ -142,7 +144,9 @@
       autocomplete="current-password"
     >
 
-    <button class="primary" onclick="login()">
+    <button
+      class="primary"
+      onclick="login()">
       Login
     </button>
 
@@ -151,10 +155,12 @@
   </div>
 
 
-  <!-- ADMIN PANEL -->
+  <!-- ADMIN -->
   <div id="adminPanel" class="hidden">
 
-    <button class="logout" onclick="logout()">
+    <button
+      class="logout"
+      onclick="logout()">
       Logout
     </button>
 
@@ -165,22 +171,38 @@
       <h1>Rana & Mazen ♡</h1>
 
       <label>Names</label>
+
       <input id="name">
 
+
       <label>Date</label>
-      <input id="eventDate" type="text">
+
+      <input
+        id="eventDate"
+        type="text"
+      >
+
 
       <label>Story</label>
+
       <textarea id="story"></textarea>
 
+
       <label>Song URL</label>
-      <input id="music" type="text">
+
+      <input
+        id="music"
+        type="text"
+      >
+
 
       <label>Photo URLs</label>
+
       <textarea
         id="photos"
         placeholder="Put one photo URL per line"
       ></textarea>
+
 
       <h2 style="margin-top:25px;">
         Memories
@@ -188,17 +210,20 @@
 
       <div id="memories"></div>
 
+
       <button
         class="secondary"
         onclick="addMemory()">
         + Add memory
       </button>
 
+
       <button
         class="primary"
         onclick="saveData()">
         Save Changes ♡
       </button>
+
 
       <div id="message"></div>
 
@@ -212,7 +237,7 @@
 <script>
 
   /* =====================================
-     SUPABASE
+     SUPABASE SETTINGS
      ===================================== */
 
   const SUPABASE_URL =
@@ -221,10 +246,49 @@
   const SUPABASE_KEY =
     "sb_publishable_lgtWi40tBxTt1zPogOQ4oA_Zf8SKU2P";
 
-  const supabaseClient =
+
+  /*
+     LOGIN CLIENT
+
+     This client is used only for
+     Supabase Authentication.
+  */
+
+  const authClient =
     window.supabase.createClient(
       SUPABASE_URL,
       SUPABASE_KEY
+    );
+
+
+  /*
+     DATA CLIENT
+
+     This is a separate client that does
+     NOT keep an authentication session.
+
+     Your current table policies are:
+
+     INSERT -> anon
+     SELECT -> anon
+     UPDATE -> anon
+
+     So this client can use those policies
+     to read and update the existing data.
+  */
+
+  const dataClient =
+    window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY,
+      {
+        auth: {
+          persistSession: false,
+          autoRefreshToken: false,
+          detectSessionInUrl: false,
+          storageKey: "rana-mazen-data"
+        }
+      }
     );
 
 
@@ -235,28 +299,39 @@
   async function login() {
 
     const email =
-      document.getElementById("email").value.trim();
+      document
+        .getElementById("email")
+        .value
+        .trim();
 
     const password =
-      document.getElementById("password").value;
+      document
+        .getElementById("password")
+        .value;
 
     const message =
       document.getElementById("loginMessage");
 
+
     if (!email || !password) {
+
       message.textContent =
         "Please enter your email and password.";
+
       return;
     }
+
 
     message.textContent =
       "Logging in...";
 
+
     const { data, error } =
-      await supabaseClient.auth.signInWithPassword({
+      await authClient.auth.signInWithPassword({
         email: email,
         password: password
       });
+
 
     if (error) {
 
@@ -265,6 +340,16 @@
 
       return;
     }
+
+
+    if (!data.session) {
+
+      message.textContent =
+        "Login failed. No session was created.";
+
+      return;
+    }
+
 
     message.textContent = "";
 
@@ -280,18 +365,32 @@
 
   async function logout() {
 
-    await supabaseClient.auth.signOut();
+    await authClient.auth.signOut();
+
 
     document
       .getElementById("adminPanel")
       .classList.add("hidden");
 
+
     document
       .getElementById("loginCard")
       .classList.remove("hidden");
 
-    document.getElementById("email").value = "";
-    document.getElementById("password").value = "";
+
+    document
+      .getElementById("email")
+      .value = "";
+
+
+    document
+      .getElementById("password")
+      .value = "";
+
+
+    document
+      .getElementById("loginMessage")
+      .textContent = "";
   }
 
 
@@ -304,6 +403,7 @@
     document
       .getElementById("loginCard")
       .classList.add("hidden");
+
 
     document
       .getElementById("adminPanel")
@@ -320,22 +420,30 @@
     const message =
       document.getElementById("message");
 
+
     message.textContent =
       "Loading...";
 
-    const { data, error } =
-      await supabaseClient
+
+    const {
+      data,
+      error
+    } =
+      await dataClient
         .from("rana_mazen")
         .select("*")
         .limit(1);
 
+
     if (error) {
 
       message.textContent =
-        "Error loading data: " + error.message;
+        "Error loading data: " +
+        error.message;
 
       return;
     }
+
 
     if (!data || data.length === 0) {
 
@@ -345,31 +453,57 @@
       return;
     }
 
+
     const item = data[0];
 
-    document.getElementById("name").value =
-      item.Name || "";
 
-    document.getElementById("eventDate").value =
-      item.Event_date || "";
+    /* NAME */
 
-    document.getElementById("story").value =
-      item.Story || "";
+    document
+      .getElementById("name")
+      .value =
+        item.Name || "";
 
-    document.getElementById("music").value =
-      item.Music || "";
+
+    /* DATE */
+
+    document
+      .getElementById("eventDate")
+      .value =
+        item.Event_date || "";
+
+
+    /* STORY */
+
+    document
+      .getElementById("story")
+      .value =
+        item.Story || "";
+
+
+    /* MUSIC */
+
+    document
+      .getElementById("music")
+      .value =
+        item.Music || "";
 
 
     /* PHOTOS */
 
-    let photos = item.Photos || [];
+    let photos =
+      item.Photos || [];
+
 
     if (!Array.isArray(photos)) {
       photos = [];
     }
 
-    document.getElementById("photos").value =
-      photos.join("\n");
+
+    document
+      .getElementById("photos")
+      .value =
+        photos.join("\n");
 
 
     /* MEMORIES */
@@ -377,19 +511,25 @@
     const memoriesContainer =
       document.getElementById("memories");
 
+
     memoriesContainer.innerHTML = "";
 
-    let memories = item.Memories || [];
+
+    let memories =
+      item.Memories || [];
+
 
     if (!Array.isArray(memories)) {
       memories = [];
     }
+
 
     memories.forEach(function(memory) {
 
       addMemory(memory);
 
     });
+
 
     message.textContent = "";
   }
@@ -404,10 +544,14 @@
     const container =
       document.getElementById("memories");
 
+
     const div =
       document.createElement("div");
 
-    div.className = "memory";
+
+    div.className =
+      "memory";
+
 
     div.innerHTML = `
       <textarea
@@ -422,15 +566,26 @@
       </button>
     `;
 
+
     container.appendChild(div);
+
 
     const textarea =
       div.querySelector(".memoryText");
 
+
     if (typeof memory === "string") {
-      textarea.value = memory;
-    } else if (memory && memory.text) {
-      textarea.value = memory.text;
+
+      textarea.value =
+        memory;
+
+    } else if (
+      memory &&
+      memory.text
+    ) {
+
+      textarea.value =
+        memory.text;
     }
   }
 
@@ -444,6 +599,7 @@
     const message =
       document.getElementById("message");
 
+
     message.textContent =
       "Saving...";
 
@@ -454,16 +610,19 @@
         .value
         .trim();
 
+
     const eventDate =
       document
         .getElementById("eventDate")
         .value
         .trim();
 
+
     const story =
       document
         .getElementById("story")
         .value;
+
 
     const music =
       document
@@ -477,8 +636,8 @@
         .getElementById("photos")
         .value
         .split("\n")
-        .map(function(x) {
-          return x.trim();
+        .map(function(item) {
+          return item.trim();
         })
         .filter(Boolean);
 
@@ -487,8 +646,8 @@
       Array.from(
         document.querySelectorAll(".memoryText")
       )
-      .map(function(x) {
-        return x.value.trim();
+      .map(function(item) {
+        return item.value.trim();
       })
       .filter(Boolean);
 
@@ -499,7 +658,7 @@
       data: existing,
       error: findError
     } =
-      await supabaseClient
+      await dataClient
         .from("rana_mazen")
         .select("Id")
         .limit(1);
@@ -508,7 +667,8 @@
     if (findError) {
 
       message.textContent =
-        "Error: " + findError.message;
+        "Error: " +
+        findError.message;
 
       return;
     }
@@ -517,12 +677,15 @@
     let result;
 
 
-    /* UPDATE */
+    /* UPDATE EXISTING DATA */
 
-    if (existing && existing.length > 0) {
+    if (
+      existing &&
+      existing.length > 0
+    ) {
 
       result =
-        await supabaseClient
+        await dataClient
           .from("rana_mazen")
           .update({
             Name: name,
@@ -532,16 +695,20 @@
             Photos: photos,
             Memories: memories
           })
-          .eq("Id", existing[0].Id);
+          .eq(
+            "Id",
+            existing[0].Id
+          );
 
     }
 
-    /* INSERT */
+
+    /* INSERT IF EMPTY */
 
     else {
 
       result =
-        await supabaseClient
+        await dataClient
           .from("rana_mazen")
           .insert({
             Name: name,
@@ -558,7 +725,8 @@
     if (result.error) {
 
       message.textContent =
-        "Save failed: " + result.error.message;
+        "Save failed: " +
+        result.error.message;
 
       return;
     }
@@ -570,20 +738,25 @@
 
 
   /* =====================================
-     CHECK EXISTING SESSION
+     CHECK AUTH SESSION
      ===================================== */
 
   async function checkSession() {
 
-    const { data } =
-      await supabaseClient.auth.getSession();
+    const {
+      data
+    } =
+      await authClient.auth.getSession();
 
-    if (data.session) {
+
+    if (
+      data &&
+      data.session
+    ) {
 
       showAdmin();
 
       await loadData();
-
     }
   }
 
