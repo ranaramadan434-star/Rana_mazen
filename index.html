@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Rana & Mazen ♡ Admin</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
 *{box-sizing:border-box}
 body{margin:0;font-family:Arial,sans-serif;background:#fff7fa;color:#333}
@@ -16,7 +17,6 @@ label{display:block;margin:14px 0 6px;font-weight:bold}
 input,textarea{width:100%;padding:12px;border:1px solid #ddd;border-radius:10px;font-size:15px}
 textarea{min-height:110px}
 button{border:0;border-radius:10px;padding:12px 18px;font-size:15px;margin-top:10px;cursor:pointer}
-button:disabled{opacity:.6}
 .main{width:100%;background:#b84d72;color:white;font-weight:bold}
 .add{background:#f3d3df;color:#8d3657}
 .remove{background:#eee;color:#666}
@@ -25,6 +25,7 @@ button:disabled{opacity:.6}
 #status,#loginStatus{text-align:center;margin:12px 0;font-weight:bold;overflow-wrap:anywhere}
 </style>
 </head>
+
 <body>
 <div class="wrap">
 
@@ -32,10 +33,13 @@ button:disabled{opacity:.6}
 <h1>Rana & Mazen ♡</h1>
 <div class="box">
 <h2>Admin Login</h2>
+
 <label>Email</label>
 <input id="email" type="email" autocomplete="username">
+
 <label>Password</label>
 <input id="password" type="password" autocomplete="current-password">
+
 <button class="main" id="loginBtn">Login</button>
 <div id="loginStatus"></div>
 </div>
@@ -46,10 +50,17 @@ button:disabled{opacity:.6}
 
 <div class="box">
 <h2>Basic Information</h2>
-<label>Names</label><input id="name">
-<label>Date</label><input id="event_date">
-<label>Story</label><textarea id="story"></textarea>
-<label>Song URL</label><input id="music" type="url">
+<label>Names</label>
+<input id="name">
+
+<label>Date</label>
+<input id="event_date">
+
+<label>Story</label>
+<textarea id="story"></textarea>
+
+<label>Song URL</label>
+<input id="music">
 </div>
 
 <div class="box">
@@ -72,209 +83,298 @@ button:disabled{opacity:.6}
 
 <button class="main" id="saveBtn">Save Changes ♡</button>
 <div id="status"></div>
-<button id="logoutBtn" style="width:100%;background:#eee;color:#555">Logout</button>
+
+<button id="logoutBtn" style="width:100%;background:#eee;color:#555">
+Logout
+</button>
 </div>
 </div>
 
 <script>
-const SUPABASE_URL="https://jqpceabdshvboderrbiz.supabase.co";
-const SUPABASE_KEY="sb_publishable_lgtWi40tBxTt1zPogOQ4oA_Zf8SKU2P";
-const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-let rowId=null;
-const $=id=>document.getElementById(id);
+const SUPABASE_URL =
+"https://jqpceabdshvboderrbiz.supabase.co";
 
-function showAdmin(){
-  $("login").style.display="none";
-  $("admin").style.display="block";
-}
-function showLogin(){
-  $("admin").style.display="none";
-  $("login").style.display="block";
-}
+const SUPABASE_KEY =
+"sb_publishable_lgtWi40tBxTt1zPogOQ4oA_Zf8SKU2P";
 
-$("loginBtn").onclick=async()=>{
-  $("loginStatus").textContent="Logging in...";
-  try{
-    const {error}=await db.auth.signInWithPassword({
-      email:$("email").value.trim(),
-      password:$("password").value
-    });
-    if(error) throw error;
-    $("loginStatus").textContent="";
-    showAdmin();
-    await loadData();
-  }catch(e){
-    $("loginStatus").textContent="Login failed: "+e.message;
-  }
-};
+const db = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
 
-async function loadData(){
-  $("status").textContent="Loading...";
-  rowId=null;
-  try{
-    const {data,error}=await db
-      .from("rana_mazen")
-      .select("*")
-      .limit(1)
-      .throwOnError();
+let rowId = null;
 
-    if(!data || data.length===0){
-      $("status").textContent=
-        "No rows returned. Check the table and read permissions.";
-      return;
-    }
+/* LOGIN */
+document.getElementById("loginBtn").onclick = async function(){
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value;
+  const status = document.getElementById("loginStatus");
+  const button = this;
 
-    const item=data[0];
-    rowId=item.id;
-
-    $("name").value=item.Name||"";
-    $("event_date").value=item.Event_date||"";
-    $("story").value=item.Story||"";
-    $("music").value=item.Music||"";
-
-    $("photos").innerHTML="";
-    (Array.isArray(item.Photos)?item.Photos:[])
-      .forEach(url=>addPhoto(url));
-
-    $("videos").innerHTML="";
-    (Array.isArray(item.Videos)?item.Videos:[])
-      .forEach(url=>addVideo(url));
-
-    $("memories").innerHTML="";
-    (Array.isArray(item.Memories)?item.Memories:[])
-      .forEach(m=>{
-        if(typeof m==="string") addMemory(m,"");
-        else addMemory(m.text||"",m.date||"");
-      });
-
-    $("status").textContent="";
-  }catch(e){
-    console.error(e);
-    $("status").textContent="Load failed: "+e.message;
-  }
-}
-
-function addPhoto(value=""){
-  const box=document.createElement("div");
-  box.className="item";
-  const input=document.createElement("input");
-  input.className="photoInput";
-  input.type="url";
-  input.placeholder="Photo URL";
-  input.value=value;
-  const remove=document.createElement("button");
-  remove.className="remove";
-  remove.textContent="Remove";
-  remove.onclick=()=>box.remove();
-  box.append(input,remove);
-  $("photos").appendChild(box);
-}
-$("addPhoto").onclick=()=>addPhoto("");
-
-function addVideo(value=""){
-  const box=document.createElement("div");
-  box.className="item";
-  const input=document.createElement("input");
-  input.className="videoInput";
-  input.type="url";
-  input.placeholder="Video URL";
-  input.value=value;
-  const remove=document.createElement("button");
-  remove.className="remove";
-  remove.textContent="Remove";
-  remove.onclick=()=>box.remove();
-  box.append(input,remove);
-  $("videos").appendChild(box);
-}
-$("addVideo").onclick=()=>addVideo("");
-
-function addMemory(text="",date=""){
-  const box=document.createElement("div");
-  box.className="item";
-  const dateInput=document.createElement("input");
-  dateInput.className="memoryDate";
-  dateInput.placeholder="Date";
-  dateInput.value=date;
-  const textInput=document.createElement("textarea");
-  textInput.className="memoryText";
-  textInput.placeholder="Memory";
-  textInput.value=text;
-  const remove=document.createElement("button");
-  remove.className="remove";
-  remove.textContent="Remove";
-  remove.onclick=()=>box.remove();
-  box.append(dateInput,textInput,remove);
-  $("memories").appendChild(box);
-}
-$("addMemory").onclick=()=>addMemory("");
-
-$("saveBtn").onclick=async()=>{
-  if(rowId===null || rowId===undefined){
-    $("status").textContent="No row ID loaded. Reload the page before saving.";
+  if(!email || !password){
+    status.textContent = "Enter your email and password.";
     return;
   }
 
-  $("saveBtn").disabled=true;
-  $("status").textContent="Saving...";
-
-  const photos=[...document.querySelectorAll(".photoInput")]
-    .map(x=>x.value.trim()).filter(Boolean);
-  const videos=[...document.querySelectorAll(".videoInput")]
-    .map(x=>x.value.trim()).filter(Boolean);
-  const memories=[...document.querySelectorAll("#memories .item")]
-    .map(box=>({
-      date:box.querySelector(".memoryDate").value.trim(),
-      text:box.querySelector(".memoryText").value.trim()
-    }))
-    .filter(x=>x.date||x.text);
-
-  const updateData={
-    Name:$("name").value.trim(),
-    Event_date:$("event_date").value.trim(),
-    Story:$("story").value.trim(),
-    Music:$("music").value.trim(),
-    Photos:photos,
-    Videos:videos,
-    Memories:memories
-  };
+  button.disabled = true;
+  status.textContent = "Logging in...";
 
   try{
-    const {data,error}=await db
-      .from("rana_mazen")
-      .update(updateData)
-      .eq("id",rowId)
-      .select("id")
-      .throwOnError();
+    const {error} = await db.auth.signInWithPassword({
+      email: email,
+      password: password
+    });
 
-    if(!data || data.length===0){
-      throw new Error("No row updated. Check update permissions (RLS).");
-    }
-    $("status").textContent="Saved online successfully ♡";
-  }catch(e){
-    console.error(e);
-    $("status").textContent="Save failed: "+e.message;
+    if(error) throw error;
+
+    document.getElementById("login").style.display = "none";
+    document.getElementById("admin").style.display = "block";
+
+    await loadData();
+  }catch(error){
+    status.textContent = "Login failed: " + error.message;
   }finally{
-    $("saveBtn").disabled=false;
+    button.disabled = false;
   }
 };
 
-$("logoutBtn").onclick=async()=>{
-  await db.auth.signOut();
-  rowId=null;
-  showLogin();
-  $("loginStatus").textContent="";
+/* LOAD DATA */
+async function loadData(){
+  const status = document.getElementById("status");
+  status.textContent = "Loading...";
+  rowId = null;
+
+  try{
+    const response = await fetch(
+      SUPABASE_URL + "/rest/v1/rana_mazen?select=*",
+      {
+        method: "GET",
+        headers: {
+          "apikey": SUPABASE_KEY,
+          "Accept": "application/json"
+        }
+      }
+    );
+
+    const data = await response.json();
+    console.log("SUPABASE DATA:", data);
+
+    if(!response.ok){
+      throw new Error(
+        data.message || data.error_description || "Request failed"
+      );
+    }
+
+    if(!Array.isArray(data) || data.length === 0){
+      status.textContent = "No data found";
+      return;
+    }
+
+    /* IMPORTANT: the database column is lowercase id */
+    const item = data[0];
+    rowId = item.id;
+
+    if(rowId === undefined || rowId === null){
+      throw new Error("The row ID was not found. Check the id column.");
+    }
+
+    document.getElementById("name").value = item.Name || "";
+    document.getElementById("event_date").value = item.Event_date || "";
+    document.getElementById("story").value = item.Story || "";
+    document.getElementById("music").value = item.Music || "";
+
+    /* PHOTOS */
+    document.getElementById("photos").innerHTML = "";
+    const photos = Array.isArray(item.Photos) ? item.Photos : [];
+    photos.forEach(url => addPhoto(url));
+
+    /* VIDEOS */
+    document.getElementById("videos").innerHTML = "";
+    const videos = Array.isArray(item.Videos) ? item.Videos : [];
+    videos.forEach(url => addVideo(url));
+
+    /* MEMORIES */
+    document.getElementById("memories").innerHTML = "";
+    const memories = Array.isArray(item.Memories) ? item.Memories : [];
+
+    memories.forEach(memory => {
+      if(typeof memory === "string"){
+        addMemory(memory, "");
+      }else{
+        addMemory(memory.text || "", memory.date || "");
+      }
+    });
+
+    status.textContent = "";
+  }catch(error){
+    console.error("LOAD ERROR:", error);
+    status.textContent = "Error loading data: " + error.message;
+  }
+}
+
+/* PHOTO */
+function addPhoto(value = ""){
+  const box = document.createElement("div");
+  box.className = "item";
+  box.innerHTML = `
+    <input class="photoInput" type="url" placeholder="Photo URL">
+    <button type="button" class="remove">Remove</button>
+  `;
+
+  box.querySelector("input").value = value;
+  box.querySelector("button").onclick = () => box.remove();
+  document.getElementById("photos").appendChild(box);
+}
+
+document.getElementById("addPhoto").onclick = () => addPhoto("");
+
+/* VIDEO */
+function addVideo(value = ""){
+  const box = document.createElement("div");
+  box.className = "item";
+  box.innerHTML = `
+    <input class="videoInput" type="url" placeholder="Video URL">
+    <button type="button" class="remove">Remove</button>
+  `;
+
+  box.querySelector("input").value = value;
+  box.querySelector("button").onclick = () => box.remove();
+  document.getElementById("videos").appendChild(box);
+}
+
+document.getElementById("addVideo").onclick = () => addVideo("");
+
+/* MEMORY */
+function addMemory(text = "", date = ""){
+  const box = document.createElement("div");
+  box.className = "item";
+  box.innerHTML = `
+    <input class="memoryDate" placeholder="Date">
+    <textarea class="memoryText" placeholder="Memory"></textarea>
+    <button type="button" class="remove">Remove</button>
+  `;
+
+  box.querySelector(".memoryDate").value = date;
+  box.querySelector(".memoryText").value = text;
+  box.querySelector("button").onclick = () => box.remove();
+  document.getElementById("memories").appendChild(box);
+}
+
+document.getElementById("addMemory").onclick = () => addMemory("", "");
+
+/* SAVE */
+document.getElementById("saveBtn").onclick = async function(){
+  const status = document.getElementById("status");
+  const button = this;
+
+  if(rowId === null || rowId === undefined){
+    status.textContent = "Cannot save: no database row was loaded. Reload the page first.";
+    return;
+  }
+
+  const photos = [...document.querySelectorAll(".photoInput")]
+    .map(input => input.value.trim())
+    .filter(Boolean);
+
+  const videos = [...document.querySelectorAll(".videoInput")]
+    .map(input => input.value.trim())
+    .filter(Boolean);
+
+  const memories = [...document.querySelectorAll("#memories .item")]
+    .map(box => ({
+      date: box.querySelector(".memoryDate").value.trim(),
+      text: box.querySelector(".memoryText").value.trim()
+    }))
+    .filter(memory => memory.text || memory.date);
+
+  const updateData = {
+    Name: document.getElementById("name").value.trim(),
+    Event_date: document.getElementById("event_date").value.trim(),
+    Story: document.getElementById("story").value.trim(),
+    Music: document.getElementById("music").value.trim(),
+    Photos: photos,
+    Videos: videos,
+    Memories: memories
+  };
+
+  button.disabled = true;
+  status.textContent = "Saving...";
+
+  try{
+    /* IMPORTANT: use lowercase id in the update filter */
+    const response = await fetch(
+      SUPABASE_URL +
+      "/rest/v1/rana_mazen?id=eq." +
+      encodeURIComponent(rowId) +
+      "&select=id",
+      {
+        method: "PATCH",
+        headers: {
+          "apikey": SUPABASE_KEY,
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "Prefer": "return=representation"
+        },
+        body: JSON.stringify(updateData)
+      }
+    );
+
+    const responseText = await response.text();
+    let result = null;
+
+    try{
+      result = responseText ? JSON.parse(responseText) : null;
+    }catch(parseError){
+      result = null;
+    }
+
+    if(!response.ok){
+      throw new Error(
+        (result && (result.message || result.error_description)) ||
+        responseText ||
+        "Request failed"
+      );
+    }
+
+    /* An empty result means no row was confirmed as updated */
+    if(!Array.isArray(result) || result.length === 0){
+      throw new Error(
+        "No row was updated. Check the database update permissions and the row id. Your edits were not confirmed as saved."
+      );
+    }
+
+    status.textContent = "Saved online successfully ♡";
+  }catch(error){
+    console.error("SAVE ERROR:", error);
+    status.textContent = "Save failed: " + error.message;
+  }finally{
+    button.disabled = false;
+  }
 };
 
-(async()=>{
+/* LOGOUT */
+document.getElementById("logoutBtn").onclick = async function(){
+  await db.auth.signOut();
+  rowId = null;
+  document.getElementById("admin").style.display = "none";
+  document.getElementById("login").style.display = "block";
+  document.getElementById("loginStatus").textContent = "";
+};
+
+/* EXISTING SESSION */
+(async function(){
   try{
-    const {data,error}=await db.auth.getSession();
+    const {data, error} = await db.auth.getSession();
+
     if(error) throw error;
+
     if(data.session){
-      showAdmin();
+      document.getElementById("login").style.display = "none";
+      document.getElementById("admin").style.display = "block";
       await loadData();
     }
-  }catch(e){
-    $("loginStatus").textContent="Session error: "+e.message;
+  }catch(error){
+    console.error("SESSION ERROR:", error);
   }
 })();
 </script>
