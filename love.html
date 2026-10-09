@@ -317,7 +317,7 @@ video {
   100% { transform:scale(1); }
 }
 
-/* Ambient background sound control */
+/* Background music control */
 #soundControl {
   position:fixed;
   z-index:50;
@@ -351,6 +351,24 @@ video {
   line-height:1.6;
   text-align:center;
 }
+
+/* Hidden YouTube player for background instrumental */
+#backgroundPlayerWrap {
+  position:fixed;
+  width:200px;
+  height:200px;
+  left:-220px;
+  top:0;
+  opacity:0;
+  pointer-events:none;
+  overflow:hidden;
+  z-index:-1;
+}
+#backgroundPlayer {
+  width:200px;
+  height:200px;
+}
+
 .youtube-player-wrap {
   position:relative;
   width:100%;
@@ -398,7 +416,12 @@ video {
 <div id="hearts"></div>
 <div id="flowers"></div>
 
-<button id="soundControl" onclick="togglePiano()"
+<!-- Background instrumental player, kept out of view -->
+<div id="backgroundPlayerWrap" aria-hidden="true">
+  <div id="backgroundPlayer"></div>
+</div>
+
+<button id="soundControl" onclick="toggleBackgroundSound()"
   aria-label="تشغيل موسيقى الخلفية"
   title="تشغيل أو إيقاف موسيقى الخلفية">♫</button>
 <div id="soundStatus" class="hidden" role="status"></div>
@@ -487,163 +510,63 @@ video {
 const SUPABASE_URL = "https://jqpceabdshvboderrbiz.supabase.co";
 const SUPABASE_KEY = "sb_publishable_lgtWi40tBxTt1zPogOQ4oA_Zf8SKU2P";
 
-/* Your YouTube song: separate from the background sound */
+/* The visible song stays separate from the background instrumental */
 const YOUTUBE_VIDEO_ID = "u7MxCuYPQT4";
+const BACKGROUND_VIDEO_ID = "9I_z97TeyDk";
 
 let photos = [];
 let photoIndex = 0;
 let videos = [];
+
 let musicPlayer = null;
 let musicPlayerReady = false;
 
-/* Soft dreamy ambient background sound */
-let pianoContext = null;
-let pianoTimer = null;
-let pianoPlaying = false;
-let pianoStep = 0;
-let ambientNodes = [];
-let ambientMaster = null;
+let backgroundPlayer = null;
+let backgroundPlayerReady = false;
+let backgroundPlaying = false;
+let backgroundRequested = false;
 
-const ambientChords = [
-  [130.81,164.81,196.00,261.63],
-  [110.00,130.81,164.81,220.00],
-  [146.83,174.61,220.00,293.66],
-  [98.00,130.81,164.81,196.00],
-  [130.81,164.81,196.00,261.63],
-  [116.54,146.83,174.61,233.08],
-  [110.00,146.83,174.61,220.00],
-  [130.81,164.81,196.00,261.63]
-];
+/* Background instrumental controls */
+function startBackgroundSound() {
+  backgroundRequested = true;
 
-function createAmbientLayer(frequency,volume,detune=0) {
-  const oscillator = pianoContext.createOscillator();
-  const gain = pianoContext.createGain();
-  const filter = pianoContext.createBiquadFilter();
+  if (!backgroundPlayerReady || !backgroundPlayer) {
+    showPianoStatus("جاري تجهيز اللحن ♡");
+    return;
+  }
 
-  oscillator.type = "sine";
-  oscillator.frequency.value = frequency;
-  oscillator.detune.value = detune;
-
-  filter.type = "lowpass";
-  filter.frequency.value = 650;
-  filter.Q.value = 0.4;
-
-  gain.gain.value = 0.0001;
-
-  oscillator.connect(filter);
-  filter.connect(gain);
-  gain.connect(ambientMaster);
-
-  oscillator.start();
-
-  const layer = {oscillator,gain,volume};
-  ambientNodes.push(layer);
-
-  return layer;
-}
-
-function ambientBeat() {
-  if (!pianoPlaying || !pianoContext || !ambientMaster) return;
-
-  const now = pianoContext.currentTime;
-  const chord = ambientChords[pianoStep % ambientChords.length];
-
-  ambientNodes.forEach((layer,index) => {
-    const frequency = chord[index % chord.length];
-    const target = layer.volume * (index === 3 ? 0.65 : 1);
-
-    layer.oscillator.frequency.cancelScheduledValues(now);
-    layer.oscillator.frequency.setTargetAtTime(
-      frequency,now,1.8
-    );
-
-    layer.gain.gain.cancelScheduledValues(now);
-    layer.gain.gain.setTargetAtTime(target,now,2.5);
-  });
-
-  pianoStep++;
-}
-
-async function startPiano() {
   try {
-    const AudioContextClass =
-      window.AudioContext || window.webkitAudioContext;
-
-    if (!AudioContextClass) {
-      showPianoStatus("المتصفح مش بيدعم الصوت ده ❤️");
-      return;
-    }
-
-    if (!pianoContext) {
-      pianoContext = new AudioContextClass();
-
-      ambientMaster = pianoContext.createGain();
-      ambientMaster.gain.value = 0.0001;
-      ambientMaster.connect(pianoContext.destination);
-
-      ambientNodes = [];
-
-      [0,1,2,3].forEach(index => {
-        createAmbientLayer(
-          ambientChords[0][index],
-          index === 3 ? 0.018 : 0.025,
-          index === 0 ? -4 : index === 2 ? 4 : 0
-        );
-      });
-    }
-
-    if (pianoContext.state === "suspended") {
-      await pianoContext.resume();
-    }
-
-    if (pianoPlaying) return;
-
-    pianoPlaying = true;
-
-    const now = pianoContext.currentTime;
-
-    ambientMaster.gain.cancelScheduledValues(now);
-    ambientMaster.gain.setValueAtTime(
-      Math.max(0.0001,ambientMaster.gain.value),now
-    );
-    ambientMaster.gain.linearRampToValueAtTime(0.75,now+3);
-
-    ambientBeat();
-    pianoTimer = setInterval(ambientBeat,5000);
-
-    updatePianoButton();
-    showPianoStatus("الموسيقى الهادية شغالة ♡");
-
+    backgroundPlayer.setVolume(55);
+    backgroundPlayer.unMute();
+    backgroundPlayer.playVideo();
+    showPianoStatus("جاري تشغيل اللحن ♡");
   } catch (error) {
-    console.error("Ambient playback error:",error);
-    showPianoStatus("اضغطي على زر ♫ مرة تانية لتشغيل الصوت");
+    console.error("Background music error:",error);
+    showPianoStatus("اضغطي على زر ♫ مرة تانية لتشغيل اللحن");
   }
 }
 
-function stopPiano() {
-  pianoPlaying = false;
+function stopBackgroundSound() {
+  backgroundRequested = false;
 
-  if (pianoTimer) {
-    clearInterval(pianoTimer);
-    pianoTimer = null;
+  if (backgroundPlayerReady && backgroundPlayer) {
+    try {
+      backgroundPlayer.pauseVideo();
+    } catch (error) {
+      console.error("Could not pause background music:",error);
+    }
   }
 
-  if (pianoContext && ambientMaster) {
-    const now = pianoContext.currentTime;
-
-    ambientMaster.gain.cancelScheduledValues(now);
-    ambientMaster.gain.setTargetAtTime(0.0001,now,0.35);
-  }
-
+  backgroundPlaying = false;
   updatePianoButton();
-  showPianoStatus("موسيقى الخلفية متوقفة");
+  showPianoStatus("اللحن متوقف ♡");
 }
 
-function togglePiano() {
-  if (pianoPlaying) {
-    stopPiano();
+function toggleBackgroundSound() {
+  if (backgroundPlaying) {
+    stopBackgroundSound();
   } else {
-    startPiano();
+    startBackgroundSound();
   }
 }
 
@@ -651,8 +574,8 @@ function updatePianoButton() {
   const button = document.getElementById("soundControl");
   if (!button) return;
 
-  button.textContent = pianoPlaying ? "♫" : "♪";
-  button.title = pianoPlaying
+  button.textContent = backgroundPlaying ? "♫" : "♪";
+  button.title = backgroundPlaying
     ? "إيقاف موسيقى الخلفية"
     : "تشغيل موسيقى الخلفية";
   button.setAttribute("aria-label",button.title);
@@ -670,7 +593,7 @@ function showPianoStatus(message) {
     if (status.textContent === message) {
       status.classList.add("hidden");
     }
-  },2600);
+  },3000);
 }
 
 /* Birthday confetti */
@@ -702,8 +625,8 @@ function enterOurWorld() {
   burstConfetti();
   document.getElementById("birthdayIntro").classList.add("intro-hidden");
 
-  /* Start ambient background only; never autoplay the Angham song. */
-  startPiano();
+  /* Request the chosen instrumental after the visitor taps the button. */
+  startBackgroundSound();
 }
 
 window.addEventListener("load",() => {
@@ -987,7 +910,7 @@ function unlockVideo() {
   }
 }
 
-/* YouTube song controls — separate from ambient sound */
+/* Visible YouTube song controls — unchanged */
 function showMusicError(message) {
   document.getElementById("musicError").textContent = message;
 }
@@ -1016,8 +939,9 @@ function toggleMusic() {
   }
 }
 
-/* YouTube iframe API: never autoplay */
+/* Create both YouTube players */
 function onYouTubeIframeAPIReady() {
+  /* Existing visible song */
   musicPlayer = new YT.Player("youtubePlayer", {
     videoId:YOUTUBE_VIDEO_ID,
     playerVars:{
@@ -1038,6 +962,59 @@ function onYouTubeIframeAPIReady() {
       },
       onError:function() {
         showMusicError("يوتيوب مش قادر يشغّل الفيديو ده هنا. جرب فتح الأغنية على يوتيوب.");
+      }
+    }
+  });
+
+  /* Chosen instrumental in the background */
+  backgroundPlayer = new YT.Player("backgroundPlayer", {
+    videoId:BACKGROUND_VIDEO_ID,
+    playerVars:{
+      autoplay:0,
+      controls:0,
+      playsinline:1,
+      rel:0,
+      modestbranding:1,
+      enablejsapi:1,
+      loop:1,
+      playlist:BACKGROUND_VIDEO_ID
+    },
+    events:{
+      onReady:function() {
+        backgroundPlayerReady = true;
+        backgroundPlayer.setVolume(55);
+
+        /* If the intro was tapped before the player loaded,
+           try starting it now. The sound button remains available
+           if the browser requires another direct tap. */
+        if (backgroundRequested) {
+          startBackgroundSound();
+        }
+      },
+      onStateChange:function(event) {
+        if (event.data === YT.PlayerState.PLAYING) {
+          backgroundPlaying = true;
+          updatePianoButton();
+          showPianoStatus("اللحن شغال ♡");
+        } else if (
+          event.data === YT.PlayerState.PAUSED ||
+          event.data === YT.PlayerState.ENDED
+        ) {
+          backgroundPlaying = false;
+          updatePianoButton();
+
+          if (event.data === YT.PlayerState.ENDED && backgroundRequested) {
+            try {
+              backgroundPlayer.playVideo();
+            } catch (_) {}
+          }
+        }
+      },
+      onError:function(event) {
+        backgroundPlaying = false;
+        updatePianoButton();
+        console.error("Background YouTube error:",event.data);
+        showPianoStatus("اللحن مش متاح للتشغيل هنا. جربي زر ♫ مرة تانية");
       }
     }
   });
