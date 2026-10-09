@@ -317,7 +317,7 @@ video {
   100% { transform:scale(1); }
 }
 
-/* Background piano control */
+/* Ambient background sound control */
 #soundControl {
   position:fixed;
   z-index:50;
@@ -399,8 +399,8 @@ video {
 <div id="flowers"></div>
 
 <button id="soundControl" onclick="togglePiano()"
-  aria-label="تشغيل البيانو الخلفي"
-  title="تشغيل أو إيقاف البيانو الخلفي">♫</button>
+  aria-label="تشغيل موسيقى الخلفية"
+  title="تشغيل أو إيقاف موسيقى الخلفية">♫</button>
 <div id="soundStatus" class="hidden" role="status"></div>
 
 <main>
@@ -487,7 +487,7 @@ video {
 const SUPABASE_URL = "https://jqpceabdshvboderrbiz.supabase.co";
 const SUPABASE_KEY = "sb_publishable_lgtWi40tBxTt1zPogOQ4oA_Zf8SKU2P";
 
-/* Your YouTube song: separate from the background piano */
+/* Your YouTube song: separate from the background sound */
 const YOUTUBE_VIDEO_ID = "u7MxCuYPQT4";
 
 let photos = [];
@@ -496,68 +496,100 @@ let videos = [];
 let musicPlayer = null;
 let musicPlayerReady = false;
 
-/* Background piano generated with Web Audio */
+/* Soft dreamy ambient background sound */
 let pianoContext = null;
 let pianoTimer = null;
 let pianoPlaying = false;
 let pianoStep = 0;
+let ambientNodes = [];
+let ambientMaster = null;
 
-const pianoMelody = [
-  [261.63,329.63,392.00],
-  [329.63,392.00,493.88],
-  [293.66,349.23,440.00],
-  [261.63,329.63,392.00],
-  [220.00,261.63,329.63],
-  [261.63,329.63,392.00],
-  [246.94,293.66,369.99],
-  [261.63,329.63,392.00]
+const ambientChords = [
+  [130.81,164.81,196.00,261.63],
+  [110.00,130.81,164.81,220.00],
+  [146.83,174.61,220.00,293.66],
+  [98.00,130.81,164.81,196.00],
+  [130.81,164.81,196.00,261.63],
+  [116.54,146.83,174.61,233.08],
+  [110.00,146.83,174.61,220.00],
+  [130.81,164.81,196.00,261.63]
 ];
 
-function playPianoNote(frequency,startTime,duration,volume=0.045) {
-  if (!pianoContext) return;
-
+function createAmbientLayer(frequency,volume,detune=0) {
   const oscillator = pianoContext.createOscillator();
   const gain = pianoContext.createGain();
+  const filter = pianoContext.createBiquadFilter();
 
   oscillator.type = "sine";
-  oscillator.frequency.setValueAtTime(frequency,startTime);
+  oscillator.frequency.value = frequency;
+  oscillator.detune.value = detune;
 
-  gain.gain.setValueAtTime(0.0001,startTime);
-  gain.gain.exponentialRampToValueAtTime(volume,startTime+0.035);
-  gain.gain.exponentialRampToValueAtTime(0.0001,startTime+duration);
+  filter.type = "lowpass";
+  filter.frequency.value = 650;
+  filter.Q.value = 0.4;
 
-  oscillator.connect(gain);
-  gain.connect(pianoContext.destination);
+  gain.gain.value = 0.0001;
 
-  oscillator.start(startTime);
-  oscillator.stop(startTime+duration+0.03);
+  oscillator.connect(filter);
+  filter.connect(gain);
+  gain.connect(ambientMaster);
+
+  oscillator.start();
+
+  const layer = {oscillator,gain,volume};
+  ambientNodes.push(layer);
+
+  return layer;
 }
 
-function pianoBeat() {
-  if (!pianoPlaying || !pianoContext) return;
+function ambientBeat() {
+  if (!pianoPlaying || !pianoContext || !ambientMaster) return;
 
   const now = pianoContext.currentTime;
-  const chord = pianoMelody[pianoStep % pianoMelody.length];
+  const chord = ambientChords[pianoStep % ambientChords.length];
 
-  chord.forEach((frequency,index) => {
-    playPianoNote(frequency,now + index*0.09,1.8,0.026);
+  ambientNodes.forEach((layer,index) => {
+    const frequency = chord[index % chord.length];
+    const target = layer.volume * (index === 3 ? 0.65 : 1);
+
+    layer.oscillator.frequency.cancelScheduledValues(now);
+    layer.oscillator.frequency.setTargetAtTime(
+      frequency,now,1.8
+    );
+
+    layer.gain.gain.cancelScheduledValues(now);
+    layer.gain.gain.setTargetAtTime(target,now,2.5);
   });
-
-  const bassNotes = [130.81,146.83,110.00,123.47];
-  playPianoNote(bassNotes[pianoStep % bassNotes.length],now,2.1,0.035);
 
   pianoStep++;
 }
 
 async function startPiano() {
   try {
+    const AudioContextClass =
+      window.AudioContext || window.webkitAudioContext;
+
+    if (!AudioContextClass) {
+      showPianoStatus("المتصفح مش بيدعم الصوت ده ❤️");
+      return;
+    }
+
     if (!pianoContext) {
-      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-      if (!AudioContextClass) {
-        showPianoStatus("المتصفح مش بيدعم تشغيل البيانو ❤️");
-        return;
-      }
       pianoContext = new AudioContextClass();
+
+      ambientMaster = pianoContext.createGain();
+      ambientMaster.gain.value = 0.0001;
+      ambientMaster.connect(pianoContext.destination);
+
+      ambientNodes = [];
+
+      [0,1,2,3].forEach(index => {
+        createAmbientLayer(
+          ambientChords[0][index],
+          index === 3 ? 0.018 : 0.025,
+          index === 0 ? -4 : index === 2 ? 4 : 0
+        );
+      });
     }
 
     if (pianoContext.state === "suspended") {
@@ -567,13 +599,24 @@ async function startPiano() {
     if (pianoPlaying) return;
 
     pianoPlaying = true;
-    pianoBeat();
-    pianoTimer = setInterval(pianoBeat,1800);
+
+    const now = pianoContext.currentTime;
+
+    ambientMaster.gain.cancelScheduledValues(now);
+    ambientMaster.gain.setValueAtTime(
+      Math.max(0.0001,ambientMaster.gain.value),now
+    );
+    ambientMaster.gain.linearRampToValueAtTime(0.75,now+3);
+
+    ambientBeat();
+    pianoTimer = setInterval(ambientBeat,5000);
+
     updatePianoButton();
-    showPianoStatus("البيانو الهادي شغال ♡");
+    showPianoStatus("الموسيقى الهادية شغالة ♡");
+
   } catch (error) {
-    console.error("Piano playback error:",error);
-    showPianoStatus("اضغط على زر ♫ مرة تانية لتشغيل البيانو");
+    console.error("Ambient playback error:",error);
+    showPianoStatus("اضغطي على زر ♫ مرة تانية لتشغيل الصوت");
   }
 }
 
@@ -585,8 +628,15 @@ function stopPiano() {
     pianoTimer = null;
   }
 
+  if (pianoContext && ambientMaster) {
+    const now = pianoContext.currentTime;
+
+    ambientMaster.gain.cancelScheduledValues(now);
+    ambientMaster.gain.setTargetAtTime(0.0001,now,0.35);
+  }
+
   updatePianoButton();
-  showPianoStatus("البيانو متوقف");
+  showPianoStatus("موسيقى الخلفية متوقفة");
 }
 
 function togglePiano() {
@@ -602,12 +652,16 @@ function updatePianoButton() {
   if (!button) return;
 
   button.textContent = pianoPlaying ? "♫" : "♪";
-  button.title = pianoPlaying ? "إيقاف البيانو الخلفي" : "تشغيل البيانو الخلفي";
+  button.title = pianoPlaying
+    ? "إيقاف موسيقى الخلفية"
+    : "تشغيل موسيقى الخلفية";
   button.setAttribute("aria-label",button.title);
 }
 
 function showPianoStatus(message) {
   const status = document.getElementById("soundStatus");
+  if (!status) return;
+
   status.textContent = message;
   status.classList.remove("hidden");
 
@@ -648,7 +702,7 @@ function enterOurWorld() {
   burstConfetti();
   document.getElementById("birthdayIntro").classList.add("intro-hidden");
 
-  /* Start only the background piano; never autoplay the Angham song. */
+  /* Start ambient background only; never autoplay the Angham song. */
   startPiano();
 }
 
@@ -933,7 +987,7 @@ function unlockVideo() {
   }
 }
 
-/* YouTube song controls — separate from the piano */
+/* YouTube song controls — separate from ambient sound */
 function showMusicError(message) {
   document.getElementById("musicError").textContent = message;
 }
