@@ -22,9 +22,7 @@ html { scroll-behavior:smooth; }
 body {
   margin:0;
   font-family:Arial,sans-serif;
-  background:
-    radial-gradient(ellipse at top,#321321 0%,transparent 48%),
-    var(--bg);
+  background:radial-gradient(ellipse at top,#321321 0%,transparent 48%),var(--bg);
   color:var(--cream);
   overflow-x:hidden;
 }
@@ -121,10 +119,13 @@ h2 {
 .photos { overflow:hidden; padding:12px; }
 .photo-track {
   display:flex;
-  transition:transform .4s ease;
+  flex-direction:row;
   direction:ltr;
+  transition:transform .4s ease;
+  will-change:transform;
 }
 .photo {
+  flex:0 0 100%;
   min-width:100%;
   padding:9px;
 }
@@ -146,15 +147,20 @@ h2 {
 .dots {
   display:flex;
   justify-content:center;
+  flex-wrap:wrap;
   gap:6px;
   margin-top:14px;
 }
 .dot {
   width:7px;
   height:7px;
+  border:0;
+  padding:0;
+  margin:0;
   border-radius:50%;
   background:#60404e;
   transition:.3s;
+  cursor:pointer;
 }
 .dot.active {
   width:22px;
@@ -202,37 +208,8 @@ button:focus-visible {
   outline:2px solid var(--cream);
   outline-offset:3px;
 }
-.record {
-  width:110px;
-  height:110px;
-  border-radius:50%;
-  background:repeating-radial-gradient(circle,#170d14 0 3px,#4c2338 4px 7px);
-  border:4px solid #321523;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  box-shadow:0 0 25px #8a2b4b35;
-}
-.record:after {
-  content:"♡";
-  width:32px;
-  height:32px;
-  background:var(--burgundy);
-  border:1px solid #c87d96;
-  color:var(--cream);
-  border-radius:50%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-.playing { animation:spin 2s linear infinite; }
-@keyframes spin { to { transform:rotate(360deg); } }
-video {
-  width:100%;
-  border-radius:15px;
-  background:#080709;
-  border:1px solid #704052;
-}
+.muted { color:var(--muted); line-height:1.9; }
+.center { text-align:center; }
 input {
   width:100%;
   padding:14px;
@@ -246,10 +223,13 @@ input {
   direction:ltr;
 }
 input::placeholder { color:#a88d98; }
-.error { color:#e6a0b3; margin-top:10px; }
-.muted { color:var(--muted); line-height:1.9; }
-.center { text-align:center; }
-a { color:var(--rose); font-weight:bold; }
+.error { color:#e6a0b3; margin-top:10px; line-height:1.8; }
+video {
+  width:100%;
+  border-radius:15px;
+  background:#080709;
+  border:1px solid #704052;
+}
 .end {
   text-align:center;
   font-family:Georgia,serif;
@@ -258,7 +238,8 @@ a { color:var(--rose); font-weight:bold; }
   margin-top:70px;
   color:var(--rose);
 }
-/* Intro */
+
+/* Birthday intro */
 #birthdayIntro {
   position:fixed;
   inset:0;
@@ -335,7 +316,8 @@ a { color:var(--rose); font-weight:bold; }
   70% { transform:scale(1.2); }
   100% { transform:scale(1); }
 }
-/* Small background music control */
+
+/* Music */
 #soundControl {
   position:fixed;
   z-index:50;
@@ -359,7 +341,7 @@ a { color:var(--rose); font-weight:bold; }
   z-index:49;
   bottom:77px;
   left:18px;
-  max-width:220px;
+  max-width:240px;
   padding:8px 12px;
   background:#21131c;
   border:1px solid var(--border);
@@ -368,6 +350,27 @@ a { color:var(--rose); font-weight:bold; }
   font-size:12px;
   line-height:1.6;
   text-align:center;
+}
+.youtube-player-wrap {
+  position:relative;
+  width:100%;
+  aspect-ratio:16/9;
+  overflow:hidden;
+  border-radius:16px;
+  border:1px solid var(--border);
+  background:#080709;
+}
+#youtubePlayer {
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+}
+.song-note {
+  text-align:center;
+  line-height:1.9;
+  color:var(--muted);
+  font-size:13px;
 }
 @media (prefers-reduced-motion:reduce) {
   *,*::before,*::after {
@@ -395,10 +398,10 @@ a { color:var(--rose); font-weight:bold; }
 <div id="hearts"></div>
 <div id="flowers"></div>
 
-<button id="soundControl" class="hidden" onclick="toggleMusic()" aria-label="تشغيل أو إيقاف الأغنية" title="تشغيل أو إيقاف الأغنية">♫</button>
+<button id="soundControl" onclick="toggleMusic()"
+  aria-label="تشغيل أو إيقاف الأغنية"
+  title="تشغيل أو إيقاف الأغنية">♫</button>
 <div id="soundStatus" class="hidden" role="status"></div>
-
-<audio id="audio" preload="auto" loop></audio>
 
 <main>
   <section class="hero">
@@ -416,11 +419,14 @@ a { color:var(--rose); font-weight:bold; }
       <div class="photo-track" id="photoTrack"></div>
     </div>
     <div class="dots" id="photoDots"></div>
+    <p class="song-note">اسحب الصورة يمين أو شمال عشان تشوف باقي صورنا ♡</p>
   </section>
 
   <section class="section">
     <h2>A Message For You</h2>
-    <div id="messageClosed" class="card lock" onclick="openMessage()" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openMessage()}">
+    <div id="messageClosed" class="card lock"
+      onclick="openMessage()" role="button" tabindex="0"
+      onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openMessage()}">
       <div class="lock-circle">🔐</div>
       <h3>Message</h3>
       <p class="muted">
@@ -428,10 +434,28 @@ a { color:var(--rose); font-weight:bold; }
         دوس على القفل عشان تفتح رسالتي ❤️
       </p>
     </div>
+
     <div id="messageOpen" class="card hidden">
       <div id="story" class="message"></div>
       <div class="center">
         <button onclick="closeMessage()">اقفل الرسالة ♡</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="musicSection" class="section">
+    <h2>Our Song ♡</h2>
+    <div class="card">
+      <div class="youtube-player-wrap">
+        <div id="youtubePlayer"></div>
+      </div>
+      <p class="song-note">
+        أغنيتنا ❤️<br>
+        اضغطي على التشغيل عشان تسمعيها
+      </p>
+      <div class="center">
+        <button onclick="toggleMusic()">تشغيل / إيقاف الأغنية ♫</button>
+        <p id="musicError" class="error"></p>
       </div>
     </div>
   </section>
@@ -446,7 +470,8 @@ a { color:var(--rose); font-weight:bold; }
         التاريخ المميز هو المفتاح ❤️
       </p>
       <div id="dateBox" class="hidden">
-        <input id="secretDate" placeholder="DD/MM/YYYY" inputmode="numeric" autocomplete="off">
+        <input id="secretDate" placeholder="DD/MM/YYYY"
+          inputmode="numeric" autocomplete="off">
         <button onclick="unlockVideo()">Unlock ♡</button>
         <div id="error" class="error"></div>
       </div>
@@ -458,16 +483,21 @@ a { color:var(--rose); font-weight:bold; }
 </main>
 
 <script>
-/* Supabase settings — unchanged */
+/* Supabase settings */
 const SUPABASE_URL = "https://jqpceabdshvboderrbiz.supabase.co";
 const SUPABASE_KEY = "sb_publishable_lgtWi40tBxTt1zPogOQ4oA_Zf8SKU2P";
+
+/* Your YouTube song */
+const YOUTUBE_VIDEO_ID = "u7MxCuYPQT4";
 
 let photos = [];
 let photoIndex = 0;
 let videos = [];
-let music = "";
+let musicPlayer = null;
+let musicPlayerReady = false;
+let musicRequested = false;
 
-/* Intro confetti */
+/* Birthday confetti */
 function burstConfetti() {
   const layer = document.getElementById("confettiLayer");
   if (!layer) return;
@@ -492,19 +522,22 @@ function burstConfetti() {
   }
 }
 
-async function enterOurWorld() {
+function enterOurWorld() {
   burstConfetti();
   document.getElementById("birthdayIntro").classList.add("intro-hidden");
 
-  /* A tap on the intro is used to request background playback */
-  if (music) {
+  // Attempt playback after the visitor taps the button.
+  musicRequested = true;
+
+  if (musicPlayerReady && musicPlayer) {
     try {
-      const audio = document.getElementById("audio");
-      await audio.play();
-      updateSoundControl(true);
+      musicPlayer.playVideo();
+      hideMusicError();
     } catch (_) {
-      showSoundStatus("اضغطي على علامة ♫ لتشغيل الأغنية");
+      showMusicError("اضغطي على تشغيل الأغنية داخل المشغّل ❤️");
     }
+  } else {
+    showMusicError("لو الأغنية مشتغلتش، اضغطي على زر التشغيل داخل المشغّل ❤️");
   }
 }
 
@@ -553,32 +586,34 @@ function closeMessage() {
   document.getElementById("messageClosed").classList.remove("hidden");
 }
 
-/* Parse saved JSON without writing to the database */
+/* Read saved JSON safely */
 function parseStored(value) {
   if (Array.isArray(value)) return value;
 
   if (value && typeof value === "object") {
-    return Array.isArray(value.items) ? value.items : Object.values(value);
+    for (const key of ["items","photos","Photos","urls","data","files","videos","Videos"]) {
+      if (Array.isArray(value[key])) return value[key];
+    }
+    return Object.values(value);
   }
 
   if (typeof value !== "string" || !value.trim()) return [];
 
   try {
     const parsed = JSON.parse(value);
-    if (Array.isArray(parsed)) return parsed;
-    if (parsed && typeof parsed === "object") {
-      return Array.isArray(parsed.items) ? parsed.items : Object.values(parsed);
-    }
-  } catch (_) {
-    return value.split(/\r?\n/).map(x => x.trim()).filter(Boolean);
-  }
-  return [];
+    if (parsed !== value) return parseStored(parsed);
+  } catch (_) {}
+
+  return value.split(/\r?\n/).map(x => x.trim()).filter(Boolean);
 }
 
 function getField(object,names,fallback = "") {
   if (!object || typeof object !== "object") return fallback;
+
   for (const name of names) {
-    if (object[name] !== undefined && object[name] !== null && object[name] !== "") {
+    if (object[name] !== undefined &&
+        object[name] !== null &&
+        object[name] !== "") {
       return object[name];
     }
   }
@@ -587,29 +622,82 @@ function getField(object,names,fallback = "") {
 
 function validUrl(value) {
   if (typeof value !== "string") return "";
+
   try {
     const url = new URL(value.trim());
-    if (url.protocol === "http:" || url.protocol === "https:") return url.href;
+    if (url.protocol === "http:" || url.protocol === "https:") {
+      return url.href;
+    }
   } catch (_) {}
+
   return "";
 }
 
+/* Accept direct URLs and common Supabase storage paths */
 function itemUrl(item) {
-  if (typeof item === "string") return validUrl(item);
-  return validUrl(getField(item,[
-    "url","URL","src","image","Image","photo","Photo","video","Video"
-  ],""));
+  if (typeof item === "string") {
+    const direct = validUrl(item);
+    if (direct) return direct;
+
+    const path = item.trim().replace(/^\/+/,"");
+    if (path && !path.includes("\n")) {
+      if (path.startsWith("storage/v1/")) {
+        return SUPABASE_URL + "/" + path.split("/").map((part,i) =>
+          i < 4 ? part : encodeURIComponent(decodeURIComponentSafe(part))
+        ).join("/");
+      }
+
+      return SUPABASE_URL +
+        "/storage/v1/object/public/Photos/" +
+        path.split("/").map(encodeURIComponent).join("/");
+    }
+    return "";
+  }
+
+  if (item && typeof item === "object") {
+    const direct = validUrl(getField(item,[
+      "url","URL","src","image_url","imageUrl","publicUrl",
+      "publicURL","signedUrl","signedURL","photo","Photo",
+      "image","Image","video","Video"
+    ],""));
+
+    if (direct) return direct;
+
+    const path = getField(item,["path","Path","filePath","file_path"],"");
+    const bucket = getField(item,["bucket","Bucket"],"Photos");
+
+    if (typeof path === "string" && path.trim()) {
+      return SUPABASE_URL + "/storage/v1/object/public/" +
+        encodeURIComponent(String(bucket)) + "/" +
+        path.trim().replace(/^\/+/,"").split("/").map(encodeURIComponent).join("/");
+    }
+  }
+
+  return "";
 }
 
-/* Swipeable photos */
+function decodeURIComponentSafe(value) {
+  try { return decodeURIComponent(value); }
+  catch (_) { return value; }
+}
+
+/* Photos: all slides are created, and the track moves in the correct direction */
 function showPhotos() {
   const track = document.getElementById("photoTrack");
   const dots = document.getElementById("photoDots");
+  const section = document.getElementById("photosSection");
+
   track.replaceChildren();
   dots.replaceChildren();
 
-  const usablePhotos = photos.map(itemUrl).filter(Boolean);
-  if (!usablePhotos.length) return;
+  const usablePhotos = [...new Set(photos.map(itemUrl).filter(Boolean))];
+
+  if (!usablePhotos.length) {
+    section.classList.add("hidden");
+    return;
+  }
+
+  photoIndex = Math.max(0,Math.min(photoIndex,usablePhotos.length - 1));
 
   usablePhotos.forEach((url,i) => {
     const slide = document.createElement("div");
@@ -617,8 +705,13 @@ function showPhotos() {
 
     const img = document.createElement("img");
     img.src = url;
-    img.alt = "Our moment";
-    img.loading = "lazy";
+    img.alt = "Our moment " + (i + 1);
+    img.loading = i === 0 ? "eager" : "lazy";
+
+    img.onerror = () => {
+      img.alt = "الصورة غير متاحة من الرابط المحفوظ";
+      img.style.objectFit = "contain";
+    };
 
     const count = document.createElement("div");
     count.className = "photo-count";
@@ -627,13 +720,18 @@ function showPhotos() {
     slide.append(img,count);
     track.appendChild(slide);
 
-    const dot = document.createElement("div");
+    const dot = document.createElement("button");
+    dot.type = "button";
     dot.className = "dot" + (i === photoIndex ? " active" : "");
+    dot.setAttribute("aria-label","عرض الصورة " + (i + 1));
+    dot.onclick = () => {
+      photoIndex = i;
+      updatePhotos();
+    };
     dots.appendChild(dot);
   });
 
-  document.getElementById("photosSection").classList.remove("hidden");
-  photoIndex = Math.min(photoIndex,track.children.length - 1);
+  section.classList.remove("hidden");
   updatePhotos();
 }
 
@@ -643,7 +741,9 @@ function updatePhotos() {
   if (!count) return;
 
   photoIndex = Math.max(0,Math.min(photoIndex,count - 1));
-  track.style.transform = "translateX(" + (photoIndex * 100) + "%)";
+
+  // Negative movement is needed to reveal the next slide.
+  track.style.transform = "translateX(" + (-photoIndex * 100) + "%)";
 
   document.querySelectorAll("#photoDots .dot").forEach((dot,i) => {
     dot.classList.toggle("active",i === photoIndex);
@@ -651,16 +751,19 @@ function updatePhotos() {
 }
 
 let photoStart = 0;
+
 document.getElementById("photoSlider").addEventListener("touchstart",e => {
   photoStart = e.touches[0].clientX;
 },{passive:true});
 
 document.getElementById("photoSlider").addEventListener("touchend",e => {
   const end = e.changedTouches[0].clientX;
-  if (end - photoStart < -40) {
+  const difference = end - photoStart;
+
+  if (difference < -40) {
     photoIndex++;
     updatePhotos();
-  } else if (end - photoStart > 40) {
+  } else if (difference > 40) {
     photoIndex--;
     updatePhotos();
   }
@@ -708,9 +811,8 @@ function unlockVideo() {
 
     const source = document.createElement("source");
     source.src = url;
-    source.type = "video/mp4";
-
     video.appendChild(source);
+
     card.appendChild(video);
     box.appendChild(card);
   });
@@ -718,15 +820,21 @@ function unlockVideo() {
   if (!box.children.length) {
     box.classList.add("hidden");
     document.getElementById("videoLocked").classList.remove("hidden");
-    error.textContent = "رابط الفيديو مش واضح. راجعي الرابط المحفوظ ❤️";
+    error.textContent = "رابط الفيديو مش مباشر أو مش واضح. راجعي الرابط المحفوظ ❤️";
   }
 }
 
-/* Background music */
-function showSoundStatus(message) {
-  const status = document.getElementById("soundStatus");
-  status.textContent = message;
-  status.classList.remove("hidden");
+/* YouTube music player */
+function showMusicError(message) {
+  const error = document.getElementById("musicError");
+  error.textContent = message;
+  document.getElementById("soundStatus").textContent = message;
+  document.getElementById("soundStatus").classList.remove("hidden");
+}
+
+function hideMusicError() {
+  document.getElementById("musicError").textContent = "";
+  document.getElementById("soundStatus").classList.add("hidden");
 }
 
 function updateSoundControl(isPlaying) {
@@ -734,40 +842,74 @@ function updateSoundControl(isPlaying) {
   button.textContent = isPlaying ? "♫" : "♪";
   button.title = isPlaying ? "إيقاف الأغنية" : "تشغيل الأغنية";
   button.setAttribute("aria-label",button.title);
-  document.getElementById("record");
 }
 
-async function toggleMusic() {
-  if (!music) return;
-
-  const audio = document.getElementById("audio");
+function toggleMusic() {
+  if (!musicPlayerReady || !musicPlayer) {
+    showMusicError("استني لحظة لحد ما مشغّل الأغنية يحمّل، وبعدها جربي تاني ❤️");
+    return;
+  }
 
   try {
-    if (audio.paused) {
-      await audio.play();
-      updateSoundControl(true);
-      document.getElementById("soundStatus").classList.add("hidden");
+    const state = musicPlayer.getPlayerState();
+
+    if (state === YT.PlayerState.PLAYING) {
+      musicPlayer.pauseVideo();
     } else {
-      audio.pause();
-      updateSoundControl(false);
-      showSoundStatus("الأغنية اتوقفت مؤقتًا");
+      musicPlayer.playVideo();
+      hideMusicError();
     }
   } catch (_) {
-    showSoundStatus("الرابط المحفوظ مش ملف صوت مباشر. افتحي رابط الأغنية من لوحة التحكم للتأكد منه.");
+    showMusicError("لو الأغنية مش شغالة، افتحيها من مشغّل يوتيوب ❤️");
   }
 }
 
-document.getElementById("audio").addEventListener("ended",() => {
-  updateSoundControl(false);
-});
-document.getElementById("audio").addEventListener("pause",() => {
-  updateSoundControl(false);
-});
-document.getElementById("audio").addEventListener("play",() => {
-  updateSoundControl(true);
-});
+/* YouTube iframe API */
+function onYouTubeIframeAPIReady() {
+  musicPlayer = new YT.Player("youtubePlayer", {
+    videoId:YOUTUBE_VIDEO_ID,
+    playerVars:{
+      autoplay:0,
+      controls:1,
+      playsinline:1,
+      rel:0,
+      enablejsapi:1
+    },
+    events:{
+      onReady:function() {
+        musicPlayerReady = true;
 
-/* Load existing Supabase data — read only */
+        if (musicRequested) {
+          try {
+            musicPlayer.playVideo();
+          } catch (_) {
+            showMusicError("اضغطي على تشغيل داخل مشغّل يوتيوب ❤️");
+          }
+        }
+      },
+      onStateChange:function(event) {
+        if (event.data === YT.PlayerState.PLAYING) {
+          updateSoundControl(true);
+          hideMusicError();
+        } else {
+          updateSoundControl(false);
+        }
+      },
+      onError:function() {
+        showMusicError("يوتيوب مش قادر يشغّل الفيديو ده هنا. جربي فتح الأغنية على يوتيوب.");
+      }
+    }
+  });
+}
+
+(function loadYouTubeAPI() {
+  const script = document.createElement("script");
+  script.src = "https://www.youtube.com/iframe_api";
+  script.async = true;
+  document.head.appendChild(script);
+})();
+
+/* Load saved Supabase data — read only */
 async function load() {
   try {
     const response = await fetch(
@@ -799,9 +941,11 @@ async function load() {
     if (row.Name) {
       document.getElementById("names").textContent = row.Name;
     }
+
     if (row.Event_date) {
       document.getElementById("date").textContent = row.Event_date;
     }
+
     if (row.Story) {
       document.getElementById("story").textContent = row.Story;
     }
@@ -809,20 +953,11 @@ async function load() {
     photos = parseStored(row.Photos);
     showPhotos();
 
-    /* Memories are intentionally not displayed; saved database data remains untouched. */
-
+    // Keep saved memories in the database; this page does not display them.
     videos = parseStored(row.Videos);
+
     if (videos.length) {
       document.getElementById("videoSection").classList.remove("hidden");
-    }
-
-    if (row.Music) {
-      const safeMusic = validUrl(row.Music);
-      if (safeMusic) {
-        music = safeMusic;
-        document.getElementById("audio").src = safeMusic;
-        document.getElementById("soundControl").classList.remove("hidden");
-      }
     }
 
     console.log("RANA & MAZEN DATA LOADED ❤️");
