@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,7 +6,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Rana & Mazen ♡ Admin</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <style>
 *{box-sizing:border-box}
 body{margin:0;font-family:Arial,sans-serif;background:#fff7fa;color:#333}
@@ -17,364 +17,287 @@ label{display:block;margin:14px 0 6px;font-weight:bold}
 input,textarea{width:100%;padding:12px;border:1px solid #ddd;border-radius:10px;font-size:15px}
 textarea{min-height:110px}
 button{border:0;border-radius:10px;padding:12px 18px;font-size:15px;margin-top:10px;cursor:pointer}
+button:disabled{opacity:.6}
 .main{width:100%;background:#b84d72;color:white;font-weight:bold}
 .add{background:#f3d3df;color:#8d3657}
 .remove{background:#eee;color:#666}
 .item{background:#fff7fa;padding:12px;border-radius:12px;margin:10px 0}
 #admin{display:none}
 #status,#loginStatus{text-align:center;margin:12px 0;font-weight:bold;overflow-wrap:anywhere}
+.hint{font-size:13px;color:#8d777f;line-height:1.6}
 </style>
 </head>
-
 <body>
 <div class="wrap">
+  <div id="login">
+    <h1>Rana & Mazen ♡</h1>
+    <div class="box">
+      <h2>Admin Login</h2>
+      <label>Email</label>
+      <input id="email" type="email" autocomplete="username">
+      <label>Password</label>
+      <input id="password" type="password" autocomplete="current-password">
+      <button class="main" id="loginBtn">Login</button>
+      <div id="loginStatus"></div>
+    </div>
+  </div>
 
-<div id="login">
-<h1>Rana & Mazen ♡</h1>
-<div class="box">
-<h2>Admin Login</h2>
+  <div id="admin">
+    <h1>Rana & Mazen ♡</h1>
 
-<label>Email</label>
-<input id="email" type="email" autocomplete="username">
+    <div class="box">
+      <h2>Basic Information</h2>
+      <label>Names</label><input id="name">
+      <label>Date</label><input id="event_date">
+      <label>Story</label><textarea id="story"></textarea>
+      <label>Song URL</label><input id="music" type="url">
+    </div>
 
-<label>Password</label>
-<input id="password" type="password" autocomplete="current-password">
+    <div class="box">
+      <h2>Photos</h2>
+      <div id="photos"></div>
+      <button class="add" id="addPhoto">+ Add photo</button>
+    </div>
 
-<button class="main" id="loginBtn">Login</button>
-<div id="loginStatus"></div>
-</div>
-</div>
+    <div class="box">
+      <h2>Videos</h2>
+      <div id="videos"></div>
+      <button class="add" id="addVideo">+ Add video</button>
+    </div>
 
-<div id="admin">
-<h1>Rana & Mazen ♡</h1>
+    <div class="box">
+      <h2>Memories ♡</h2>
+      <p class="hint">Each memory can have its own title, date, text, and photo URL. Upload the photo to your Photos storage bucket first, then paste its public URL below.</p>
+      <div id="memories"></div>
+      <button class="add" id="addMemory">+ Add memory</button>
+    </div>
 
-<div class="box">
-<h2>Basic Information</h2>
-<label>Names</label>
-<input id="name">
-
-<label>Date</label>
-<input id="event_date">
-
-<label>Story</label>
-<textarea id="story"></textarea>
-
-<label>Song URL</label>
-<input id="music">
-</div>
-
-<div class="box">
-<h2>Photos</h2>
-<div id="photos"></div>
-<button class="add" id="addPhoto">+ Add photo</button>
-</div>
-
-<div class="box">
-<h2>Videos</h2>
-<div id="videos"></div>
-<button class="add" id="addVideo">+ Add video</button>
-</div>
-
-<div class="box">
-<h2>Memories</h2>
-<div id="memories"></div>
-<button class="add" id="addMemory">+ Add memory</button>
-</div>
-
-<button class="main" id="saveBtn">Save Changes ♡</button>
-<div id="status"></div>
-
-<button id="logoutBtn" style="width:100%;background:#eee;color:#555">
-Logout
-</button>
-</div>
+    <button class="main" id="saveBtn">Save Changes ♡</button>
+    <div id="status"></div>
+    <button id="logoutBtn" style="width:100%;background:#eee;color:#555">Logout</button>
+  </div>
 </div>
 
 <script>
-const SUPABASE_URL =
-"https://jqpceabdshvboderrbiz.supabase.co";
+const SUPABASE_URL="https://jqpceabdshvboderrbiz.supabase.co";
+const SUPABASE_KEY="sb_publishable_lgtWi40tBxTt1zPogOQ4oA_Zf8SKU2P";
+const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+let rowId=null;
+const $=id=>document.getElementById(id);
 
-const SUPABASE_KEY =
-"sb_publishable_lgtWi40tBxTt1zPogOQ4oA_Zf8SKU2P";
+function showAdmin(){
+  $("login").style.display="none";
+  $("admin").style.display="block";
+}
+function showLogin(){
+  $("admin").style.display="none";
+  $("login").style.display="block";
+}
 
-const db = window.supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY
-);
-
-let rowId = null;
-
-/* LOGIN */
-document.getElementById("loginBtn").onclick = async function(){
-  const email = document.getElementById("email").value.trim();
-  const password = document.getElementById("password").value;
-  const status = document.getElementById("loginStatus");
-  const button = this;
-
-  if(!email || !password){
-    status.textContent = "Enter your email and password.";
-    return;
-  }
-
-  button.disabled = true;
-  status.textContent = "Logging in...";
-
+$("loginBtn").onclick=async()=>{
+  $("loginStatus").textContent="Logging in...";
   try{
-    const {error} = await db.auth.signInWithPassword({
-      email: email,
-      password: password
+    const {error}=await db.auth.signInWithPassword({
+      email:$("email").value.trim(),
+      password:$("password").value
     });
-
     if(error) throw error;
-
-    document.getElementById("login").style.display = "none";
-    document.getElementById("admin").style.display = "block";
-
+    $("loginStatus").textContent="";
+    showAdmin();
     await loadData();
-  }catch(error){
-    status.textContent = "Login failed: " + error.message;
-  }finally{
-    button.disabled = false;
+  }catch(e){
+    $("loginStatus").textContent="Login failed: "+e.message;
   }
 };
 
-/* LOAD DATA */
 async function loadData(){
-  const status = document.getElementById("status");
-  status.textContent = "Loading...";
-  rowId = null;
-
+  $("status").textContent="Loading...";
+  rowId=null;
   try{
-    const response = await fetch(
-      SUPABASE_URL + "/rest/v1/rana_mazen?select=*",
-      {
-        method: "GET",
-        headers: {
-          "apikey": SUPABASE_KEY,
-          "Accept": "application/json"
-        }
-      }
-    );
+    const {data,error}=await db
+      .from("rana_mazen")
+      .select("*")
+      .limit(1)
+      .throwOnError();
 
-    const data = await response.json();
-    console.log("SUPABASE DATA:", data);
-
-    if(!response.ok){
-      throw new Error(
-        data.message || data.error_description || "Request failed"
-      );
-    }
-
-    if(!Array.isArray(data) || data.length === 0){
-      status.textContent = "No data found";
+    if(!data || data.length===0){
+      $("status").textContent="No rows returned. Check the table and read permissions.";
       return;
     }
 
-    /* IMPORTANT: the database column is lowercase id */
-    const item = data[0];
-    rowId = item.id;
+    const item=data[0];
+    rowId=item.id;
+    $("name").value=item.Name||"";
+    $("event_date").value=item.Event_date||"";
+    $("story").value=item.Story||"";
+    $("music").value=item.Music||"";
 
-    if(rowId === undefined || rowId === null){
-      throw new Error("The row ID was not found. Check the id column.");
-    }
+    $("photos").innerHTML="";
+    (Array.isArray(item.Photos)?item.Photos:[]).forEach(url=>addPhoto(url));
 
-    document.getElementById("name").value = item.Name || "";
-    document.getElementById("event_date").value = item.Event_date || "";
-    document.getElementById("story").value = item.Story || "";
-    document.getElementById("music").value = item.Music || "";
+    $("videos").innerHTML="";
+    (Array.isArray(item.Videos)?item.Videos:[]).forEach(url=>addVideo(url));
 
-    /* PHOTOS */
-    document.getElementById("photos").innerHTML = "";
-    const photos = Array.isArray(item.Photos) ? item.Photos : [];
-    photos.forEach(url => addPhoto(url));
-
-    /* VIDEOS */
-    document.getElementById("videos").innerHTML = "";
-    const videos = Array.isArray(item.Videos) ? item.Videos : [];
-    videos.forEach(url => addVideo(url));
-
-    /* MEMORIES */
-    document.getElementById("memories").innerHTML = "";
-    const memories = Array.isArray(item.Memories) ? item.Memories : [];
-
-    memories.forEach(memory => {
-      if(typeof memory === "string"){
-        addMemory(memory, "");
+    $("memories").innerHTML="";
+    (Array.isArray(item.Memories)?item.Memories:[]).forEach(m=>{
+      if(typeof m==="string"){
+        addMemory(m,"","","");
       }else{
-        addMemory(memory.text || "", memory.date || "");
+        addMemory(m.text||"",m.date||"",m.title||"",m.image||"");
       }
     });
 
-    status.textContent = "";
-  }catch(error){
-    console.error("LOAD ERROR:", error);
-    status.textContent = "Error loading data: " + error.message;
+    $("status").textContent="";
+  }catch(e){
+    console.error(e);
+    $("status").textContent="Load failed: "+e.message;
   }
 }
 
-/* PHOTO */
-function addPhoto(value = ""){
-  const box = document.createElement("div");
-  box.className = "item";
-  box.innerHTML = `
-    <input class="photoInput" type="url" placeholder="Photo URL">
-    <button type="button" class="remove">Remove</button>
-  `;
-
-  box.querySelector("input").value = value;
-  box.querySelector("button").onclick = () => box.remove();
-  document.getElementById("photos").appendChild(box);
+function addPhoto(value=""){
+  const box=document.createElement("div");
+  box.className="item";
+  const input=document.createElement("input");
+  input.className="photoInput";
+  input.type="url";
+  input.placeholder="Photo URL";
+  input.value=value;
+  const remove=document.createElement("button");
+  remove.className="remove";
+  remove.textContent="Remove";
+  remove.onclick=()=>box.remove();
+  box.append(input,remove);
+  $("photos").appendChild(box);
 }
+$("addPhoto").onclick=()=>addPhoto("");
 
-document.getElementById("addPhoto").onclick = () => addPhoto("");
-
-/* VIDEO */
-function addVideo(value = ""){
-  const box = document.createElement("div");
-  box.className = "item";
-  box.innerHTML = `
-    <input class="videoInput" type="url" placeholder="Video URL">
-    <button type="button" class="remove">Remove</button>
-  `;
-
-  box.querySelector("input").value = value;
-  box.querySelector("button").onclick = () => box.remove();
-  document.getElementById("videos").appendChild(box);
+function addVideo(value=""){
+  const box=document.createElement("div");
+  box.className="item";
+  const input=document.createElement("input");
+  input.className="videoInput";
+  input.type="url";
+  input.placeholder="Video URL";
+  input.value=value;
+  const remove=document.createElement("button");
+  remove.className="remove";
+  remove.textContent="Remove";
+  remove.onclick=()=>box.remove();
+  box.append(input,remove);
+  $("videos").appendChild(box);
 }
+$("addVideo").onclick=()=>addVideo("");
 
-document.getElementById("addVideo").onclick = () => addVideo("");
+function addMemory(text="",date="",title="",image=""){
+  const box=document.createElement("div");
+  box.className="item";
 
-/* MEMORY */
-function addMemory(text = "", date = ""){
-  const box = document.createElement("div");
-  box.className = "item";
-  box.innerHTML = `
-    <input class="memoryDate" placeholder="Date">
-    <textarea class="memoryText" placeholder="Memory"></textarea>
-    <button type="button" class="remove">Remove</button>
-  `;
+  const titleInput=document.createElement("input");
+  titleInput.className="memoryTitle";
+  titleInput.placeholder="Memory title";
+  titleInput.value=title;
 
-  box.querySelector(".memoryDate").value = date;
-  box.querySelector(".memoryText").value = text;
-  box.querySelector("button").onclick = () => box.remove();
-  document.getElementById("memories").appendChild(box);
+  const dateInput=document.createElement("input");
+  dateInput.className="memoryDate";
+  dateInput.placeholder="Date";
+  dateInput.value=date;
+
+  const textInput=document.createElement("textarea");
+  textInput.className="memoryText";
+  textInput.placeholder="Write about this memory";
+  textInput.value=text;
+
+  const imageInput=document.createElement("input");
+  imageInput.className="memoryImage";
+  imageInput.type="url";
+  imageInput.placeholder="Memory photo URL";
+  imageInput.value=image;
+
+  const hint=document.createElement("p");
+  hint.className="hint";
+  hint.textContent="Paste the public photo link here.";
+
+  const remove=document.createElement("button");
+  remove.className="remove";
+  remove.textContent="Remove memory";
+  remove.onclick=()=>box.remove();
+
+  box.append(titleInput,dateInput,textInput,imageInput,hint,remove);
+  $("memories").appendChild(box);
 }
+$("addMemory").onclick=()=>addMemory();
 
-document.getElementById("addMemory").onclick = () => addMemory("", "");
-
-/* SAVE */
-document.getElementById("saveBtn").onclick = async function(){
-  const status = document.getElementById("status");
-  const button = this;
-
-  if(rowId === null || rowId === undefined){
-    status.textContent = "Cannot save: no database row was loaded. Reload the page first.";
+$("saveBtn").onclick=async()=>{
+  if(rowId===null || rowId===undefined){
+    $("status").textContent="No row ID loaded. Reload the page before saving.";
     return;
   }
 
-  const photos = [...document.querySelectorAll(".photoInput")]
-    .map(input => input.value.trim())
-    .filter(Boolean);
+  $("saveBtn").disabled=true;
+  $("status").textContent="Saving...";
 
-  const videos = [...document.querySelectorAll(".videoInput")]
-    .map(input => input.value.trim())
-    .filter(Boolean);
+  const photos=[...document.querySelectorAll(".photoInput")]
+    .map(x=>x.value.trim()).filter(Boolean);
 
-  const memories = [...document.querySelectorAll("#memories .item")]
-    .map(box => ({
-      date: box.querySelector(".memoryDate").value.trim(),
-      text: box.querySelector(".memoryText").value.trim()
+  const videos=[...document.querySelectorAll(".videoInput")]
+    .map(x=>x.value.trim()).filter(Boolean);
+
+  const memories=[...document.querySelectorAll("#memories .item")]
+    .map(box=>({
+      title:box.querySelector(".memoryTitle").value.trim(),
+      date:box.querySelector(".memoryDate").value.trim(),
+      text:box.querySelector(".memoryText").value.trim(),
+      image:box.querySelector(".memoryImage").value.trim()
     }))
-    .filter(memory => memory.text || memory.date);
+    .filter(x=>x.title||x.date||x.text||x.image);
 
-  const updateData = {
-    Name: document.getElementById("name").value.trim(),
-    Event_date: document.getElementById("event_date").value.trim(),
-    Story: document.getElementById("story").value.trim(),
-    Music: document.getElementById("music").value.trim(),
-    Photos: photos,
-    Videos: videos,
-    Memories: memories
+  const updateData={
+    Name:$("name").value.trim(),
+    Event_date:$("event_date").value.trim(),
+    Story:$("story").value.trim(),
+    Music:$("music").value.trim(),
+    Photos:photos,
+    Videos:videos,
+    Memories:memories
   };
 
-  button.disabled = true;
-  status.textContent = "Saving...";
-
   try{
-    /* IMPORTANT: use lowercase id in the update filter */
-    const response = await fetch(
-      SUPABASE_URL +
-      "/rest/v1/rana_mazen?id=eq." +
-      encodeURIComponent(rowId) +
-      "&select=id",
-      {
-        method: "PATCH",
-        headers: {
-          "apikey": SUPABASE_KEY,
-          "Content-Type": "application/json",
-          "Accept": "application/json",
-          "Prefer": "return=representation"
-        },
-        body: JSON.stringify(updateData)
-      }
-    );
+    const {data,error}=await db
+      .from("rana_mazen")
+      .update(updateData)
+      .eq("id",rowId)
+      .select("id")
+      .throwOnError();
 
-    const responseText = await response.text();
-    let result = null;
-
-    try{
-      result = responseText ? JSON.parse(responseText) : null;
-    }catch(parseError){
-      result = null;
+    if(!data || data.length===0){
+      throw new Error("No row updated. Check update permissions (RLS).");
     }
-
-    if(!response.ok){
-      throw new Error(
-        (result && (result.message || result.error_description)) ||
-        responseText ||
-        "Request failed"
-      );
-    }
-
-    /* An empty result means no row was confirmed as updated */
-    if(!Array.isArray(result) || result.length === 0){
-      throw new Error(
-        "No row was updated. Check the database update permissions and the row id. Your edits were not confirmed as saved."
-      );
-    }
-
-    status.textContent = "Saved online successfully ♡";
-  }catch(error){
-    console.error("SAVE ERROR:", error);
-    status.textContent = "Save failed: " + error.message;
+    $("status").textContent="Saved online successfully ♡";
+  }catch(e){
+    console.error(e);
+    $("status").textContent="Save failed: "+e.message;
   }finally{
-    button.disabled = false;
+    $("saveBtn").disabled=false;
   }
 };
 
-/* LOGOUT */
-document.getElementById("logoutBtn").onclick = async function(){
+$("logoutBtn").onclick=async()=>{
   await db.auth.signOut();
-  rowId = null;
-  document.getElementById("admin").style.display = "none";
-  document.getElementById("login").style.display = "block";
-  document.getElementById("loginStatus").textContent = "";
+  rowId=null;
+  showLogin();
+  $("loginStatus").textContent="";
 };
 
-/* EXISTING SESSION */
-(async function(){
+(async()=>{
   try{
-    const {data, error} = await db.auth.getSession();
-
+    const {data,error}=await db.auth.getSession();
     if(error) throw error;
-
     if(data.session){
-      document.getElementById("login").style.display = "none";
-      document.getElementById("admin").style.display = "block";
+      showAdmin();
       await loadData();
     }
-  }catch(error){
-    console.error("SESSION ERROR:", error);
+  }catch(e){
+    $("loginStatus").textContent="Session error: "+e.message;
   }
 })();
 </script>
