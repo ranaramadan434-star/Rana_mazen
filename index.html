@@ -1,539 +1,282 @@
 <!DOCTYPE html>
-
 <html lang="en">
-
 <head>
-
 <meta charset="UTF-8">
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Rana & Mazen ♡ Admin</title>
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <style>
-
 *{box-sizing:border-box}
-
 body{margin:0;font-family:Arial,sans-serif;background:#fff7fa;color:#333}
-
 .wrap{max-width:700px;margin:auto;padding:25px 18px 50px}
-
 h1{text-align:center;color:#b84d72}
-
 h2{color:#b84d72;font-size:20px}
-
 .box{background:white;padding:18px;border-radius:15px;margin:15px 0;box-shadow:0 3px 15px #0000000d}
-
 label{display:block;margin:14px 0 6px;font-weight:bold}
-
 input,textarea{width:100%;padding:12px;border:1px solid #ddd;border-radius:10px;font-size:15px}
-
 textarea{min-height:110px}
-
 button{border:0;border-radius:10px;padding:12px 18px;font-size:15px;margin-top:10px;cursor:pointer}
-
+button:disabled{opacity:.6}
 .main{width:100%;background:#b84d72;color:white;font-weight:bold}
-
 .add{background:#f3d3df;color:#8d3657}
-
 .remove{background:#eee;color:#666}
-
 .item{background:#fff7fa;padding:12px;border-radius:12px;margin:10px 0}
-
 #admin{display:none}
-
 #status,#loginStatus{text-align:center;margin:12px 0;font-weight:bold;overflow-wrap:anywhere}
-
 </style>
-
 </head>
-
 <body>
-
 <div class="wrap">
 
 <div id="login">
-
 <h1>Rana & Mazen ♡</h1>
-
 <div class="box">
-
 <h2>Admin Login</h2>
-
 <label>Email</label>
-
 <input id="email" type="email" autocomplete="username">
-
 <label>Password</label>
-
 <input id="password" type="password" autocomplete="current-password">
-
 <button class="main" id="loginBtn">Login</button>
-
 <div id="loginStatus"></div>
-
 </div>
-
 </div>
 
 <div id="admin">
-
 <h1>Rana & Mazen ♡</h1>
 
 <div class="box">
-
 <h2>Basic Information</h2>
-
-<label>Names</label>
-
-<input id="name">
-
-<label>Date</label>
-
-<input id="event_date">
-
-<label>Story</label>
-
-<textarea id="story"></textarea>
-
-<label>Song URL</label>
-
-<input id="music" type="url">
-
+<label>Names</label><input id="name">
+<label>Date</label><input id="event_date">
+<label>Story</label><textarea id="story"></textarea>
+<label>Song URL</label><input id="music" type="url">
 </div>
 
 <div class="box">
-
 <h2>Photos</h2>
-
 <div id="photos"></div>
-
 <button class="add" id="addPhoto">+ Add photo</button>
-
 </div>
 
 <div class="box">
-
 <h2>Videos</h2>
-
 <div id="videos"></div>
-
 <button class="add" id="addVideo">+ Add video</button>
-
 </div>
 
 <div class="box">
-
 <h2>Memories</h2>
-
 <div id="memories"></div>
-
 <button class="add" id="addMemory">+ Add memory</button>
-
 </div>
 
 <button class="main" id="saveBtn">Save Changes ♡</button>
-
 <div id="status"></div>
-
-<button id="logoutBtn" style="width:100%;background:#eee;color:#555">
-
-Logout
-
-</button>
-
+<button id="logoutBtn" style="width:100%;background:#eee;color:#555">Logout</button>
 </div>
-
 </div>
 
 <script>
-
-const SUPABASE_URL =
-
-"https://jqpceabdshvboderrbiz.supabase.co";
-
-const SUPABASE_KEY =
-
-"sb_publishable_lgtWi40tBxTt1zPogOQ4oA_Zf8SKU2P";
-
-const db = window.supabase.createClient(
-
-  SUPABASE_URL,
-
-  SUPABASE_KEY
-
-);
-
-let rowId = null;
-
-const $ = id => document.getElementById(id);
+const SUPABASE_URL="https://jqpceabdshvboderrbiz.supabase.co";
+const SUPABASE_KEY="sb_publishable_lgtWi40tBxTt1zPogOQ4oA_Zf8SKU2P";
+const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+let rowId=null;
+const $=id=>document.getElementById(id);
 
 function showAdmin(){
-
-  $("login").style.display = "none";
-
-  $("admin").style.display = "block";
-
+  $("login").style.display="none";
+  $("admin").style.display="block";
 }
-
 function showLogin(){
-
-  $("admin").style.display = "none";
-
-  $("login").style.display = "block";
-
+  $("admin").style.display="none";
+  $("login").style.display="block";
 }
 
-$("loginBtn").onclick = async function(){
-
-  const email = $("email").value.trim();
-
-  const password = $("password").value;
-
-  $("loginStatus").textContent = "Logging in...";
-
-  const {error} = await db.auth.signInWithPassword({
-
-    email,
-
-    password
-
-  });
-
-  if(error){
-
-    $("loginStatus").textContent =
-
-      "Login failed: " + error.message;
-
-    return;
-
+$("loginBtn").onclick=async()=>{
+  $("loginStatus").textContent="Logging in...";
+  try{
+    const {error}=await db.auth.signInWithPassword({
+      email:$("email").value.trim(),
+      password:$("password").value
+    });
+    if(error) throw error;
+    $("loginStatus").textContent="";
+    showAdmin();
+    await loadData();
+  }catch(e){
+    $("loginStatus").textContent="Login failed: "+e.message;
   }
-
-  $("loginStatus").textContent = "";
-
-  showAdmin();
-
-  await loadData();
-
 };
 
 async function loadData(){
-
-  $("status").textContent = "Loading...";
-
+  $("status").textContent="Loading...";
+  rowId=null;
   try{
-
-    const {data, error} = await db
-
+    const {data,error}=await db
       .from("rana_mazen")
-
       .select("*")
+      .limit(1)
+      .throwOnError();
 
-      .limit(1);
-
-    if(error) throw error;
-
-    if(!data || data.length === 0){
-
-      rowId = null;
-
-      $("status").textContent = "No data found";
-
+    if(!data || data.length===0){
+      $("status").textContent=
+        "No rows returned. Check the table and read permissions.";
       return;
-
     }
 
-    const item = data[0];
+    const item=data[0];
+    rowId=item.id;
 
-    // Correct database column name: id (lowercase)
+    $("name").value=item.Name||"";
+    $("event_date").value=item.Event_date||"";
+    $("story").value=item.Story||"";
+    $("music").value=item.Music||"";
 
-    rowId = item.id;
+    $("photos").innerHTML="";
+    (Array.isArray(item.Photos)?item.Photos:[])
+      .forEach(url=>addPhoto(url));
 
-    $("name").value = item.Name || "";
+    $("videos").innerHTML="";
+    (Array.isArray(item.Videos)?item.Videos:[])
+      .forEach(url=>addVideo(url));
 
-    $("event_date").value = item.Event_date || "";
+    $("memories").innerHTML="";
+    (Array.isArray(item.Memories)?item.Memories:[])
+      .forEach(m=>{
+        if(typeof m==="string") addMemory(m,"");
+        else addMemory(m.text||"",m.date||"");
+      });
 
-    $("story").value = item.Story || "";
-
-    $("music").value = item.Music || "";
-
-    $("photos").innerHTML = "";
-
-    const photos = Array.isArray(item.Photos) ? item.Photos : [];
-
-    photos.forEach(url => addPhoto(url));
-
-    $("videos").innerHTML = "";
-
-    const videos = Array.isArray(item.Videos) ? item.Videos : [];
-
-    videos.forEach(url => addVideo(url));
-
-    $("memories").innerHTML = "";
-
-    const memories = Array.isArray(item.Memories) ? item.Memories : [];
-
-    memories.forEach(memory => {
-
-      if(typeof memory === "string"){
-
-        addMemory(memory, "");
-
-      }else{
-
-        addMemory(memory.text || "", memory.date || "");
-
-      }
-
-    });
-
-    $("status").textContent = "";
-
-  }catch(error){
-
-    console.error(error);
-
-    $("status").textContent =
-
-      "Load failed: " + (error.message || String(error));
-
+    $("status").textContent="";
+  }catch(e){
+    console.error(e);
+    $("status").textContent="Load failed: "+e.message;
   }
-
 }
 
-function addPhoto(value = ""){
-
-  const box = document.createElement("div");
-
-  box.className = "item";
-
-  const input = document.createElement("input");
-
-  input.className = "photoInput";
-
-  input.type = "url";
-
-  input.placeholder = "Photo URL";
-
-  input.value = value;
-
-  const remove = document.createElement("button");
-
-  remove.className = "remove";
-
-  remove.textContent = "Remove";
-
-  remove.onclick = () => box.remove();
-
-  box.append(input, remove);
-
+function addPhoto(value=""){
+  const box=document.createElement("div");
+  box.className="item";
+  const input=document.createElement("input");
+  input.className="photoInput";
+  input.type="url";
+  input.placeholder="Photo URL";
+  input.value=value;
+  const remove=document.createElement("button");
+  remove.className="remove";
+  remove.textContent="Remove";
+  remove.onclick=()=>box.remove();
+  box.append(input,remove);
   $("photos").appendChild(box);
-
 }
+$("addPhoto").onclick=()=>addPhoto("");
 
-$("addPhoto").onclick = () => addPhoto("");
-
-function addVideo(value = ""){
-
-  const box = document.createElement("div");
-
-  box.className = "item";
-
-  const input = document.createElement("input");
-
-  input.className = "videoInput";
-
-  input.type = "url";
-
-  input.placeholder = "Video URL";
-
-  input.value = value;
-
-  const remove = document.createElement("button");
-
-  remove.className = "remove";
-
-  remove.textContent = "Remove";
-
-  remove.onclick = () => box.remove();
-
-  box.append(input, remove);
-
+function addVideo(value=""){
+  const box=document.createElement("div");
+  box.className="item";
+  const input=document.createElement("input");
+  input.className="videoInput";
+  input.type="url";
+  input.placeholder="Video URL";
+  input.value=value;
+  const remove=document.createElement("button");
+  remove.className="remove";
+  remove.textContent="Remove";
+  remove.onclick=()=>box.remove();
+  box.append(input,remove);
   $("videos").appendChild(box);
-
 }
+$("addVideo").onclick=()=>addVideo("");
 
-$("addVideo").onclick = () => addVideo("");
-
-function addMemory(text = "", date = ""){
-
-  const box = document.createElement("div");
-
-  box.className = "item";
-
-  const dateInput = document.createElement("input");
-
-  dateInput.className = "memoryDate";
-
-  dateInput.placeholder = "Date";
-
-  dateInput.value = date;
-
-  const textInput = document.createElement("textarea");
-
-  textInput.className = "memoryText";
-
-  textInput.placeholder = "Memory";
-
-  textInput.value = text;
-
-  const remove = document.createElement("button");
-
-  remove.className = "remove";
-
-  remove.textContent = "Remove";
-
-  remove.onclick = () => box.remove();
-
-  box.append(dateInput, textInput, remove);
-
+function addMemory(text="",date=""){
+  const box=document.createElement("div");
+  box.className="item";
+  const dateInput=document.createElement("input");
+  dateInput.className="memoryDate";
+  dateInput.placeholder="Date";
+  dateInput.value=date;
+  const textInput=document.createElement("textarea");
+  textInput.className="memoryText";
+  textInput.placeholder="Memory";
+  textInput.value=text;
+  const remove=document.createElement("button");
+  remove.className="remove";
+  remove.textContent="Remove";
+  remove.onclick=()=>box.remove();
+  box.append(dateInput,textInput,remove);
   $("memories").appendChild(box);
-
 }
+$("addMemory").onclick=()=>addMemory("");
 
-$("addMemory").onclick = () => addMemory("", "");
-
-$("saveBtn").onclick = async function(){
-
-  if(rowId === null || rowId === undefined){
-
-    $("status").textContent =
-
-      "Cannot save: the database row ID was not loaded. Reload the page.";
-
+$("saveBtn").onclick=async()=>{
+  if(rowId===null || rowId===undefined){
+    $("status").textContent="No row ID loaded. Reload the page before saving.";
     return;
-
   }
 
-  $("saveBtn").disabled = true;
+  $("saveBtn").disabled=true;
+  $("status").textContent="Saving...";
 
-  $("status").textContent = "Saving...";
-
-  const photos = [...document.querySelectorAll(".photoInput")]
-
-    .map(input => input.value.trim())
-
-    .filter(Boolean);
-
-  const videos = [...document.querySelectorAll(".videoInput")]
-
-    .map(input => input.value.trim())
-
-    .filter(Boolean);
-
-  const memories = [...document.querySelectorAll("#memories .item")]
-
-    .map(box => ({
-
-      date: box.querySelector(".memoryDate").value.trim(),
-
-      text: box.querySelector(".memoryText").value.trim()
-
+  const photos=[...document.querySelectorAll(".photoInput")]
+    .map(x=>x.value.trim()).filter(Boolean);
+  const videos=[...document.querySelectorAll(".videoInput")]
+    .map(x=>x.value.trim()).filter(Boolean);
+  const memories=[...document.querySelectorAll("#memories .item")]
+    .map(box=>({
+      date:box.querySelector(".memoryDate").value.trim(),
+      text:box.querySelector(".memoryText").value.trim()
     }))
+    .filter(x=>x.date||x.text);
 
-    .filter(memory => memory.text || memory.date);
-
-  const updateData = {
-
-    Name: $("name").value.trim(),
-
-    Event_date: $("event_date").value.trim(),
-
-    Story: $("story").value.trim(),
-
-    Music: $("music").value.trim(),
-
-    Photos: photos,
-
-    Videos: videos,
-
-    Memories: memories
-
+  const updateData={
+    Name:$("name").value.trim(),
+    Event_date:$("event_date").value.trim(),
+    Story:$("story").value.trim(),
+    Music:$("music").value.trim(),
+    Photos:photos,
+    Videos:videos,
+    Memories:memories
   };
 
   try{
-
-    const {data, error} = await db
-
+    const {data,error}=await db
       .from("rana_mazen")
-
       .update(updateData)
+      .eq("id",rowId)
+      .select("id")
+      .throwOnError();
 
-      .eq("id", rowId)
-
-      .select("id");
-
-    if(error) throw error;
-
-    if(!data || data.length === 0){
-
-      throw new Error(
-
-        "No row was updated. Check your Supabase table permissions (RLS)."
-
-      );
-
+    if(!data || data.length===0){
+      throw new Error("No row updated. Check update permissions (RLS).");
     }
-
-    $("status").textContent = "Saved online successfully ♡";
-
-  }catch(error){
-
-    console.error(error);
-
-    $("status").textContent =
-
-      "Save failed: " + (error.message || String(error));
-
+    $("status").textContent="Saved online successfully ♡";
+  }catch(e){
+    console.error(e);
+    $("status").textContent="Save failed: "+e.message;
   }finally{
-
-    $("saveBtn").disabled = false;
-
+    $("saveBtn").disabled=false;
   }
-
 };
 
-$("logoutBtn").onclick = async function(){
-
+$("logoutBtn").onclick=async()=>{
   await db.auth.signOut();
-
-  rowId = null;
-
+  rowId=null;
   showLogin();
-
-  $("loginStatus").textContent = "";
-
+  $("loginStatus").textContent="";
 };
 
-(async function(){
-
-  const {data, error} = await db.auth.getSession();
-
-  if(!error && data.session){
-
-    showAdmin();
-
-    await loadData();
-
+(async()=>{
+  try{
+    const {data,error}=await db.auth.getSession();
+    if(error) throw error;
+    if(data.session){
+      showAdmin();
+      await loadData();
+    }
+  }catch(e){
+    $("loginStatus").textContent="Session error: "+e.message;
   }
-
 })();
-
 </script>
-
 </body>
-
 </html>
