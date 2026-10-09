@@ -1,938 +1,1017 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport"
-content="width=device-width,initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="theme-color" content="#10090d">
 <title>Rana & Mazen ♡</title>
+
 <style>
-*{
-box-sizing:border-box
+:root {
+  --bg: #10090d;
+  --panel: #1d1118;
+  --burgundy: #792642;
+  --rose: #d18aa0;
+  --cream: #f1e5d3;
+  --muted: #c3adb5;
+  --border: #704052;
 }
-body{
-margin:0;
-font-family:Arial,sans-serif;
-background:linear-gradient(135deg,#fff7f5,#f5e3e0);
-color:#5b4039;
-overflow-x:hidden;
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background:
+    radial-gradient(ellipse at top, #321321 0%, transparent 48%),
+    var(--bg);
+  color: var(--cream);
+  overflow-x: hidden;
 }
-#hearts,#flowers{
-position:fixed;
-inset:0;
-pointer-events:none;
-overflow:hidden;
+
+#hearts, #flowers {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
 }
-#hearts{
-z-index:0
+#hearts { z-index: 0; }
+#flowers { z-index: 100000; }
+
+.heart {
+  position: absolute;
+  bottom: -40px;
+  color: #bd6483;
+  animation: up 7s linear forwards;
+  opacity: .55;
 }
-#flowers{
-z-index:20
+@keyframes up {
+  to {
+    transform: translateY(-110vh) rotate(25deg);
+    opacity: 0;
+  }
 }
-.heart{
-position:absolute;
-bottom:-40px;
-animation:up 7s linear forwards;
-opacity:.55;
+
+.flower {
+  position: absolute;
+  top: -50px;
+  font-size: 30px;
+  animation: fall 3s linear forwards;
 }
-@keyframes up{
-to{
-transform:translateY(-110vh) rotate(25deg);
-opacity:0;
+@keyframes fall {
+  to {
+    transform: translateY(110vh) rotate(360deg);
+    opacity: 0;
+  }
 }
+
+main {
+  position: relative;
+  z-index: 2;
+  max-width: 650px;
+  margin: auto;
+  padding: 30px 15px 70px;
 }
-.flower{
-position:absolute;
-top:-50px;
-font-size:30px;
-animation:fall 3s linear forwards;
+
+.hero {
+  min-height: 78vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  padding: 30px 10px;
 }
-@keyframes fall{
-to{
-transform:translateY(110vh) rotate(360deg);
-opacity:0;
+
+.hero h1 {
+  font-family: Georgia, serif;
+  font-size: clamp(38px, 10vw, 56px);
+  font-weight: normal;
+  line-height: 1.2;
+  margin: 14px 0;
+  color: var(--cream);
+  text-shadow: 0 0 30px #9c3d5c45;
+  overflow-wrap: anywhere;
 }
+
+.hero .big-heart {
+  font-size: 65px;
+  color: var(--rose);
+  animation: beat 1.5s infinite;
 }
-main{
-position:relative;
-z-index:2;
-max-width:650px;
-margin:auto;
-padding:30px 15px 70px;
+@keyframes beat {
+  50% { transform: scale(1.15); }
 }
-.hero{
-min-height:70vh;
-display:flex;
-flex-direction:column;
-justify-content:center;
-align-items:center;
-text-align:center;
+
+.hero p {
+  color: var(--muted);
+  line-height: 1.9;
 }
-.hero h1{
-font-family:Georgia,serif;
-font-size:52px;
-font-weight:normal;
-margin:10px 0;
+
+.hero-label {
+  font-size: 11px;
+  letter-spacing: 4px;
+  color: var(--rose);
 }
-.hero .big-heart{
-font-size:65px;
-animation:beat 1.5s infinite;
+
+.section { margin-top: 55px; }
+
+h2 {
+  text-align: center;
+  font-family: Georgia, serif;
+  font-weight: normal;
+  font-size: 30px;
+  color: var(--cream);
 }
-@keyframes beat{
-50%{
-transform:scale(1.15)
+
+.card {
+  background: linear-gradient(145deg, #29131fef, #191017f5);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 22px;
+  box-shadow: 0 15px 40px #0003;
 }
+
+.hidden { display: none !important; }
+
+.photos { overflow: hidden; }
+
+.photo-track {
+  display: flex;
+  transition: transform .4s ease;
+  direction: ltr;
 }
-.hero p{
-color:#96756d
+
+.photo {
+  min-width: 100%;
+  padding: 10px;
 }
-.section{
-margin-top:55px
+
+.photo img {
+  width: 100%;
+  aspect-ratio: 4/5;
+  object-fit: cover;
+  border-radius: 13px;
+  display: block;
+  box-shadow: 0 10px 25px #0005;
 }
-h2{
-text-align:center;
-font-family:Georgia,serif;
-font-weight:normal;
-font-size:30px;
+
+.photo-count {
+  text-align: center;
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 13px;
 }
-.card{
-background:#ffffffdd;
-border-radius:28px;
-padding:25px;
-box-shadow:0 15px 40px #00000012;
+
+.dots {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 12px;
 }
-.hidden{
-display:none!important
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #60404e;
+  transition: .3s;
 }
-.photos{
-overflow:hidden
+
+.dot.active {
+  width: 22px;
+  border-radius: 20px;
+  background: var(--rose);
 }
-.photo-track{
-display:flex;
-transition:.4s;
+
+.lock { text-align: center; }
+
+.lock-circle {
+  width: 80px;
+  height: 80px;
+  margin: auto;
+  border-radius: 50%;
+  background: #4b2034;
+  border: 1px solid #a35370;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 35px;
 }
-.photo{
-min-width:100%;
-padding:10px;
+
+.lock h3 {
+  font-family: Georgia, serif;
+  font-size: 25px;
+  color: var(--rose);
 }
-.photo img{
-width:100%;
-aspect-ratio:4/5;
-object-fit:cover;
-border-radius:10px;
-display:block;
-box-shadow:0 10px 25px #0002;
+
+.message {
+  line-height: 2.2;
+  font-size: 16px;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
 }
-.photo-count{
-text-align:center;
-margin-top:10px;
+
+button {
+  border: 1px solid #a85a75;
+  background: linear-gradient(135deg, #8a2b4b, #55172f);
+  color: var(--cream);
+  padding: 12px 22px;
+  border-radius: 25px;
+  cursor: pointer;
+  margin-top: 15px;
+  box-shadow: 0 5px 18px #0002;
 }
-.dots{
-display:flex;
-justify-content:center;
-gap:6px;
-margin-top:10px;
+
+button:active { transform: scale(.98); }
+
+.memory-stage {
+  min-height: 400px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
 }
-.dot{
-width:8px;
-height:8px;
-border-radius:50%;
-background:#d9c0ba;
+
+.memory {
+  position: absolute;
+  width: 88%;
+  background: #21131c;
+  border: 1px solid #704052;
+  border-radius: 13px;
+  padding: 12px 12px 22px;
+  box-shadow: 0 15px 40px #0005;
+  transition: .4s;
 }
-.dot.active{
-width:22px;
-border-radius:20px;
-background:#76554d;
+
+.memory img {
+  width: 100%;
+  aspect-ratio: 4/3;
+  object-fit: cover;
+  border-radius: 7px;
+  display: block;
 }
-.lock{
-text-align:center;
-cursor:pointer;
+
+.memory h3 {
+  font-family: Georgia, serif;
+  color: var(--rose);
+  margin: 15px 5px 5px;
+  font-size: 22px;
 }
-.lock-circle{
-width:80px;
-height:80px;
-margin:auto;
-border-radius:50%;
-background:#f1dfdb;
-display:flex;
-align-items:center;
-justify-content:center;
-font-size:35px;
+
+.memory p {
+  margin: 8px 5px;
+  line-height: 1.8;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
 }
-.lock h3{
-font-family:Georgia,serif;
-font-size:25px;
+
+.memory small {
+  margin: 5px;
+  display: block;
+  color: var(--muted);
 }
-.message{
-line-height:2;
-font-size:16px;
-white-space:pre-line;
+
+.record {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  margin: auto;
+  background: repeating-radial-gradient(
+    circle, #170d14 0 3px, #4c2338 4px 7px
+  );
+  border: 4px solid #321523;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 0 25px #8a2b4b35;
 }
-button{
-border:0;
-background:#624740;
-color:white;
-padding:12px 22px;
-border-radius:25px;
-cursor:pointer;
-margin-top:15px;
+
+.record:after {
+  content: "♡";
+  width: 32px;
+  height: 32px;
+  background: var(--burgundy);
+  border: 1px solid #c87d96;
+  color: var(--cream);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-.memory-stage{
-height:400px;
-position:relative;
-display:flex;
-align-items:center;
-justify-content:center;
-overflow:hidden;
+
+.playing { animation: spin 2s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.music { text-align: center; }
+
+video {
+  width: 100%;
+  border-radius: 18px;
+  background: #080709;
 }
-.memory{
-position:absolute;
-width:88%;
-background:white;
-padding:12px 12px 22px;
-box-shadow:0 15px 40px #0002;
-transition:.4s;
+
+input {
+  width: 100%;
+  padding: 14px;
+  background: #10090d;
+  color: var(--cream);
+  border: 1px solid #704052;
+  border-radius: 15px;
+  text-align: center;
+  font-size: 16px;
+  margin-top: 15px;
+  direction: ltr;
 }
-.memory img{
-width:100%;
-aspect-ratio:4/3;
-object-fit:cover;
+
+input::placeholder { color: #a88d98; }
+
+.error {
+  color: #e6a0b3;
+  margin-top: 10px;
 }
-.memory h3{
-font-family:Georgia,serif;
-margin:15px 5px 5px;
-font-size:22px;
+
+.end {
+  text-align: center;
+  font-family: Georgia, serif;
+  font-size: 22px;
+  margin-top: 70px;
+  color: var(--rose);
 }
-.memory p{
-margin:5px;
-line-height:1.8;
+
+a {
+  color: var(--rose);
+  font-weight: bold;
 }
-.memory small{
-margin:5px;
-display:block;
-color:#9c8078;
+
+.muted {
+  color: var(--muted);
+  line-height: 1.9;
 }
-.record{
-width:110px;
-height:110px;
-border-radius:50%;
-margin:auto;
-background:repeating-radial-gradient(
-circle,#392622 0 3px,#533b35 4px 7px
-);
-display:flex;
-align-items:center;
-justify-content:center;
-cursor:pointer;
+
+.center { text-align: center; }
+
+/* Birthday intro */
+#birthdayIntro {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  text-align: center;
+  background:
+    radial-gradient(ellipse at center, #49172c 0%, #1b0d15 52%, #080709 100%);
+  transition: opacity .8s ease, visibility .8s ease;
 }
-.record:after{
-content:"♡";
-width:32px;
-height:32px;
-background:#ead5d0;
-border-radius:50%;
-display:flex;
-align-items:center;
-justify-content:center;
+
+#birthdayIntro.intro-hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
 }
-.playing{
-animation:spin 2s linear infinite;
+
+#confettiLayer {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
 }
-@keyframes spin{
-to{
-transform:rotate(360deg)
+
+.birthday-content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  padding: 24px;
+  animation: birthdayReveal 1s ease both;
 }
+
+.birthday-small {
+  color: #d5bda3;
+  font-size: 10px;
+  letter-spacing: 3px;
 }
-.music{
-text-align:center
+
+.birthday-cake {
+  font-size: 60px;
+  margin: 20px 0;
+  animation: cakePop .8s .3s both;
 }
-video{
-width:100%;
-border-radius:18px;
-background:#111;
+
+.birthday-content h1 {
+  color: var(--cream);
+  font-family: Georgia, serif;
+  font-size: clamp(43px, 12vw, 68px);
+  line-height: 1.05;
+  margin: 16px 0;
+  text-shadow: 0 0 28px #c24d76;
 }
-input{
-width:100%;
-padding:14px;
-border:1px solid #dcc9c4;
-border-radius:15px;
-text-align:center;
-font-size:16px;
-margin-top:15px;
+
+.birthday-content h2 {
+  color: #d78ba4;
+  font-size: clamp(25px, 7vw, 36px);
+  margin: 15px 0;
 }
-.error{
-color:#a04e48;
-margin-top:10px;
+
+.birthday-subtitle {
+  color: #e4d0c8;
+  margin-top: 22px;
 }
-.end{
-text-align:center;
-font-family:Georgia,serif;
-font-size:22px;
-margin-top:70px;
+
+#enterBirthday { margin-top: 20px; }
+
+.birthday-confetti {
+  position: absolute;
+  top: 48%;
+  left: 50%;
+  width: 9px;
+  height: 15px;
+  border-radius: 2px;
+  animation: confettiBurst 1.8s ease-out forwards;
 }
-a{
-color:#76554d;
-font-weight:bold;
+
+@keyframes confettiBurst {
+  from {
+    transform: translate(-50%, -50%) rotate(0) scale(0);
+    opacity: 1;
+  }
+  to {
+    transform: translate(var(--x), var(--y)) rotate(var(--rotation)) scale(1);
+    opacity: 0;
+  }
+}
+
+@keyframes birthdayReveal {
+  from { opacity: 0; transform: scale(.84) translateY(18px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@keyframes cakePop {
+  0% { transform: scale(0); }
+  70% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 </style>
 </head>
+
 <body>
+<div id="birthdayIntro">
+  <div id="confettiLayer"></div>
+  <div class="birthday-content">
+    <p class="birthday-small">A SPECIAL DAY FOR SOMEONE SPECIAL</p>
+    <div class="birthday-cake">🎂</div>
+    <h1>HAPPY<br>BIRTHDAY</h1>
+    <h2>Y ZANZONA ❤️</h2>
+    <p class="birthday-subtitle">النهارده يومك يا حبيبي</p>
+    <button id="enterBirthday" onclick="enterOurWorld()">
+      استعد للمفاجأة ♡
+    </button>
+  </div>
+</div>
+
 <div id="hearts"></div>
 <div id="flowers"></div>
+
 <main>
-<section class="hero">
-<div class="big-heart">♡</div>
-<div>OUR LITTLE STORY</div>
-<h1 id="names">
-Rana & Mazen
-</h1>
-<p>
-For my favorite person ❤️
-</p>
-<p id="date"></p>
-<p>
-اسحب لتحت وشوف مفاجأتك ↓
-</p>
-</section>
-<section id="photosSection"
-class="section hidden">
-<h2>
-Our Moments ♡
-</h2>
-<div class="card photos"
-id="photoSlider">
-<div class="photo-track"
-id="photoTrack">
-</div>
-</div>
-<div class="dots"
-id="photoDots">
-</div>
-</section>
-<section class="section">
-<h2>
-A Message For You
-</h2>
-<div id="messageClosed"
-class="card lock"
-onclick="openMessage()">
-<div class="lock-circle">
-🔐
-</div>
-<h3>
-Message
-</h3>
-<p>
-في حاجة مستخبية ليك هنا…<br>
-دوس على القفل عشان تفتح رسالتي ❤️
-</p>
-</div>
-<div id="messageOpen"
-class="card hidden">
-<div id="story"
-class="message">
-</div>
-<div style="text-align:center">
-<button onclick="closeMessage()">
-اقفل الرسالة ♡
-</button>
-</div>
-</div>
-</section>
-<section id="memoriesSection"
-class="section hidden">
-<h2>
-Our Little Moments ♡
-</h2>
-<p style="text-align:center;color:#96756d">
-اسحب الكارت يمين أو شمال واكتشف ذكرياتنا
-</p>
-<div class="memory-stage"
-id="memoryStage">
-</div>
-</section>
-<section id="videoSection"
-class="section hidden">
-<h2>
-Something Secret 🔐
-</h2>
-<div id="videoLocked"
-class="card lock">
-<div class="lock-circle"
-onclick="showDateInput()">
-🔐
-</div>
-<h3>
-Secret Video
-</h3>
-<p>
-الفيديو مقفول…<br>
-التاريخ المميز هو المفتاح ❤️
-</p>
-<div id="dateBox"
-class="hidden">
-<input
-id="secretDate"
-placeholder="DD/MM/YYYY"
-inputmode="numeric">
-<button onclick="unlockVideo()">
-Unlock ♡
-</button>
-<div id="error"
-class="error">
-</div>
-</div>
-</div>
-<div id="videoUnlocked"
-class="hidden">
-</div>
-</section>
-<section id="musicSection"
-class="section hidden">
-<h2>
-Our Sound ♡
-</h2>
-<div class="card music">
-<div id="record"
-class="record"
-onclick="toggleMusic()">
-</div>
-<h3>
-This song sounds like us ♡
-</h3>
-<p>
-كل مرة تسمعها… افتكرنا ❤️
-</p>
-<a id="musicLink"
-class="hidden"
-target="_blank"
-rel="noopener">
-افتح الأغنية ♡
-</a>
-<audio id="audio"></audio>
-</div>
-</section>
-<div class="end">
-And this is only the beginning... ♡
-</div>
+  <section class="hero">
+    <div class="big-heart">♡</div>
+    <div class="hero-label">OUR LITTLE STORY</div>
+    <h1 id="names">Rana &amp; Mazen</h1>
+    <p>For my favorite person ❤️</p>
+    <p id="date"></p>
+    <p>اسحب لتحت وشوف مفاجأتك ↓</p>
+  </section>
+
+  <section id="photosSection" class="section hidden">
+    <h2>Our Moments ♡</h2>
+    <div class="card photos" id="photoSlider">
+      <div class="photo-track" id="photoTrack"></div>
+    </div>
+    <div class="dots" id="photoDots"></div>
+  </section>
+
+  <section class="section">
+    <h2>A Message For You</h2>
+    <div id="messageClosed" class="card lock" onclick="openMessage()">
+      <div class="lock-circle">🔐</div>
+      <h3>Message</h3>
+      <p class="muted">
+        في حاجة مستخبية ليك هنا…<br>
+        دوس على القفل عشان تفتح رسالتي ❤️
+      </p>
+    </div>
+    <div id="messageOpen" class="card hidden">
+      <div id="story" class="message"></div>
+      <div class="center">
+        <button onclick="closeMessage()">اقفل الرسالة ♡</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="memoriesSection" class="section hidden">
+    <h2>Our Little Moments ♡</h2>
+    <p class="center muted">اسحب الكارت يمين أو شمال واكتشف ذكرياتنا</p>
+    <div class="memory-stage" id="memoryStage"></div>
+  </section>
+
+  <section id="videoSection" class="section hidden">
+    <h2>Something Secret 🔐</h2>
+    <div id="videoLocked" class="card lock">
+      <div class="lock-circle" onclick="showDateInput()">🔐</div>
+      <h3>Secret Video</h3>
+      <p class="muted">
+        الفيديو مقفول…<br>
+        التاريخ المميز هو المفتاح ❤️
+      </p>
+      <div id="dateBox" class="hidden">
+        <input id="secretDate" placeholder="DD/MM/YYYY" inputmode="numeric" autocomplete="off">
+        <button onclick="unlockVideo()">Unlock ♡</button>
+        <div id="error" class="error"></div>
+      </div>
+    </div>
+    <div id="videoUnlocked" class="hidden"></div>
+  </section>
+
+  <section id="musicSection" class="section hidden">
+    <h2>Our Sound ♡</h2>
+    <div class="card music">
+      <div id="record" class="record" onclick="toggleMusic()"></div>
+      <h3>This song sounds like us ♡</h3>
+      <p class="muted">كل مرة تسمعها… افتكرنا ❤️</p>
+      <a id="musicLink" class="hidden" target="_blank" rel="noopener noreferrer">افتح الأغنية ♡</a>
+      <audio id="audio" preload="none"></audio>
+    </div>
+  </section>
+
+  <div class="end">And this is only the beginning... ♡</div>
 </main>
+
 <script>
-/* =========================
-   SUPABASE
-========================= */
+/* SUPABASE — نفس بيانات المشروع القديم */
 const SUPABASE_URL =
-"https://jqpceabdshvboderrbiz.supabase.co";
+  "https://jqpceabdshvboderrbiz.supabase.co";
 const SUPABASE_KEY =
-"sb_publishable_lgtWi40tBxTt1zPogOQ4oA_Zf8SKU2P";
-/* =========================
-   DATA
-========================= */
+  "sb_publishable_lgtWi40tBxTt1zPogOQ4oA_Zf8SKU2P";
+
 let photos = [];
 let photoIndex = 0;
 let memories = [];
 let memoryIndex = 0;
 let videos = [];
 let music = "";
-/* =========================
-   HEARTS
-========================= */
-function heart(){
-const h =
-document.createElement("div");
-h.className = "heart";
-h.textContent =
-Math.random() > 0.5
-? "♡"
-: "♥";
-h.style.left =
-Math.random() * 100 + "%";
-h.style.fontSize =
-(12 + Math.random() * 20) + "px";
-h.style.animationDuration =
-(6 + Math.random() * 5) + "s";
-document
-.getElementById("hearts")
-.appendChild(h);
-setTimeout(
-() => h.remove(),
-12000
-);
+
+/* Birthday confetti */
+function burstConfetti() {
+  const layer = document.getElementById("confettiLayer");
+  if (!layer) return;
+
+  const colors = ["#792642", "#bd526f", "#f1e5d3", "#d5bda3", "#ffffff"];
+
+  for (let i = 0; i < 110; i++) {
+    const piece = document.createElement("span");
+    piece.className = "birthday-confetti";
+
+    const angle = Math.random() * Math.PI * 2;
+    const distance = 90 + Math.random() * Math.max(innerWidth, innerHeight) * .45;
+
+    piece.style.setProperty("--x", Math.cos(angle) * distance + "px");
+    piece.style.setProperty("--y", Math.sin(angle) * distance + "px");
+    piece.style.setProperty("--rotation", Math.random() * 1000 + "deg");
+    piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+    piece.style.animationDelay = Math.random() * .3 + "s";
+
+    layer.appendChild(piece);
+    setTimeout(() => piece.remove(), 2400);
+  }
 }
-setInterval(heart,800);
-/* =========================
-   FLOWERS
-========================= */
-function flowers(){
-const box =
-document.getElementById("flowers");
-const list = [
-"🌹",
-"🌷",
-"🌸",
-"🌺",
-"💐"
-];
-for(let i = 0; i < 25; i++){
-const f =
-document.createElement("div");
-f.className = "flower";
-f.textContent =
-list[
-Math.floor(
-Math.random() * list.length
-)
-];
-f.style.left =
-Math.random() * 100 + "%";
-f.style.animationDelay =
-Math.random() * 2 + "s";
-box.appendChild(f);
+
+function enterOurWorld() {
+  burstConfetti();
+  const intro = document.getElementById("birthdayIntro");
+  intro.classList.add("intro-hidden");
 }
-setTimeout(
-() => box.innerHTML = "",
-5000
-);
+
+window.addEventListener("load", () => {
+  burstConfetti();
+  setTimeout(burstConfetti, 600);
+});
+
+/* Floating hearts */
+function heart() {
+  const h = document.createElement("div");
+  h.className = "heart";
+  h.textContent = Math.random() > .5 ? "♡" : "♥";
+  h.style.left = Math.random() * 100 + "%";
+  h.style.fontSize = (12 + Math.random() * 20) + "px";
+  h.style.animationDuration = (6 + Math.random() * 5) + "s";
+
+  document.getElementById("hearts").appendChild(h);
+  setTimeout(() => h.remove(), 12000);
+}
+setInterval(heart, 800);
+
+/* Falling flowers */
+function flowers() {
+  const box = document.getElementById("flowers");
+  const list = ["🌹", "🌷", "🌸", "🌺", "💐"];
+
+  for (let i = 0; i < 25; i++) {
+    const f = document.createElement("div");
+    f.className = "flower";
+    f.textContent = list[Math.floor(Math.random() * list.length)];
+    f.style.left = Math.random() * 100 + "%";
+    f.style.animationDelay = Math.random() * 2 + "s";
+    box.appendChild(f);
+    setTimeout(() => f.remove(), 5200);
+  }
 }
 flowers();
-/* =========================
-   MESSAGE
-========================= */
-function openMessage(){
-document
-.getElementById("messageClosed")
-.classList.add("hidden");
-document
-.getElementById("messageOpen")
-.classList.remove("hidden");
+
+/* Message */
+function openMessage() {
+  document.getElementById("messageClosed").classList.add("hidden");
+  document.getElementById("messageOpen").classList.remove("hidden");
 }
-function closeMessage(){
-document
-.getElementById("messageOpen")
-.classList.add("hidden");
-document
-.getElementById("messageClosed")
-.classList.remove("hidden");
+function closeMessage() {
+  document.getElementById("messageOpen").classList.add("hidden");
+  document.getElementById("messageClosed").classList.remove("hidden");
 }
-/* =========================
-   PHOTOS
-========================= */
-function showPhotos(){
-if(!photos.length)
-return;
-const track =
-document.getElementById("photoTrack");
-const dots =
-document.getElementById("photoDots");
-track.innerHTML = "";
-dots.innerHTML = "";
-photos.forEach(
-(url,i) => {
-track.innerHTML += `
-<div class="photo">
-<img
-src="${url}"
-alt="Our moment"
-loading="lazy">
-<div class="photo-count">
-${i + 1} / ${photos.length}
-</div>
-</div>
-`;
-dots.innerHTML += `
-<div class="dot ${i === 0 ? "active" : ""}">
-</div>
-`;
+
+/* Parse stored data in different JSON formats */
+function parseStored(value) {
+  if (Array.isArray(value)) return value;
+  if (value && typeof value === "object") {
+    return Array.isArray(value.items) ? value.items : Object.values(value);
+  }
+  if (typeof value !== "string" || !value.trim()) return [];
+
+  try {
+    const parsed = JSON.parse(value);
+    if (Array.isArray(parsed)) return parsed;
+    if (parsed && typeof parsed === "object") {
+      return Array.isArray(parsed.items) ? parsed.items : Object.values(parsed);
+    }
+  } catch (_) {
+    return value.split(/\r?\n/).map(x => x.trim()).filter(Boolean);
+  }
+  return [];
 }
-);
-document
-.getElementById("photosSection")
-.classList.remove("hidden");
-updatePhotos();
+
+function getField(object, names, fallback = "") {
+  if (!object || typeof object !== "object") return fallback;
+  for (const name of names) {
+    if (object[name] !== undefined && object[name] !== null && object[name] !== "") {
+      return object[name];
+    }
+  }
+  return fallback;
 }
-function updatePhotos(){
-document
-.getElementById("photoTrack")
-.style.transform =
-`translateX(${photoIndex * 100}%)`;
-document
-.querySelectorAll(".dot")
-.forEach(
-(dot,i) => {
-dot.classList.toggle(
-"active",
-i === photoIndex
-);
+
+function validUrl(value) {
+  if (typeof value !== "string") return "";
+  const valueTrimmed = value.trim();
+  try {
+    const url = new URL(valueTrimmed);
+    if (url.protocol === "http:" || url.protocol === "https:") {
+      return url.href;
+    }
+  } catch (_) {}
+  return "";
 }
-);
+
+function itemUrl(item) {
+  if (typeof item === "string") return validUrl(item);
+  return validUrl(getField(item, [
+    "url", "URL", "src", "image", "Image", "photo", "Photo", "video", "Video"
+  ], ""));
 }
+
+/* Photos */
+function showPhotos() {
+  const track = document.getElementById("photoTrack");
+  const dots = document.getElementById("photoDots");
+  track.replaceChildren();
+  dots.replaceChildren();
+
+  if (!photos.length) return;
+
+  photos.forEach((item, i) => {
+    const url = itemUrl(item);
+    if (!url) return;
+
+    const slide = document.createElement("div");
+    slide.className = "photo";
+
+    const img = document.createElement("img");
+    img.src = url;
+    img.alt = "Our moment";
+    img.loading = "lazy";
+
+    const count = document.createElement("div");
+    count.className = "photo-count";
+    count.textContent = (i + 1) + " / " + photos.length;
+
+    slide.append(img, count);
+    track.appendChild(slide);
+
+    const dot = document.createElement("div");
+    dot.className = "dot" + (i === photoIndex ? " active" : "");
+    dots.appendChild(dot);
+  });
+
+  if (!track.children.length) return;
+  document.getElementById("photosSection").classList.remove("hidden");
+  photoIndex = Math.min(photoIndex, track.children.length - 1);
+  updatePhotos();
+}
+
+function updatePhotos() {
+  const track = document.getElementById("photoTrack");
+  const count = track.children.length;
+  if (!count) return;
+
+  photoIndex = Math.max(0, Math.min(photoIndex, count - 1));
+  track.style.transform = "translateX(" + (photoIndex * 100) + "%)";
+
+  document.querySelectorAll(".dot").forEach((dot, i) => {
+    dot.classList.toggle("active", i === photoIndex);
+  });
+}
+
 let photoStart = 0;
-document
-.getElementById("photoSlider")
-.addEventListener(
-"touchstart",
-e => {
-photoStart =
-e.touches[0].clientX;
-},
-{passive:true}
-);
-document
-.getElementById("photoSlider")
-.addEventListener(
-"touchend",
-e => {
-const end =
-e.changedTouches[0].clientX;
-if(end - photoStart < -40){
-photoIndex =
-Math.min(
-photoIndex + 1,
-photos.length - 1
-);
-updatePhotos();
+document.getElementById("photoSlider").addEventListener("touchstart", e => {
+  photoStart = e.touches[0].clientX;
+}, { passive: true });
+
+document.getElementById("photoSlider").addEventListener("touchend", e => {
+  const end = e.changedTouches[0].clientX;
+  if (end - photoStart < -40) {
+    photoIndex++;
+    updatePhotos();
+  } else if (end - photoStart > 40) {
+    photoIndex--;
+    updatePhotos();
+  }
+}, { passive: true });
+
+/* Memories */
+function normalizeMemory(item, index) {
+  if (typeof item === "string") {
+    return { title: "ذكرى رقم " + (index + 1), text: item, image: "", date: "" };
+  }
+  return {
+    title: getField(item, ["title", "Title", "name", "Name"], "ذكرى رقم " + (index + 1)),
+    text: getField(item, ["text", "Text", "story", "Story", "description", "Description"], ""),
+    image: validUrl(getField(item, ["image", "Image", "photo", "Photo", "url", "URL"], "")),
+    date: getField(item, ["date", "Date", "Event_date"], "")
+  };
 }
-if(end - photoStart > 40){
-photoIndex =
-Math.max(
-photoIndex - 1,
-0
-);
-updatePhotos();
+
+function showMemories() {
+  if (!memories.length) return;
+  document.getElementById("memoriesSection").classList.remove("hidden");
+  drawMemories();
 }
-},
-{passive:true}
-);
-/* =========================
-   MEMORIES
-========================= */
-function showMemories(){
-if(!memories.length)
-return;
-document
-.getElementById("memoriesSection")
-.classList.remove("hidden");
-drawMemories();
+
+function drawMemories() {
+  const stage = document.getElementById("memoryStage");
+  stage.replaceChildren();
+
+  if (!memories.length) return;
+  memoryIndex = (memoryIndex + memories.length) % memories.length;
+
+  for (let offset = Math.min(3, memories.length - 1); offset >= 0; offset--) {
+    const index = (memoryIndex + offset) % memories.length;
+    const m = normalizeMemory(memories[index], index);
+    const card = document.createElement("div");
+    card.className = "memory";
+    card.style.zIndex = String(10 - offset);
+    card.style.transform =
+      "translateY(" + (offset * 8) + "px) rotate(" +
+      (offset % 2 ? 2 : -2) + "deg) scale(" + (1 - offset * .04) + ")";
+
+    if (m.image) {
+      const img = document.createElement("img");
+      img.src = m.image;
+      img.alt = "Memory";
+      img.loading = "lazy";
+      card.appendChild(img);
+    }
+
+    const title = document.createElement("h3");
+    title.textContent = m.title;
+    card.appendChild(title);
+
+    if (m.date) {
+      const date = document.createElement("small");
+      date.textContent = m.date;
+      card.appendChild(date);
+    }
+
+    if (m.text) {
+      const text = document.createElement("p");
+      text.textContent = m.text;
+      card.appendChild(text);
+    }
+
+    stage.appendChild(card);
+  }
 }
-function drawMemories(){
-const stage =
-document.getElementById("memoryStage");
-stage.innerHTML = "";
-memories.forEach(
-(m,i) => {
-if(i < memoryIndex)
-return;
-if(i > memoryIndex + 3)
-return;
-const card =
-document.createElement("div");
-card.className =
-"memory";
-let html = "";
-if(m.image){
-html += `
-<img
-src="${m.image}"
-alt="Memory"
-loading="lazy">
-`;
-}
-if(m.title){
-html += `
-<h3>
-${m.title}
-</h3>
-`;
-}
-if(m.date){
-html += `
-<small>
-${m.date}
-</small>
-`;
-}
-if(m.text){
-html += `
-<p>
-${m.text}
-</p>
-`;
-}
-card.innerHTML = html;
-const offset =
-i - memoryIndex;
-card.style.zIndex =
-10 - offset;
-card.style.transform =
-`
-translateY(${offset * 8}px)
-rotate(${offset % 2 ? 2 : -2}deg)
-scale(${1 - offset * .04})
-`;
-stage.appendChild(card);
-}
-);
-}
+
 let memoryStart = 0;
-document
-.getElementById("memoryStage")
-.addEventListener(
-"touchstart",
-e => {
-memoryStart =
-e.touches[0].clientX;
-},
-{passive:true}
-);
-document
-.getElementById("memoryStage")
-.addEventListener(
-"touchend",
-e => {
-if(!memories.length)
-return;
-const end =
-e.changedTouches[0].clientX;
-if(end - memoryStart < -40){
-memoryIndex++;
-if(memoryIndex >= memories.length)
-memoryIndex = 0;
-drawMemories();
+document.getElementById("memoryStage").addEventListener("touchstart", e => {
+  memoryStart = e.touches[0].clientX;
+}, { passive: true });
+
+document.getElementById("memoryStage").addEventListener("touchend", e => {
+  if (!memories.length) return;
+  const diff = e.changedTouches[0].clientX - memoryStart;
+  if (diff < -40) {
+    memoryIndex = (memoryIndex + 1) % memories.length;
+    drawMemories();
+  } else if (diff > 40) {
+    memoryIndex = (memoryIndex - 1 + memories.length) % memories.length;
+    drawMemories();
+  }
+}, { passive: true });
+
+/* Secret video */
+function showDateInput() {
+  document.getElementById("dateBox").classList.remove("hidden");
+  document.getElementById("secretDate").focus();
 }
-if(end - memoryStart > 40){
-memoryIndex--;
-if(memoryIndex < 0)
-memoryIndex =
-memories.length - 1;
-drawMemories();
+
+function unlockVideo() {
+  const value = document.getElementById("secretDate").value.replace(/[^0-9]/g, "");
+  const error = document.getElementById("error");
+
+  if (value !== "03112025" && value !== "3112025") {
+    error.textContent = "التاريخ مش ده 👀 جربي تاني ❤️";
+    return;
+  }
+
+  if (!videos.length) {
+    error.textContent = "الفيديو لسه مش مضاف ❤️";
+    return;
+  }
+
+  error.textContent = "";
+  document.getElementById("videoLocked").classList.add("hidden");
+
+  const box = document.getElementById("videoUnlocked");
+  box.replaceChildren();
+  box.classList.remove("hidden");
+
+  videos.forEach(item => {
+    const url = itemUrl(item);
+    if (!url) return;
+
+    const card = document.createElement("div");
+    card.className = "card";
+    card.style.marginTop = "15px";
+
+    const video = document.createElement("video");
+    video.controls = true;
+    video.playsInline = true;
+    video.preload = "metadata";
+
+    const source = document.createElement("source");
+    source.src = url;
+    source.type = "video/mp4";
+
+    video.appendChild(source);
+    card.appendChild(video);
+    box.appendChild(card);
+  });
+
+  if (!box.children.length) {
+    box.classList.add("hidden");
+    document.getElementById("videoLocked").classList.remove("hidden");
+    error.textContent = "رابط الفيديو مش واضح. راجعي الرابط المحفوظ ❤️";
+  }
 }
-},
-{passive:true}
-);
-/* =========================
-   VIDEO
-========================= */
-function showDateInput(){
-document
-.getElementById("dateBox")
-.classList.remove("hidden");
+
+/* Music */
+function setupMusic(url) {
+  const safe = validUrl(url);
+  if (!safe) return;
+
+  music = safe;
+  document.getElementById("musicSection").classList.remove("hidden");
+  document.getElementById("audio").src = safe;
+
+  const link = document.getElementById("musicLink");
+  link.href = safe;
+  link.classList.remove("hidden");
 }
-function unlockVideo(){
-const value =
-document
-.getElementById("secretDate")
-.value
-.replace(/[^0-9]/g,"");
-if(
-value !== "03112025" &&
-value !== "3112025"
-){
-document
-.getElementById("error")
-.textContent =
-"التاريخ مش ده 👀 جربي تاني ❤️";
-return;
+
+async function toggleMusic() {
+  if (!music) return;
+
+  const audio = document.getElementById("audio");
+  const record = document.getElementById("record");
+  const link = document.getElementById("musicLink");
+
+  try {
+    if (audio.paused) {
+      await audio.play();
+      record.classList.add("playing");
+    } else {
+      audio.pause();
+      record.classList.remove("playing");
+    }
+  } catch (_) {
+    link.classList.remove("hidden");
+    window.open(music, "_blank", "noopener,noreferrer");
+  }
 }
-if(!videos.length){
-document
-.getElementById("error")
-.textContent =
-"الفيديو لسه مش مضاف ❤️";
-return;
+
+document.getElementById("audio").addEventListener("ended", () => {
+  document.getElementById("record").classList.remove("playing");
+});
+
+/* Load saved Supabase data */
+async function load() {
+  try {
+    const response = await fetch(
+      SUPABASE_URL + "/rest/v1/rana_mazen?select=*",
+      {
+        method: "GET",
+        headers: {
+          "apikey": SUPABASE_KEY,
+          "Authorization": "Bearer " + SUPABASE_KEY,
+          "Accept": "application/json"
+        }
+      }
+    );
+
+    if (!response.ok) {
+      console.error("Supabase response error:", await response.text());
+      return;
+    }
+
+    const data = await response.json();
+    console.log("Supabase data loaded");
+
+    if (!Array.isArray(data) || !data.length) {
+      console.error("Supabase returned no rows");
+      return;
+    }
+
+    const row = data[0];
+
+    /* Names and date */
+    if (row.Name) {
+      document.getElementById("names").textContent = row.Name;
+    }
+
+    if (row.Event_date) {
+      document.getElementById("date").textContent = row.Event_date;
+    }
+
+    /* Message */
+    if (row.Story) {
+      document.getElementById("story").textContent = row.Story;
+    }
+
+    /* Photos */
+    photos = parseStored(row.Photos);
+    showPhotos();
+
+    /* Memories */
+    memories = parseStored(row.Memories);
+    showMemories();
+
+    /* Videos */
+    videos = parseStored(row.Videos);
+    if (videos.length) {
+      document.getElementById("videoSection").classList.remove("hidden");
+    }
+
+    /* Music */
+    if (row.Music) {
+      setupMusic(row.Music);
+    }
+
+    console.log("RANA & MAZEN DATA LOADED ❤️");
+  } catch (error) {
+    console.error("LOAD ERROR:", error);
+  }
 }
-document
-.getElementById("videoLocked")
-.classList.add("hidden");
-const box =
-document.getElementById("videoUnlocked");
-box.innerHTML = "";
-box.classList.remove("hidden");
-videos.forEach(
-url => {
-box.innerHTML += `
-<div
-class="card"
-style="margin-top:15px">
-<video
-controls
-playsinline
-preload="metadata">
-<source
-src="${url}"
-type="video/mp4">
-المتصفح لا يدعم تشغيل الفيديو.
-</video>
-</div>
-`;
-}
-);
-}
-/* =========================
-   MUSIC
-========================= */
-function setupMusic(url){
-if(!url)
-return;
-music = url;
-document
-.getElementById("musicSection")
-.classList.remove("hidden");
-document
-.getElementById("audio")
-.src = url;
-document
-.getElementById("musicLink")
-.href = url;
-}
-async function toggleMusic(){
-if(!music)
-return;
-const audio =
-document.getElementById("audio");
-const record =
-document.getElementById("record");
-try{
-if(audio.paused){
-await audio.play();
-record.classList.add("playing");
-}else{
-audio.pause();
-record.classList.remove("playing");
-}
-}catch(e){
-document
-.getElementById("musicLink")
-.classList.remove("hidden");
-}
-}
-document
-.getElementById("audio")
-.addEventListener(
-"ended",
-() => {
-document
-.getElementById("record")
-.classList.remove("playing");
-}
-);
-/* =========================
-   SAFE JSON
-========================= */
-function parseJSON(value){
-if(Array.isArray(value))
-return value;
-if(typeof value !== "string")
-return [];
-try{
-const parsed =
-JSON.parse(value);
-return Array.isArray(parsed)
-? parsed
-: [];
-}catch(e){
-return [];
-}
-}
-/* =========================
-   LOAD SUPABASE
-========================= */
-async function load(){
-try{
-const response =
-await fetch(
-SUPABASE_URL +
-"/rest/v1/rana_mazen?select=*",
-{
-method:"GET",
-headers:{
-"apikey":
-SUPABASE_KEY,
-"Authorization":
-"Bearer " + SUPABASE_KEY,
-"Accept":
-"application/json"
-}
-}
-);
-const data =
-await response.json();
-console.log(
-"SUPABASE RESPONSE:",
-data
-);
-if(!response.ok){
-console.error(
-"SUPABASE ERROR:",
-data
-);
-return;
-}
-if(
-!Array.isArray(data) ||
-!data.length
-){
-console.error(
-"SUPABASE: NO DATA"
-);
-return;
-}
-const row =
-data[0];
-/* NAME */
-if(row.Name){
-document
-.getElementById("names")
-.textContent =
-row.Name;
-}
-/* DATE */
-if(row.Event_date){
-document
-.getElementById("date")
-.textContent =
-row.Event_date;
-}
-/* STORY */
-if(row.Story){
-document
-.getElementById("story")
-.textContent =
-row.Story;
-}
-/* PHOTOS */
-photos =
-parseJSON(row.Photos);
-if(photos.length){
-showPhotos();
-}
-/* MEMORIES */
-memories =
-parseJSON(row.Memories);
-if(memories.length){
-showMemories();
-}
-/* VIDEOS */
-videos =
-parseJSON(row.Videos);
-if(videos.length){
-document
-.getElementById("videoSection")
-.classList.remove("hidden");
-}
-/* MUSIC */
-if(row.Music){
-setupMusic(
-row.Music
-);
-}
-console.log(
-"RANA & MAZEN DATA LOADED ❤️"
-);
-}catch(error){
-console.error(
-"LOAD ERROR:",
-error
-);
-}
-}
+
 load();
 </script>
 </body>
